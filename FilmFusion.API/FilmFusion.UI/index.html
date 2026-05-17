@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmFusion - AI Movie Recommender</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .welcome-container {
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(245, 240, 249, 0.9), rgba(232, 221, 242, 0.9));
+        }
+
+            .welcome-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                opacity: 0.15;
+                z-index: 0;
+            }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #home, #features, #about {
+            scroll-margin-top: 80px;
+        }
+
+        .feature-card {
+            cursor: pointer;
+        }
+
+        .form-card {
+            transition: all 0.3s ease;
+        }
+
+            .form-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <!-- Animated Background -->
+        <div class="animated-bg">
+            <div class="gradient-orb orb1"></div>
+            <div class="gradient-orb orb2"></div>
+            <div class="gradient-orb orb3"></div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="welcome-nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🎬</span>
+                <span class="brand-text">FilmFusion</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">🏠 Home</a>
+                <a href="#features" class="nav-link">✨ Features</a>
+                <a href="#about" class="nav-link">📖 About</a>
+               
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="welcome-content">
+            <!-- Hero Section -->
+            <div id="home" class="hero-section">
+                <div class="hero-badge">
+                    <span>✨ AI-Powered</span>
+                </div>
+                <h1 class="hero-title">
+                    Where Movies
+                    <span class="gradient-text">Fuse</span>
+                    With Your Mood
+                </h1>
+                <p class="hero-description">
+                    Experience the future of movie recommendations. Our AI understands your emotions
+                    and suggests the perfect movie for every mood.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="window.selectRole('admin')">
+                        <span>👑</span> Admin Login
+                    </button>
+                    <button class="btn-secondary" onclick="window.selectRole('user')">
+                        <span>👤</span> User Login
+                    </button>
+                </div>
+
+                <!-- Admin Login Form -->
+                <div id="loginForm" class="login-form-container" style="display: none;">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h3 id="loginTitle">👑 Admin Access</h3>
+                            <p>Enter your credentials to continue</p>
+                        </div>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="📧 admin@filmfusion.com">
+                        <input type="password" id="loginPassword" class="form-input" placeholder="🔒 Password">
+                        <button class="btn-submit" onclick="window.handleLogin()">Sign In →</button>
+                        <div id="signupPrompt" style="display: none; text-align: center; margin-top: 1rem;">
+                            <p style="color: #6a5a7a;">New user? <a href="#" onclick="window.switchToSignup(); return false;" style="color: #9b59b6; text-decoration: none;">✨ Create account</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Signup Form -->
+                <div id="signupForm" class="login-form-container" style="display: none;">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h3>✨ Create Account</h3>
+                            <p>Join FilmFusion today</p>
+                        </div>
+                        <input type="text" id="signupUsername" class="form-input" placeholder="👤 Username">
+                        <input type="email" id="signupEmail" class="form-input" placeholder="📧 Email address">
+                        <input type="password" id="signupPassword" class="form-input" placeholder="🔒 Password (min 6 characters)">
+                        <button class="btn-submit" onclick="window.handleSignup()">Create Account →</button>
+                        <p style="text-align: center; margin-top: 1rem; color: #6a5a7a;">
+                            Already have an account? <a href="#" onclick="window.switchToLogin(); return false;" style="color: #9b59b6; text-decoration: none;">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div id="features" class="features-section">
+                <div class="feature-card" onclick="window.scrollToSection('home')" style="animation-delay: 0s;">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Chatbot</h3>
+                    <p>Talk naturally to get personalized movie recommendations</p>
+                </div>
+                <div class="feature-card" onclick="window.scrollToSection('home')" style="animation-delay: 0.1s;">
+                    <div class="feature-icon">😊</div>
+                    <h3>Mood Detection</h3>
+                    <p>Movies perfectly matched to your current mood</p>
+                </div>
+                <div class="feature-card" onclick="window.scrollToSection('home')" style="animation-delay: 0.2s;">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized</h3>
+                    <p>Recommendations that understand your taste</p>
+                </div>
+                <div class="feature-card" onclick="window.scrollToSection('home')" style="animation-delay: 0.3s;">
+                    <div class="feature-icon">❤️</div>
+                    <h3>Favorites</h3>
+                    <p>Save and organize your favorite movies</p>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div id="about" class="about-section">
+                <h2>📖 About FilmFusion</h2>
+                <p>FilmFusion is a next-generation movie recommendation platform that uses AI (Google Gemini) to understand your emotions and provide personalized movie suggestions. Built with ASP.NET Core, PostgreSQL, and modern web technologies.</p>
+                <p style="margin-top: 1rem;">🎬 Features: Real movie data from TMDB | AI Chatbot | Favorites & Watchlist | User Ratings & Comments | Admin Dashboard</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

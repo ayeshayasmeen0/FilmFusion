@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Movie - FilmFusion</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 20px;
+            background: #000;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+            .video-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+        .server-select {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .server-btn {
+            padding: 0.6rem 1.2rem;
+            background: #f0e6f5;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+            .server-btn:hover {
+                transform: translateY(-2px);
+                background: #e0d4e8;
+            }
+
+            .server-btn.active {
+                background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+                color: white;
+                box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-movie {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+            .like-btn:hover {
+                transform: translateY(-2px);
+                background: #2ecc71;
+            }
+
+        .dislike-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+            .dislike-btn:hover {
+                transform: translateY(-2px);
+                background: #c0392b;
+            }
+
+        .fav-btn {
+            background: #9b59b6;
+            color: white;
+        }
+
+            .fav-btn:hover {
+                transform: translateY(-2px);
+                background: #d2b0e5;
+            }
+
+        .watchlist-btn {
+            background: #3498db;
+            color: white;
+        }
+
+            .watchlist-btn:hover {
+                transform: translateY(-2px);
+                background: #5dade2;
+            }
+
+        .comment-box {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+            .comment-box input {
+                flex: 1;
+                padding: 0.8rem;
+                border: 1px solid #e0d4e8;
+                border-radius: 12px;
+                font-size: 0.9rem;
+            }
+
+                .comment-box input:focus {
+                    outline: none;
+                    border-color: #9b59b6;
+                }
+
+        .movie-detail-item {
+            margin: 0.6rem 0;
+        }
+
+            .movie-detail-item strong {
+                color: #2d1b4e;
+            }
+
+        .no-video-msg {
+            text-align: center;
+            padding: 2rem;
+            color: #6a5a7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="logo">🎬 FilmFusion</div>
+            <div class="nav-links">
+                <a href="user-dashboard.html">🏠 Home</a>
+                <a href="user-favorites.html">❤️ Favorites</a>
+                <a href="user-watchlist.html">📝 Watchlist</a>
+                <a href="user-chatbot.html">🤖 AI Assistant</a>
+                <a href="user-profile.html">👤 Profile</a>
+                <button class="logout-btn" onclick="window.logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <!-- Server Selection -->
+            <div class="glass-card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <span style="font-weight: 600;">🎬 Select Server:</span>
+                </div>
+                <div class="server-select">
+                    <button class="server-btn active" data-server="youtube">▶️ YouTube</button>
+                    <button class="server-btn" data-server="embed">🎥 Embed</button>
+                    <button class="server-btn" data-server="vidsrc">📺 VidSrc</button>
+                    <button class="server-btn" data-server="google">🔍 Google Drive</button>
+                </div>
+            </div>
+
+            <!-- Video Player -->
+            <div class="glass-card" style="padding: 0; overflow: hidden;">
+                <div class="video-container">
+                    <iframe id="moviePlayer" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Movie Info -->
+            <div class="glass-card">
+                <h1 id="movieTitle" style="color: #2d1b4e; margin-bottom: 1rem;">Loading...</h1>
+
+                <div class="action-buttons">
+                    <button class="btn-movie like-btn" onclick="window.likeMovie()">👍 Like</button>
+                    <button class="btn-movie dislike-btn" onclick="window.dislikeMovie()">👎 Dislike</button>
+                    <button class="btn-movie fav-btn" onclick="window.toggleFavorite()">❤️ Favorite</button>
+                    <button class="btn-movie watchlist-btn" onclick="window.toggleWatchlist()">📝 Watchlist</button>
+                </div>
+
+                <p id="movieOverview" style="color: #6a5a7a; line-height: 1.6;"></p>
+
+                <div class="movie-detail-item"><strong>⭐ Rating:</strong> <span id="movieRating"></span>/10</div>
+                <div class="movie-detail-item"><strong>🎭 Genre:</strong> <span id="movieGenre"></span></div>
+                <div class="movie-detail-item"><strong>🎬 Director:</strong> <span id="movieDirector"></span></div>
+                <div class="movie-detail-item"><strong>⭐ Cast:</strong> <span id="movieCast"></span></div>
+            </div>
+
+            <!-- Comments -->
+            <div class="glass-card">
+                <h3>💬 Comments</h3>
+                <div class="comment-box">
+                    <input type="text" id="commentInput" placeholder="Write a comment...">
+                    <button class="btn-primary" onclick="window.addCommentForWatch()">Post</button>
+                </div>
+                <div id="commentsList" style="margin-top: 1.5rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let currentMovieData = null;
+        let currentServer = 'youtube';
+
+        // Server selection
+        document.querySelectorAll('.server-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentServer = this.dataset.server;
+                loadVideo();
+            });
+        });
+
+        function loadVideo() {
+            const player = document.getElementById('moviePlayer');
+            if (!player || !currentMovieData) return;
+
+            const title = encodeURIComponent(currentMovieData.title);
+            const year = currentMovieData.year || '';
+            const searchQuery = encodeURIComponent(`${currentMovieData.title} ${year} full movie`);
+
+            let videoUrl = '';
+
+            switch(currentServer) {
+                case 'youtube':
+                    videoUrl = `https://www.youtube.com/embed?listType=search&q=${searchQuery}&autoplay=1`;
+                    break;
+                case 'embed':
+                    videoUrl = `https://www.2embed.to/embed/tmdb/movie?id=${currentMovieData.tmdbId || ''}`;
+                    break;
+                case 'vidsrc':
+                    videoUrl = `https://vidsrc.to/embed/movie/${currentMovieData.tmdbId || ''}`;
+                    break;
+                case 'google':
+                    videoUrl = `https://www.google.com/search?q=${encodeURIComponent(currentMovieData.title + ' watch online')}&igu=1`;
+                    break;
+                default:
+                    videoUrl = `https://www.youtube.com/embed?listType=search&q=${searchQuery}&autoplay=1`;
+            }
+
+            player.src = videoUrl;
+
+            // If no tmdbId, show message
+            if (!currentMovieData.tmdbId && (currentServer === 'embed' || currentServer === 'vidsrc')) {
+                console.log('No TMDB ID available for this movie');
+            }
+        }
+
+        // Expose to window
+        window.updateMoviePlayer = function(movieData) {
+            currentMovieData = movieData;
+            loadVideo();
+        };
+
+        // Auto-play on load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.currentMovieId && !currentMovieData) {
+                setTimeout(() => {
+                    if (currentMovieData) loadVideo();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

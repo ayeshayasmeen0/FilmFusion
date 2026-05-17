@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - FilmFusion</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+            .profile-header h1 {
+                font-size: 2rem;
+                background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #9b59b6;
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.2);
+            transition: all 0.3s ease;
+        }
+
+            .profile-avatar:hover {
+                transform: scale(1.05);
+            }
+
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+            .edit-avatar-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .profile-info {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(155, 89, 182, 0.1);
+        }
+
+        .info-label {
+            width: 100px;
+            font-weight: 600;
+            color: #2d1b4e;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #6a5a7a;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+            .edit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+            }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+            .modal-content h2 {
+                color: #2d1b4e;
+                margin-bottom: 1.5rem;
+            }
+
+            .modal-content input,
+            .modal-content textarea {
+                width: 100%;
+                padding: 0.8rem;
+                margin-bottom: 1rem;
+                border: 1px solid #e0d4e8;
+                border-radius: 12px;
+                font-size: 0.95rem;
+            }
+
+                .modal-content input:focus,
+                .modal-content textarea:focus {
+                    outline: none;
+                    border-color: #9b59b6;
+                }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+            .modal-buttons button {
+                flex: 1;
+                padding: 0.8rem;
+                border: none;
+                border-radius: 12px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+        .save-btn {
+            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #e0d4e8;
+            color: #2d1b4e;
+        }
+
+        .avatar-options {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+
+        .avatar-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+            .avatar-option:hover {
+                transform: scale(1.1);
+                border-color: #9b59b6;
+            }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #9b59b6;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f5fa;
+        }
+
+            .upload-area:hover {
+                background: #f0e6f5;
+                border-color: #d2b0e5;
+            }
+
+            .upload-area .upload-icon {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .upload-area p {
+                color: #6a5a7a;
+                font-size: 0.85rem;
+            }
+
+        .upload-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .upload-btn {
+            flex: 1;
+            padding: 0.6rem;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .upload-btn:hover {
+                background: #d2b0e5;
+            }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+            border: 3px solid #9b59b6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="logo">🎬 FilmFusion</div>
+            <div class="nav-links">
+                <a href="user-dashboard.html">🏠 Home</a>
+                <a href="user-favorites.html">❤️ Favorites</a>
+                <a href="user-watchlist.html">📝 Watchlist</a>
+                <a href="user-chatbot.html">🤖 AI Assistant</a>
+                <a href="user-profile.html" class="active">👤 Profile</a>
+                <button class="logout-btn" onclick="window.logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content profile-container">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="profileAvatar" class="profile-avatar" src="" alt="Profile">
+                    <button class="edit-avatar-btn" onclick="window.openAvatarModal()">✎</button>
+                </div>
+                <h1 id="profileName">Loading...</h1>
+                <p id="profileRole" style="color: #9b59b6;"></p>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-row">
+                    <div class="info-label">📧 Email</div>
+                    <div class="info-value" id="profileEmail">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">📅 Joined</div>
+                    <div class="info-value" id="profileJoined">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">👤 Role</div>
+                    <div class="info-value" id="profileUserRole">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">📝 Bio</div>
+                    <div class="info-value" id="profileBio">-</div>
+                </div>
+
+                <button class="edit-btn" onclick="window.openEditModal()">✏️ Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>✏️ Edit Profile</h2>
+            <input type="text" id="editUsername" placeholder="Username">
+            <input type="email" id="editEmail" placeholder="Email">
+            <textarea id="editBio" rows="3" placeholder="Tell us about yourself..."></textarea>
+            <div class="modal-buttons">
+                <button class="save-btn" onclick="window.saveProfile()">Save Changes</button>
+                <button class="cancel-btn" onclick="window.closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Selection Modal (with Camera & Gallery) -->
+    <div id="avatarModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>🎨 Choose Profile Picture</h2>
+
+            <!-- Upload from Gallery -->
+            <div class="upload-area" onclick="document.getElementById('galleryInput').click()">
+                <div class="upload-icon">📸</div>
+                <p>Click to upload from gallery</p>
+                <input type="file" id="galleryInput" class="hidden-file-input" accept="image/*" onchange="window.handleGalleryUpload(event)">
+            </div>
+
+            <!-- Camera Option -->
+            <div class="upload-area" onclick="document.getElementById('cameraInput').click()">
+                <div class="upload-icon">📷</div>
+                <p>Take a photo with camera</p>
+                <input type="file" id="cameraInput" class="hidden-file-input" accept="image/*" capture="environment" onchange="window.handleCameraUpload(event)">
+            </div>
+
+            <div style="text-align: center; margin: 0.5rem 0; color: #6a5a7a;">or</div>
+
+            <!-- Avatar Options -->
+            <div class="avatar-options" id="avatarOptions"></div>
+
+            <!-- Custom URL Option -->
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <input type="text" id="avatarUrlInput" placeholder="Or paste image URL..." style="flex: 1;">
+                <button class="save-btn" onclick="window.setCustomAvatar()">Set</button>
+            </div>
+            <div class="modal-buttons" style="margin-top: 1rem;">
+                <button class="cancel-btn" onclick="window.closeAvatarModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in
+        (function() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                const popupDiv = document.createElement('div');
+                popupDiv.className = 'login-popup';
+                popupDiv.id = 'loginPopup';
+                popupDiv.innerHTML = `
+                    <div class="login-popup-content">
+                        <div class="popup-icon">🔐</div>
+                        <h2>Login Required</h2>
+                        <p>Please login to view your profile</p>
+                        <button onclick="window.location.href='index.html'">Go to Login</button>
+                        <button class="close-popup" onclick="document.getElementById('loginPopup').remove()">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(popupDiv);
+                setTimeout(() => {
+                    if (document.getElementById('loginPopup')) {
+                        window.location.href = 'index.html';
+                    }
+                }, 3000);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FilmFusion</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="logo">🎬 FilmFusion</div>
+            <div class="nav-links">
+                <a href="user-dashboard.html">Home</a>
+                <a href="user-favorites.html">❤️ Favorites</a>
+                <a href="user-watchlist.html">📝 Watchlist</a>
+                <a href="user-chatbot.html">🤖 AI Assistant</a>
+                <a href="user-profile.html">👤 Profile</a>
+                <button class="logout-btn" onclick="window.logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="glass-card">
+                <h2 class="section-title">🎬 Discover Movies</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search movies by title, genre..." onkeyup="window.searchMovies()">
+                    <select id="genreFilter" onchange="window.filterByGenre()">
+                        <option value="">All Genres</option>
+                        <option value="action">Action</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="drama">Drama</option>
+                        <option value="horror">Horror</option>
+                        <option value="sci-fi">Sci-Fi</option>
+                        <option value="romance">Romance</option>
+                        <option value="thriller">Thriller</option>
+                    </select>
+                </div>
+                <div id="moviesGrid" class="movie-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

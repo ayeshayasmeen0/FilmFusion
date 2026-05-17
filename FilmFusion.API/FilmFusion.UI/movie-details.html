@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - FilmFusion</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .movie-hero {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border-radius: 24px;
+            padding: 3rem;
+            color: white;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+        }
+
+            .movie-hero::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4));
+                border-radius: 24px;
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .movie-title {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.8rem;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .trailer-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+            .trailer-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.3rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .star {
+            color: #ddd;
+            transition: 0.3s;
+        }
+
+            .star.active {
+                color: #ffc107;
+            }
+
+            .star:hover {
+                color: #ffc107;
+            }
+
+        .comment-box {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+            .comment-box input {
+                flex: 1;
+                padding: 0.8rem;
+                border: 1px solid #ddd;
+                border-radius: 12px;
+            }
+
+        .comment-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+        }
+
+        .comment-user {
+            font-weight: bold;
+            color: #9b59b6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+            .action-btn.favorite {
+                background: #e74c3c;
+                color: white;
+            }
+
+            .action-btn.watchlist {
+                background: #3498db;
+                color: white;
+            }
+
+            .action-btn.watched {
+                background: #27ae60;
+                color: white;
+            }
+
+            .action-btn:hover {
+                transform: translateY(-2px);
+            }
+
+        .cast-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cast-item {
+            background: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🎬 FilmFusion</div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="chatbot.html">AI Chatbot</a>
+            <a href="user-profile.html">👤 Profile</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Movie Hero Section -->
+        <div id="movieHero" class="movie-hero">
+            <div class="hero-content">
+                <h1 id="movieTitle" class="movie-title">Loading...</h1>
+                <p id="movieTagline" class="movie-tagline"></p>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">⭐ Rating</div>
+                        <div class="info-value" id="movieRating">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">📅 Year</div>
+                        <div class="info-value" id="movieYear">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">🎭 Genre</div>
+                        <div class="info-value" id="movieGenre">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">⏱ Runtime</div>
+                        <div class="info-value" id="movieRuntime">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">🎬 Director</div>
+                        <div class="info-value" id="movieDirector">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="glass-card">
+            <div class="action-buttons">
+                <button class="action-btn favorite" onclick="toggleFavorite()">❤️ Favorite</button>
+                <button class="action-btn watchlist" onclick="toggleWatchlist()">📝 Watchlist</button>
+                <button class="action-btn watched" onclick="markAsWatched()">✅ Watched</button>
+            </div>
+
+            <h3>⭐ Rate This Movie</h3>
+            <div class="rating-stars" id="ratingStars">
+                ★★★★★
+            </div>
+        </div>
+
+        <!-- Trailer Section -->
+        <div id="trailerSection" class="glass-card" style="display: none;">
+            <h3>🎬 Trailer</h3>
+            <div id="trailerContainer" class="trailer-container"></div>
+        </div>
+
+        <!-- Overview Section -->
+        <div class="glass-card">
+            <h3>📖 Overview</h3>
+            <p id="movieOverview" style="font-size: 1rem; line-height: 1.6;"></p>
+        </div>
+
+        <!-- Cast Section -->
+        <div class="glass-card">
+            <h3>🎭 Top Cast</h3>
+            <div id="castList" class="cast-list"></div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="glass-card">
+            <h3>💬 Comments</h3>
+            <div class="comment-box">
+                <input type="text" id="commentInput" placeholder="Write a comment...">
+                <button class="btn btn-primary" onclick="addComment()">Post</button>
+            </div>
+            <div id="commentsList" style="margin-top: 1.5rem;"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
