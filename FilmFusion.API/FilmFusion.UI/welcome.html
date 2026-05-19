@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmFusion - Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
+            z-index: 1;
+        }
+
+        /* Animated Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(100, 180, 250, 0.3);
+            border-radius: 50%;
+            animation: floatParticle 15s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 4rem;
+            background: rgba(10, 20, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #64b4fa, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .nav-link:hover {
+                color: #64b4fa;
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(135deg, #3a86ff, #64b4fa);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
+            }
+
+        /* Hero Section */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(100, 180, 250, 0.15);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64b4fa;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(100, 180, 250, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+            .hero-title span {
+                background: linear-gradient(135deg, #64b4fa, #3a86ff);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(58, 134, 255, 0.4);
+            }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(100, 180, 250, 0.5);
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-outline:hover {
+                background: rgba(100, 180, 250, 0.1);
+                border-color: #64b4fa;
+                transform: translateY(-3px);
+            }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #64b4fa;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        /* Features Section */
+        .features {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 5rem 2rem;
+            margin-top: 3rem;
+        }
+
+        .features-title {
+            text-align: center;
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(100, 180, 250, 0.1);
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+            .feature-card:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .feature-card:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .feature-card:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+
+            .feature-card:nth-child(4) {
+                animation-delay: 0.3s;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-8px);
+                background: rgba(100, 180, 250, 0.1);
+                border-color: rgba(100, 180, 250, 0.3);
+            }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* About Section */
+        .about {
+            background: rgba(10, 20, 30, 0.8);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+            .about h2 {
+                color: white;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .about p {
+                color: rgba(255, 255, 255, 0.6);
+                max-width: 700px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 20, 30, 0.9);
+            padding: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+            .scroll-indicator span {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 2rem;
+            }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats {
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .features-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v2.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <span class="logo-text">FilmFusion</span>
+            </div>
+            <div class="nav-links">
+                <a class="nav-link" id="homeNav">Home</a>
+                <a class="nav-link" id="featuresNav">Features</a>
+                <a class="nav-link" id="aboutNav">About</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div id="home" class="hero">
+            <div class="hero-badge">
+                <span>✨ AI-Powered Movie Discovery</span>
+            </div>
+            <h1 class="hero-title">
+                Where Movies <span>Fuse</span><br>With Your Taste
+            </h1>
+            <p class="hero-description">
+                Discover personalized movie recommendations powered by real data.
+                Find, save, and enjoy the perfect movie for every moment.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn-primary" id="getStartedBtn">Get Started →</button>
+                <button class="btn-outline" id="exploreFeaturesBtn">Explore Features</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Movies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.8★</div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator" id="scrollIndicator">
+                <span>↓</span>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div id="features" class="features">
+            <h2 class="features-title">Why Choose FilmFusion?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Picks</h3>
+                    <p>Get movie suggestions tailored to your unique taste</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">❤️</div>
+                    <h3>Favorites & Watchlist</h3>
+                    <p>Save movies you love and plan what to watch next</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real TMDB Data</h3>
+                    <p>Powered by The Movie Database for accurate info</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Rate & Review</h3>
+                    <p>Share your thoughts and rate movies you've watched</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="about" class="about">
+            <h2>📖 About FilmFusion</h2>
+            <p>
+                FilmFusion is a modern movie recommendation platform that helps you discover movies based on your preferences.
+                Built with ASP.NET Core, PostgreSQL, and real TMDB data. Create your watchlist, save favorites, and explore thousands of movies.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2026 FilmFusion. All rights reserved. Made with 🎬 for movie lovers.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

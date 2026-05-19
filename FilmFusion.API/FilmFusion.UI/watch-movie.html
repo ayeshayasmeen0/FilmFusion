@@ -4,16 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie - FilmFusion</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
+            z-index: -1;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-nav {
+            background: rgba(10, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #64b4fa, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            .nav-links a {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+            }
+
+                .nav-links a:hover {
+                    color: #64b4fa;
+                    background: rgba(100, 180, 250, 0.1);
+                }
+
+        .logout-btn {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+            .logout-btn:hover {
+                background: rgba(231, 76, 60, 0.3);
+                transform: translateY(-2px);
+            }
+
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .glass-card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100, 180, 250, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             border-radius: 20px;
             background: #000;
-            margin-bottom: 2rem;
             overflow: hidden;
         }
 
@@ -29,38 +167,64 @@
         .server-select {
             display: flex;
             gap: 0.8rem;
-            margin-bottom: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .server-btn {
             padding: 0.6rem 1.2rem;
-            background: #f0e6f5;
-            border: none;
+            background: rgba(100, 180, 250, 0.15);
+            border: 1px solid rgba(100, 180, 250, 0.3);
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
             font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
             .server-btn:hover {
+                background: rgba(100, 180, 250, 0.3);
                 transform: translateY(-2px);
-                background: #e0d4e8;
             }
 
             .server-btn.active {
-                background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+                background: linear-gradient(135deg, #3a86ff, #64b4fa);
                 color: white;
-                box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+                border-color: transparent;
+                box-shadow: 0 4px 12px rgba(58, 134, 255, 0.3);
             }
+
+        .movie-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .movie-rating-badge {
+            background: rgba(255, 193, 7, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            color: #ffc107;
+        }
 
         .action-buttons {
             display: flex;
             gap: 1rem;
-            margin: 1.5rem 0;
             flex-wrap: wrap;
+            margin: 1rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
         }
 
         .btn-movie {
@@ -70,212 +234,560 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .like-btn {
-            background: #27ae60;
-            color: white;
+            background: rgba(39, 174, 96, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
         }
 
             .like-btn:hover {
+                background: #27ae60;
+                color: white;
                 transform: translateY(-2px);
-                background: #2ecc71;
             }
 
         .dislike-btn {
-            background: #e74c3c;
-            color: white;
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
         }
 
             .dislike-btn:hover {
+                background: #e74c3c;
+                color: white;
                 transform: translateY(-2px);
-                background: #c0392b;
             }
 
         .fav-btn {
-            background: #9b59b6;
-            color: white;
+            background: rgba(100, 180, 250, 0.2);
+            color: #64b4fa;
+            border: 1px solid rgba(100, 180, 250, 0.3);
         }
 
             .fav-btn:hover {
+                background: #3a86ff;
+                color: white;
                 transform: translateY(-2px);
-                background: #d2b0e5;
             }
 
         .watchlist-btn {
-            background: #3498db;
-            color: white;
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
         }
 
             .watchlist-btn:hover {
+                background: #3498db;
+                color: white;
                 transform: translateY(-2px);
-                background: #5dade2;
             }
+
+        .movie-details {
+            margin: 1rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-label {
+            width: 100px;
+            color: #64b4fa;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Comments Section */
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .comments-count {
+            color: white;
+            font-weight: 600;
+        }
 
         .comment-box {
             display: flex;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-            .comment-box input {
-                flex: 1;
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+            .comment-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .comment-input-area {
+            flex: 1;
+        }
+
+            .comment-input-area input {
+                width: 100%;
                 padding: 0.8rem;
-                border: 1px solid #e0d4e8;
-                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(100, 180, 250, 0.3);
+                border-radius: 24px;
+                color: white;
                 font-size: 0.9rem;
             }
 
-                .comment-box input:focus {
+                .comment-input-area input:focus {
                     outline: none;
-                    border-color: #9b59b6;
+                    border-color: #64b4fa;
                 }
 
-        .movie-detail-item {
-            margin: 0.6rem 0;
+                .comment-input-area input::placeholder {
+                    color: rgba(255, 255, 255, 0.4);
+                }
+
+        .comment-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 0.5rem;
         }
 
-            .movie-detail-item strong {
-                color: #2d1b4e;
+            .comment-actions button {
+                padding: 0.4rem 1rem;
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+                font-weight: 500;
             }
 
-        .no-video-msg {
+        .comment-cancel {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .comment-submit {
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            color: white;
+        }
+
+        .comment-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-main {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .comment-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+            .comment-avatar-small img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-user {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .comment-user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .comment-user-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .comment-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-stats {
+            margin-bottom: 0.5rem;
+        }
+
+        .like-count {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .comment-actions-small {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .like-btn-small {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 16px;
+        }
+
+            .like-btn-small:hover {
+                color: #64b4fa;
+                background: rgba(100, 180, 250, 0.1);
+            }
+
+            .like-btn-small.liked {
+                color: #3a86ff;
+            }
+
+        .reply-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 16px;
+        }
+
+            .reply-btn:hover {
+                color: #64b4fa;
+                background: rgba(100, 180, 250, 0.1);
+            }
+
+        .comment-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .comment-menu-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0 0.3rem;
+        }
+
+        .comment-menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #1a2634;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+            .comment-menu-content span {
+                display: block;
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+                .comment-menu-content span:hover {
+                    background: #2a3a4a;
+                }
+
+        .reply-input-area {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .reply-input {
+            flex: 1;
+            padding: 0.4rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(100, 180, 250, 0.3);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .reply-submit {
+            background: #3a86ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 0.2rem 0.8rem;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .cancel-reply {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .replies-section {
+            margin-left: 48px;
+            margin-top: 0.8rem;
+            border-left: 2px solid rgba(100, 180, 250, 0.2);
+            padding-left: 1rem;
+        }
+
+        .reply-item {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .reply-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #64b4fa, #3a86ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+            .reply-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .reply-content {
+            flex: 1;
+        }
+
+        .reply-user-name {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .reply-time {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .reply-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .show-replies-btn {
+            background: transparent;
+            border: none;
+            color: #64b4fa;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-top: 0.3rem;
+        }
+
+        .no-comments {
             text-align: center;
             padding: 2rem;
-            color: #6a5a7a;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .movie-title {
+                font-size: 1.3rem;
+            }
+
+            .replies-section {
+                margin-left: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v6.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
     <div class="dashboard-container">
         <nav class="dashboard-nav">
-            <div class="logo">🎬 FilmFusion</div>
+            <div class="logo"><span class="logo-icon">🎬</span><span class="logo-text">FilmFusion</span></div>
             <div class="nav-links">
                 <a href="user-dashboard.html">🏠 Home</a>
                 <a href="user-favorites.html">❤️ Favorites</a>
                 <a href="user-watchlist.html">📝 Watchlist</a>
-                <a href="user-chatbot.html">🤖 AI Assistant</a>
                 <a href="user-profile.html">👤 Profile</a>
-                <button class="logout-btn" onclick="window.logout()">Logout</button>
+                <div class="notification-bell" id="notificationBell" onclick="window.toggleNotifications()">🔔<span id="notificationBadge" class="notification-badge" style="display:none;">0</span></div>
+                <button class="logout-btn" onclick="window.logout()">🚪 Logout</button>
             </div>
         </nav>
 
         <div class="dashboard-content">
             <!-- Server Selection -->
             <div class="glass-card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <span style="font-weight: 600;">🎬 Select Server:</span>
-                </div>
+                <div style="text-align: center; margin-bottom: 1rem;"><span style="font-weight: 600; color: #64b4fa;">🎬 Select Server:</span></div>
                 <div class="server-select">
-                    <button class="server-btn active" data-server="youtube">▶️ YouTube</button>
-                    <button class="server-btn" data-server="embed">🎥 Embed</button>
-                    <button class="server-btn" data-server="vidsrc">📺 VidSrc</button>
-                    <button class="server-btn" data-server="google">🔍 Google Drive</button>
+                    <button class="server-btn active" data-server="vidsrc">📺 VidSrc</button>
+                    <button class="server-btn" data-server="embed">🎥 2Embed</button>
+                    <button class="server-btn" data-server="youtube">▶️ YouTube Trailer</button>
                 </div>
             </div>
 
             <!-- Video Player -->
             <div class="glass-card" style="padding: 0; overflow: hidden;">
-                <div class="video-container">
-                    <iframe id="moviePlayer" src="" allowfullscreen></iframe>
-                </div>
+                <div class="video-container"><iframe id="moviePlayer" src="" allowfullscreen></iframe></div>
             </div>
 
             <!-- Movie Info -->
             <div class="glass-card">
-                <h1 id="movieTitle" style="color: #2d1b4e; margin-bottom: 1rem;">Loading...</h1>
-
+                <h1 class="movie-title" id="movieTitle">Loading...</h1>
+                <div class="movie-meta">
+                    <span id="movieYear">—</span><span>•</span>
+                    <span id="movieGenre">—</span><span>•</span>
+                    <span class="movie-rating-badge" id="movieRating">⭐ —/10</span>
+                </div>
                 <div class="action-buttons">
                     <button class="btn-movie like-btn" onclick="window.likeMovie()">👍 Like</button>
                     <button class="btn-movie dislike-btn" onclick="window.dislikeMovie()">👎 Dislike</button>
                     <button class="btn-movie fav-btn" onclick="window.toggleFavorite()">❤️ Favorite</button>
                     <button class="btn-movie watchlist-btn" onclick="window.toggleWatchlist()">📝 Watchlist</button>
                 </div>
-
-                <p id="movieOverview" style="color: #6a5a7a; line-height: 1.6;"></p>
-
-                <div class="movie-detail-item"><strong>⭐ Rating:</strong> <span id="movieRating"></span>/10</div>
-                <div class="movie-detail-item"><strong>🎭 Genre:</strong> <span id="movieGenre"></span></div>
-                <div class="movie-detail-item"><strong>🎬 Director:</strong> <span id="movieDirector"></span></div>
-                <div class="movie-detail-item"><strong>⭐ Cast:</strong> <span id="movieCast"></span></div>
+                <p id="movieOverview" style="color: rgba(255, 255, 255, 0.7); line-height: 1.6; margin: 1rem 0;"></p>
+                <div class="movie-details">
+                    <div class="detail-row"><div class="detail-label">Director</div><div class="detail-value" id="movieDirector">—</div></div>
+                    <div class="detail-row"><div class="detail-label">Cast</div><div class="detail-value" id="movieCast">—</div></div>
+                </div>
             </div>
 
-            <!-- Comments -->
+            <!-- Comments Section (No Sort By) -->
             <div class="glass-card">
-                <h3>💬 Comments</h3>
-                <div class="comment-box">
-                    <input type="text" id="commentInput" placeholder="Write a comment...">
-                    <button class="btn-primary" onclick="window.addCommentForWatch()">Post</button>
+                <div class="comments-header">
+                    <div class="comments-count" id="commentsCount">0 Comments</div>
                 </div>
-                <div id="commentsList" style="margin-top: 1.5rem;"></div>
+
+                <div class="comment-box">
+                    <div class="comment-avatar" id="currentUserAvatar"><span>👤</span></div>
+                    <div class="comment-input-area">
+                        <input type="text" id="commentInput" placeholder="Add a comment...">
+                        <div class="comment-actions">
+                            <button class="comment-cancel" onclick="clearCommentInput()">Cancel</button>
+                            <button class="comment-submit" onclick="window.addCommentForWatch()">Comment</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="commentsList"><div class="no-comments">No comments yet. Be the first to comment!</div></div>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
+        function clearCommentInput() { document.getElementById('commentInput').value = ''; }
+        if (!localStorage.getItem('userId')) { window.location.href = 'index.html'; }
+        const userId = localStorage.getItem('userId');
+        const userAvatar = localStorage.getItem('userAvatar');
+        if (userAvatar && document.getElementById('currentUserAvatar')) {
+            document.getElementById('currentUserAvatar').innerHTML = `<img src="${userAvatar}" alt="avatar">`;
+        }
+        let currentServer = 'vidsrc';
         let currentMovieData = null;
-        let currentServer = 'youtube';
-
-        // Server selection
-        document.querySelectorAll('.server-btn').forEach(btn => {
+        document.querySelectorAll('.server-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.server-btn').forEach(function(b) { b.classList.remove('active'); });
                 this.classList.add('active');
-                currentServer = this.dataset.server;
+                currentServer = this.getAttribute('data-server');
                 loadVideo();
             });
         });
-
         function loadVideo() {
-            const player = document.getElementById('moviePlayer');
+            var player = document.getElementById('moviePlayer');
             if (!player || !currentMovieData) return;
-
-            const title = encodeURIComponent(currentMovieData.title);
-            const year = currentMovieData.year || '';
-            const searchQuery = encodeURIComponent(`${currentMovieData.title} ${year} full movie`);
-
-            let videoUrl = '';
-
-            switch(currentServer) {
-                case 'youtube':
-                    videoUrl = `https://www.youtube.com/embed?listType=search&q=${searchQuery}&autoplay=1`;
-                    break;
-                case 'embed':
-                    videoUrl = `https://www.2embed.to/embed/tmdb/movie?id=${currentMovieData.tmdbId || ''}`;
-                    break;
-                case 'vidsrc':
-                    videoUrl = `https://vidsrc.to/embed/movie/${currentMovieData.tmdbId || ''}`;
-                    break;
-                case 'google':
-                    videoUrl = `https://www.google.com/search?q=${encodeURIComponent(currentMovieData.title + ' watch online')}&igu=1`;
-                    break;
-                default:
-                    videoUrl = `https://www.youtube.com/embed?listType=search&q=${searchQuery}&autoplay=1`;
+            var title = encodeURIComponent(currentMovieData.title);
+            var tmdbId = currentMovieData.tmdbId || '';
+            var videoUrl = '';
+            if (currentServer === 'vidsrc') {
+                videoUrl = tmdbId ? 'https://vidsrc.to/embed/movie/' + tmdbId : 'https://vidsrc.to/embed/movie?q=' + title;
+            } else if (currentServer === 'embed') {
+                videoUrl = tmdbId ? 'https://www.2embed.to/embed/tmdb/movie?id=' + tmdbId : 'https://www.2embed.to/embed/tmdb/movie?q=' + title;
+            } else {
+                videoUrl = 'https://www.youtube.com/embed?listType=search&q=' + title + '+trailer&autoplay=1';
             }
-
             player.src = videoUrl;
-
-            // If no tmdbId, show message
-            if (!currentMovieData.tmdbId && (currentServer === 'embed' || currentServer === 'vidsrc')) {
-                console.log('No TMDB ID available for this movie');
-            }
         }
-
-        // Expose to window
-        window.updateMoviePlayer = function(movieData) {
-            currentMovieData = movieData;
-            loadVideo();
-        };
-
-        // Auto-play on load
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.currentMovieId && !currentMovieData) {
-                setTimeout(() => {
-                    if (currentMovieData) loadVideo();
-                }, 1000);
-            }
-        });
+        window.updateMoviePlayer = function(movieData) { currentMovieData = movieData; loadVideo(); };
     </script>
 </body>
 </html>

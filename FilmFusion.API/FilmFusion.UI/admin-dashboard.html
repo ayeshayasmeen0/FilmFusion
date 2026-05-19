@@ -4,143 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - FilmFusion</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .admin-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .admin-stat-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.5rem;
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
+            z-index: -1;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-nav {
+            background: rgba(10, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(155, 89, 182, 0.1);
-            cursor: pointer;
+            gap: 0.5rem;
         }
 
-            .admin-stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 15px 35px rgba(155, 89, 182, 0.15);
+        .logo-icon {
+            font-size: 1.8rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%,100% {
+                transform: translateY(0);
             }
 
-        .stat-info h3 {
-            font-size: 0.85rem;
-            color: #6a5a7a;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #2d1b4e;
-        }
-
-        .stat-trend {
-            font-size: 0.7rem;
-            margin-top: 0.3rem;
-        }
-
-            .stat-trend.up {
-                color: #27ae60;
+            50% {
+                transform: translateY(-3px);
             }
-
-            .stat-trend.down {
-                color: #e74c3c;
-            }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.7;
         }
 
-        .charts-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .logo-text {
+            background: linear-gradient(135deg, #64b4fa, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .chart-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid rgba(155, 89, 182, 0.1);
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-            .chart-card h3 {
-                color: #2d1b4e;
-                margin-bottom: 1rem;
+            .nav-links a {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.3rem;
             }
 
-        canvas {
-            max-height: 280px;
-        }
+                .nav-links a:hover {
+                    color: #64b4fa;
+                    background: rgba(100, 180, 250, 0.1);
+                }
 
-        .recent-activity {
-            max-height: 350px;
-            overflow-y: auto;
-        }
+                .nav-links a.active {
+                    background: rgba(100, 180, 250, 0.15);
+                    color: #64b4fa;
+                }
 
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem;
-            border-bottom: 1px solid rgba(155, 89, 182, 0.1);
-            transition: all 0.3s ease;
-        }
-
-            .activity-item:hover {
-                background: rgba(155, 89, 182, 0.05);
-            }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+        .logout-btn {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            padding: 0.5rem 1rem;
             border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
+            gap: 0.3rem;
         }
 
-        .activity-details {
-            flex: 1;
-        }
+            .logout-btn:hover {
+                background: rgba(231, 76, 60, 0.3);
+                transform: translateY(-2px);
+            }
 
-        .activity-title {
-            font-weight: 600;
-            color: #2d1b4e;
-        }
-
-        .activity-time {
-            font-size: 0.7rem;
-            color: #6a5a7a;
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
         .quick-actions {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .quick-action-btn {
-            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
             color: white;
             border: none;
             padding: 0.7rem 1.2rem;
@@ -150,50 +161,224 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            font-weight: 500;
         }
 
             .quick-action-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+                box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
             }
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-stat-card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(100, 180, 250, 0.15);
+            cursor: pointer;
+        }
+
+            .admin-stat-card:hover {
+                transform: translateY(-5px);
+                border-color: #3a86ff;
+            }
+
+        .stat-info h3 {
+            font-size: 0.75rem;
+            color: #64b4fa;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
+        .chart-card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100, 180, 250, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+            .chart-card h3 {
+                color: white;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+        canvas {
+            max-height: 250px;
+        }
+
+        .glass-card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100, 180, 250, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+            .glass-card h3 {
+                color: white;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .activity-item:hover {
+                background: rgba(100, 180, 250, 0.05);
+            }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+            .activity-icon.like {
+                background: rgba(46, 204, 113, 0.2);
+                color: #2ecc71;
+            }
+
+            .activity-icon.dislike {
+                background: rgba(231, 76, 60, 0.2);
+                color: #e74c3c;
+            }
+
+            .activity-icon.comment {
+                background: rgba(100, 180, 250, 0.2);
+                color: #64b4fa;
+            }
+
+            .activity-icon.watchlist {
+                background: rgba(155, 89, 182, 0.2);
+                color: #d2b0e5;
+            }
+
+            .activity-icon.favorite {
+                background: rgba(241, 196, 15, 0.2);
+                color: #f1c40f;
+            }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .activity-subtitle {
+            font-size: 0.7rem;
+            color: #64b4fa;
+        }
+
+        .activity-time {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 0.2rem;
+        }
+
+        .activity-type {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .type-like {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .type-dislike {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .type-comment {
+            background: rgba(100, 180, 250, 0.2);
+            color: #64b4fa;
+        }
+
+        .type-watchlist {
+            background: rgba(155, 89, 182, 0.2);
+            color: #d2b0e5;
+        }
+
+        .type-favorite {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.3rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            border-radius: 2px;
+        }
 
         .table-container {
             overflow-x: auto;
-        }
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .movie-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-            .movie-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 30px rgba(155, 89, 182, 0.15);
-            }
-
-            .movie-card img {
-                width: 100%;
-                height: auto;
-            }
-
-        .movie-info {
-            padding: 1rem;
-        }
-
-        .movie-title {
-            font-weight: 700;
-            color: #2d1b4e;
         }
 
         table {
@@ -204,56 +389,241 @@
         th, td {
             padding: 0.75rem;
             text-align: left;
-            border-bottom: 1px solid rgba(155, 89, 182, 0.1);
+            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
         }
 
         th {
-            background: #f5eef9;
-            color: #2d1b4e;
+            background: rgba(100, 180, 250, 0.1);
+            color: #64b4fa;
+            font-weight: 600;
+        }
+
+        td {
+            color: white;
         }
 
         .badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         .badge-admin {
-            background: #9b59b6;
-            color: white;
+            background: rgba(58, 134, 255, 0.2);
+            color: #64b4fa;
         }
 
         .badge-user {
-            background: #e0d4e8;
-            color: #2d1b4e;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e0d4e8;
-            border-radius: 3px;
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .movie-card {
+            background: rgba(20, 30, 40, 0.8);
+            border-radius: 16px;
             overflow: hidden;
-            margin-top: 0.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(100, 180, 250, 0.1);
         }
 
-        .progress-fill {
+            .movie-card:hover {
+                transform: translateY(-5px);
+                border-color: #3a86ff;
+            }
+
+            .movie-card img {
+                width: 100%;
+                height: auto;
+            }
+
+        .movie-info {
+            padding: 0.8rem;
+        }
+
+        .movie-title {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-year {
+            font-size: 0.7rem;
+            color: #64b4fa;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+            .search-bar input {
+                flex: 1;
+                padding: 0.7rem 1rem;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(100,180,250,0.3);
+                border-radius: 12px;
+                color: white;
+            }
+
+                .search-bar input:focus {
+                    outline: none;
+                    border-color: #64b4fa;
+                }
+
+            .search-bar select {
+                padding: 0.7rem 1rem;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(100,180,250,0.3);
+                border-radius: 12px;
+                color: white;
+                cursor: pointer;
+            }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #9b59b6, #d2b0e5);
-            border-radius: 3px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0a141e;
+            border-radius: 20px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #3a86ff;
+        }
+
+            .modal-content h2 {
+                color: white;
+                margin-bottom: 1rem;
+            }
+
+            .modal-content input, .modal-content textarea {
+                width: 100%;
+                padding: 0.7rem;
+                margin-bottom: 0.8rem;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(100,180,250,0.3);
+                border-radius: 10px;
+                color: white;
+            }
+
+                .modal-content input::placeholder {
+                    color: rgba(255,255,255,0.5);
+                }
+
+        #tmdbResults {
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+            #tmdbResults div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem;
+                border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+                color: white;
+            }
+
+            #tmdbResults span {
+                color: white;
+                font-size: 0.85rem;
+            }
+
+            #tmdbResults button {
+                background: linear-gradient(135deg, #3a86ff, #64b4fa);
+                color: white;
+                border: none;
+                padding: 0.2rem 0.8rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.7rem;
+            }
+
+        .btn-primary, .save-btn {
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .cancel-btn {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dashboard-content {
+                padding: 1rem;
+            }
+
+            .admin-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v8.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
     <div class="dashboard-container">
         <nav class="dashboard-nav">
-            <div class="logo">🎬 FilmFusion Admin</div>
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <span class="logo-text">FilmFusion Admin</span>
+            </div>
             <div class="nav-links">
                 <a href="admin-dashboard.html" class="active">📊 Dashboard</a>
                 <a href="user-dashboard.html">🎬 Movies</a>
-                <button class="logout-btn" onclick="window.logout()">Logout</button>
+                <button class="logout-btn" onclick="window.logout()">🚪 Logout</button>
             </div>
         </nav>
 
@@ -271,45 +641,74 @@
             <!-- Stats Cards -->
             <div class="admin-stats-grid" id="statsGrid"></div>
 
-            <!-- Charts Row -->
-            <div class="charts-row">
-                <div class="chart-card">
-                    <h3>📈 User Growth (Last 6 Months)</h3>
-                    <canvas id="userGrowthChart"></canvas>
+            <!-- User Growth Chart -->
+            <div class="chart-card">
+                <h3>📈 User Growth (Last 6 Months)</h3>
+                <canvas id="userGrowthChart"></canvas>
+            </div>
+
+            <!-- User Activity Sections -->
+            <div class="activity-grid">
+                <div class="glass-card">
+                    <h3>👍 Recent Likes</h3>
+                    <div id="likesActivity" class="activity-list">
+                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading likes...</div>
+                    </div>
                 </div>
-                <div class="chart-card">
-                    <h3>⭐ Ratings Distribution</h3>
-                    <canvas id="ratingsChart"></canvas>
+
+                <div class="glass-card">
+                    <h3>👎 Recent Dislikes</h3>
+                    <div id="dislikesActivity" class="activity-list">
+                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading dislikes...</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Second Row -->
-            <div class="charts-row">
-                <div class="chart-card">
-                    <h3>🏆 Top Rated Movies</h3>
-                    <div id="topMoviesList" class="recent-activity"></div>
+            <div class="activity-grid">
+                <div class="glass-card">
+                    <h3>💬 Recent Comments</h3>
+                    <div id="commentsActivity" class="activity-list">
+                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading comments...</div>
+                    </div>
                 </div>
-                <div class="chart-card">
-                    <h3>🕐 Recent User Activity</h3>
-                    <div class="recent-activity" id="recentActivity"></div>
+
+                <div class="glass-card">
+                    <h3>📝 Watchlist Additions</h3>
+                    <div id="watchlistActivity" class="activity-list">
+                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading watchlist...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-grid">
+                <div class="glass-card">
+                    <h3>❤️ Favorites Additions</h3>
+                    <div id="favoritesActivity" class="activity-list">
+                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading favorites...</div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3>🏆 Top Rated Movies</h3>
+                    <div id="topMoviesList" class="activity-list"></div>
                 </div>
             </div>
 
             <!-- Genre Distribution -->
-            <div class="chart-card">
-                <h3>🎭 Movie Genre Distribution</h3>
-                <div id="genreDistribution" class="recent-activity"></div>
+            <div class="glass-card">
+                <h3>🎭 Genre Distribution</h3>
+                <div id="genreDistribution" class="activity-list"></div>
             </div>
 
             <!-- Users Table -->
             <div class="glass-card">
-                <h3 style="margin-bottom: 1rem;">👥 All Users</h3>
+                <h3>👥 All Users</h3>
                 <div class="table-container" id="usersList"></div>
             </div>
 
-            <!-- Movies Table -->
+            <!-- Movies Grid -->
             <div class="glass-card">
-                <h3 style="margin-bottom: 1rem;">🎬 All Movies</h3>
+                <h3>🎬 All Movies</h3>
                 <div class="search-bar">
                     <input type="text" id="searchInput" placeholder="Search movies..." onkeyup="window.searchMovies()">
                     <select id="genreFilter" onchange="window.filterByGenre()">
@@ -331,7 +730,7 @@
     <!-- Import Modal -->
     <div id="importModal" class="modal">
         <div class="modal-content">
-            <h2>🎬 Import Movie from TMDB</h2>
+            <h2>🎬 Import from TMDB</h2>
             <input type="text" id="tmdbSearchQuery" placeholder="Search movie...">
             <button class="btn-primary" onclick="window.searchTMDB()">Search</button>
             <div id="tmdbResults" style="margin-top: 1rem; max-height: 300px; overflow-y: auto;"></div>
@@ -342,219 +741,24 @@
     <!-- Add Movie Modal -->
     <div id="addMovieModal" class="modal">
         <div class="modal-content">
-            <h2>🎬 Add New Movie</h2>
+            <h2>🎬 Add Movie</h2>
             <input type="text" id="movieTitle" placeholder="Title">
             <input type="text" id="movieGenre" placeholder="Genre">
             <input type="number" id="movieYear" placeholder="Year">
-            <input type="number" id="movieRating" step="0.1" placeholder="Rating (0-10)">
+            <input type="number" id="movieRating" step="0.1" placeholder="Rating">
             <textarea id="movieDescription" placeholder="Description" rows="3"></textarea>
             <input type="text" id="movieTags" placeholder="Tags">
             <button class="save-btn" onclick="window.addMovie()">Add Movie</button>
+            <button class="cancel-btn" onclick="window.closeModals()">Cancel</button>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        let userGrowthChart, ratingsChart;
-
-        // Initialize charts with real data
-        async function initCharts() {
-            // User Growth Chart
-            const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
-            const userGrowthData = await getUserGrowthData();
-            userGrowthChart = new Chart(userGrowthCtx, {
-                type: 'line',
-                data: {
-                    labels: userGrowthData.labels,
-                    datasets: [{
-                        label: 'New Users',
-                        data: userGrowthData.values,
-                        borderColor: '#9b59b6',
-                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            // Ratings Distribution Chart
-            const ratingsCtx = document.getElementById('ratingsChart').getContext('2d');
-            const ratingsData = await getRatingsDistribution();
-            ratingsChart = new Chart(ratingsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ratingsData.labels,
-                    datasets: [{ data: ratingsData.values, backgroundColor: ['#9b59b6', '#d2b0e5', '#e0d4e8', '#c9a9e6', '#b380d4'], borderWidth: 0 }]
-                },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
-            });
+        // Authentication check
+        if (!localStorage.getItem('userId') || localStorage.getItem('userRole') !== 'Admin') {
+            window.location.href = 'index.html';
         }
-
-        // Get user growth data from backend
-        async function getUserGrowthData() {
-            try {
-                const res = await fetch(`${API_URL}/Admin/user-growth`);
-                if (res.ok) {
-                    return await res.json();
-                }
-            } catch(e) { console.error(e); }
-            // Fallback to calculated from users data
-            const usersRes = await fetch(`${API_URL}/Admin/users`);
-            const users = await usersRes.json();
-            const monthly = {};
-            users.forEach(u => {
-                const date = new Date(u.createdAt);
-                const month = date.toLocaleString('default', { month: 'short' });
-                monthly[month] = (monthly[month] || 0) + 1;
-            });
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-            return { labels: months, values: months.map(m => monthly[m] || 0) };
-        }
-
-        // Get ratings distribution from backend
-        async function getRatingsDistribution() {
-            try {
-                const res = await fetch(`${API_URL}/Movies/ratings-distribution`);
-                if (res.ok) return await res.json();
-            } catch(e) { console.error(e); }
-            // Fallback: calculate from movies
-            const moviesRes = await fetch(`${API_URL}/Movies`);
-            const movies = await moviesRes.json();
-            const dist = { '5★': 0, '4★': 0, '3★': 0, '2★': 0, '1★': 0 };
-            movies.forEach(m => {
-                const rating = Math.round(m.rating);
-                if (rating >= 8) dist['5★']++;
-                else if (rating >= 6) dist['4★']++;
-                else if (rating >= 4) dist['3★']++;
-                else if (rating >= 2) dist['2★']++;
-                else dist['1★']++;
-            });
-            return { labels: Object.keys(dist), values: Object.values(dist) };
-        }
-
-        // Load top movies
-        async function loadTopMovies() {
-            const res = await fetch(`${API_URL}/Movies`);
-            const movies = await res.json();
-            const topMovies = movies.sort((a, b) => b.rating - a.rating).slice(0, 6);
-            const container = document.getElementById('topMoviesList');
-            container.innerHTML = topMovies.map(m => `
-                <div class="activity-item" onclick="window.viewMovie(${m.id})" style="cursor:pointer;">
-                    <div class="activity-icon">⭐</div>
-                    <div class="activity-details">
-                        <div class="activity-title">${m.title}</div>
-                        <div class="activity-time">Rating: ${m.rating}/10 | Year: ${m.year}</div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: ${(m.rating/10)*100}%"></div></div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Load recent activity
-        async function loadRecentActivity() {
-            const res = await fetch(`${API_URL}/Admin/users`);
-            const users = await res.json();
-            const recentUsers = users.slice(-6).reverse();
-            const container = document.getElementById('recentActivity');
-            container.innerHTML = recentUsers.map(u => `
-                <div class="activity-item">
-                    <div class="activity-icon">👤</div>
-                    <div class="activity-details">
-                        <div class="activity-title">${u.username}</div>
-                        <div class="activity-time">Joined: ${new Date(u.createdAt).toLocaleString()}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Load genre distribution
-        async function loadGenreDistribution() {
-            const res = await fetch(`${API_URL}/Movies`);
-            const movies = await res.json();
-            const genres = {};
-            movies.forEach(m => {
-                m.genre.split(',').forEach(g => {
-                    const genre = g.trim();
-                    genres[genre] = (genres[genre] || 0) + 1;
-                });
-            });
-            const sorted = Object.entries(genres).sort((a, b) => b[1] - a[1]).slice(0, 8);
-            const container = document.getElementById('genreDistribution');
-            container.innerHTML = sorted.map(([genre, count]) => `
-                <div class="activity-item">
-                    <div class="activity-icon">🎭</div>
-                    <div class="activity-details">
-                        <div class="activity-title">${genre}</div>
-                        <div class="activity-time">${count} movies</div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: ${(count / movies.length) * 100}%"></div></div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Export functions
-        window.exportData = async function() {
-            const usersRes = await fetch(`${API_URL}/Admin/users`);
-            const users = await usersRes.json();
-            const moviesRes = await fetch(`${API_URL}/Movies`);
-            const movies = await moviesRes.json();
-
-            let csv = "FilmFusion Full Report\nGenerated: " + new Date().toLocaleString() + "\n\n";
-            csv += "USERS REPORT\nID,Username,Email,Role,Joined\n";
-            users.forEach(u => csv += `${u.id},${u.username},${u.email},${u.role},${new Date(u.createdAt).toLocaleDateString()}\n`);
-            csv += "\nMOVIES REPORT\nID,Title,Genre,Year,Rating\n";
-            movies.forEach(m => csv += `${m.id},${m.title},${m.genre},${m.year},${m.rating}\n`);
-
-            downloadCSV(csv, `filmfusion_full_report_${new Date().toISOString().split('T')[0]}.csv`);
-        };
-
-        window.exportUsersCSV = async function() {
-            const res = await fetch(`${API_URL}/Admin/users`);
-            const users = await res.json();
-            let csv = "ID,Username,Email,Role,Joined\n";
-            users.forEach(u => csv += `${u.id},${u.username},${u.email},${u.role},${new Date(u.createdAt).toLocaleDateString()}\n`);
-            downloadCSV(csv, `filmfusion_users_${new Date().toISOString().split('T')[0]}.csv`);
-        };
-
-        window.exportMoviesCSV = async function() {
-            const res = await fetch(`${API_URL}/Movies`);
-            const movies = await res.json();
-            let csv = "ID,Title,Genre,Year,Rating,Description\n";
-            movies.forEach(m => csv += `${m.id},${m.title},${m.genre},${m.year},${m.rating},${(m.overview || '').replace(/,/g, ' ')}\n`);
-            downloadCSV(csv, `filmfusion_movies_${new Date().toISOString().split('T')[0]}.csv`);
-        };
-
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert('✅ Report exported!');
-        }
-
-        window.refreshData = async function() {
-            await window.loadDashboardStats();
-            await window.loadAllUsers();
-            await loadMovies();
-            await loadTopMovies();
-            await loadRecentActivity();
-            await loadGenreDistribution();
-            if (userGrowthChart) userGrowthChart.destroy();
-            if (ratingsChart) ratingsChart.destroy();
-            await initCharts();
-            alert('✅ All data refreshed!');
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initCharts();
-            loadTopMovies();
-            loadRecentActivity();
-            loadGenreDistribution();
-        });
     </script>
 </body>
 </html>
