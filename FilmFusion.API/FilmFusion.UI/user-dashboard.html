@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FilmFusion - Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Your existing CSS - keep as is */
         * {
             margin: 0;
             padding: 0;
@@ -13,69 +15,34 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* Video Background */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
-            z-index: -1;
-        }
-
-        /* Dashboard Container */
-        .dashboard-container {
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Glassmorphism Navbar */
         .dashboard-nav {
-            background: rgba(10, 20, 30, 0.8);
+            background: rgba(10, 20, 30, 0.95);
             backdrop-filter: blur(20px);
             padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
             border-bottom: 1px solid rgba(100, 180, 250, 0.2);
-            animation: slideDown 0.5s ease-out;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -83,17 +50,6 @@
 
         .logo-icon {
             font-size: 1.8rem;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-3px);
-            }
         }
 
         .logo-text {
@@ -105,122 +61,144 @@
 
         .nav-links {
             display: flex;
-            gap: 1rem;
-            align-items: center;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
 
             .nav-links a {
                 text-decoration: none;
-                color: rgba(255, 255, 255, 0.7);
-                font-weight: 500;
-                padding: 0.5rem 1rem;
-                border-radius: 12px;
-                transition: all 0.3s ease;
+                color: rgba(255,255,255,0.7);
+                padding: 0.6rem 1.2rem;
+                border-radius: 40px;
+                transition: 0.3s;
                 display: flex;
                 align-items: center;
-                gap: 0.3rem;
+                gap: 0.5rem;
             }
 
-                .nav-links a:hover {
-                    color: #64b4fa;
-                    background: rgba(100, 180, 250, 0.1);
-                }
-
-                .nav-links a.active {
-                    background: rgba(100, 180, 250, 0.15);
+                .nav-links a:hover, .nav-links a.active {
+                    background: rgba(100,180,250,0.15);
                     color: #64b4fa;
                 }
 
-        .logout-btn {
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid rgba(231, 76, 60, 0.3);
-            color: #e74c3c;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .user-section {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 1rem;
         }
 
-            .logout-btn:hover {
-                background: rgba(231, 76, 60, 0.3);
-                transform: translateY(-2px);
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+            .user-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
 
-        /* Dashboard Content */
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: rgba(20,30,40,0.98);
+            border-radius: 20px;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .user-profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+            .user-profile-dropdown:hover .dropdown-menu {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .dropdown-item {
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+            .dropdown-item:hover {
+                background: rgba(100,180,250,0.1);
+                color: #64b4fa;
+            }
+
+        .logout-dropdown {
+            color: #e74c3c;
+        }
+
         .dashboard-content {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* Hero Banner */
         .hero-banner {
-            background: linear-gradient(135deg, rgba(58, 134, 255, 0.15), rgba(100, 180, 250, 0.05));
-            border-radius: 28px;
-            padding: 2rem 2rem;
+            background: linear-gradient(135deg, rgba(58,134,255,0.15), rgba(100,180,250,0.05));
+            border-radius: 32px;
+            padding: 2rem;
             margin-bottom: 2rem;
-            border: 1px solid rgba(100, 180, 250, 0.2);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.6s ease-out;
+            border: 1px solid rgba(100,180,250,0.2);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+            .hero-banner h1 {
+                font-size: 2rem;
+                color: white;
             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+                .hero-banner h1 span {
+                    color: #64b4fa;
+                }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(10,20,30,0.6);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(100,180,250,0.15);
+        }
+
+            .stat-card .stat-number {
+                font-size: 2rem;
+                font-weight: 800;
+                color: white;
             }
-        }
 
-        .hero-banner h1 {
-            font-size: 1.8rem;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-            .hero-banner h1 span {
-                color: #64b4fa;
+            .stat-card .stat-label {
+                font-size: 0.75rem;
+                color: rgba(255,255,255,0.5);
             }
 
-        .hero-banner p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-        }
-
-        /* Glass Card */
         .glass-card {
-            background: rgba(10, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(10,20,30,0.5);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100, 180, 250, 0.15);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(100,180,250,0.15);
         }
 
-            .glass-card:hover {
-                border-color: rgba(100, 180, 250, 0.3);
-            }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Search Bar */
         .search-bar {
             display: flex;
             gap: 1rem;
@@ -231,186 +209,101 @@
             .search-bar input {
                 flex: 1;
                 padding: 0.8rem 1.2rem;
-                background: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(100, 180, 250, 0.3);
-                border-radius: 16px;
-                font-size: 0.9rem;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(100,180,250,0.3);
+                border-radius: 50px;
                 color: white;
-                transition: all 0.3s ease;
             }
-
-                .search-bar input:focus {
-                    outline: none;
-                    border-color: #64b4fa;
-                    background: rgba(255, 255, 255, 0.12);
-                }
-
-                .search-bar input::placeholder {
-                    color: rgba(255, 255, 255, 0.4);
-                }
 
             .search-bar select {
                 padding: 0.8rem 1.2rem;
-                background: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(100, 180, 250, 0.3);
-                border-radius: 16px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(100,180,250,0.3);
+                border-radius: 50px;
                 color: white;
-                cursor: pointer;
-                transition: all 0.3s ease;
             }
 
-                .search-bar select:focus {
-                    outline: none;
-                    border-color: #64b4fa;
-                }
-
-                .search-bar select option {
-                    background: #0a141e;
-                }
-
-        /* Movie Grid */
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin-top: 1rem;
         }
 
         .movie-card {
-            background: rgba(20, 30, 40, 0.8);
-            border-radius: 20px;
+            background: rgba(20,30,40,0.85);
+            border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(100, 180, 250, 0.1);
-            animation: fadeInUp 0.5s ease-out forwards;
-            opacity: 0;
+            transition: 0.3s;
         }
 
-            .movie-card:nth-child(1) {
-                animation-delay: 0.05s;
-            }
-
-            .movie-card:nth-child(2) {
-                animation-delay: 0.1s;
-            }
-
-            .movie-card:nth-child(3) {
-                animation-delay: 0.15s;
-            }
-
-            .movie-card:nth-child(4) {
-                animation-delay: 0.2s;
-            }
-
             .movie-card:hover {
-                transform: translateY(-8px);
-                border-color: rgba(100, 180, 250, 0.4);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                transform: translateY(-5px);
             }
 
         .movie-poster {
             position: relative;
-            overflow: hidden;
             aspect-ratio: 2/3;
+            overflow: hidden;
         }
 
             .movie-poster img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                transition: transform 0.5s ease;
             }
-
-        .movie-card:hover .movie-poster img {
-            transform: scale(1.05);
-        }
 
         .movie-rating-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            padding: 0.3rem 0.6rem;
+            background: rgba(0,0,0,0.7);
+            padding: 0.2rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.7rem;
             color: #ffc107;
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
         }
 
         .movie-info {
-            padding: 1rem;
+            padding: 0.8rem;
         }
 
         .movie-title {
-            font-weight: 700;
             color: white;
-            margin-bottom: 0.3rem;
-            font-size: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .movie-year {
-            font-size: 0.75rem;
-            color: rgba(100, 180, 250, 0.7);
-        }
-
-        .movie-genre {
             font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 0.3rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
+            color: rgba(100,180,250,0.7);
         }
 
-            .movie-genre span {
-                background: rgba(100, 180, 250, 0.15);
-                padding: 0.2rem 0.5rem;
-                border-radius: 12px;
-            }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem;
-            background: rgba(10, 20, 30, 0.5);
-            border-radius: 24px;
-        }
-
-            .empty-state .empty-icon {
-                font-size: 4rem;
-                margin-bottom: 1rem;
-                opacity: 0.5;
-            }
-
-            .empty-state h3 {
-                color: white;
-                margin-bottom: 0.5rem;
-            }
-
-            .empty-state p {
-                color: rgba(255, 255, 255, 0.5);
-            }
-
-        /* Loading */
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: #64b4fa;
         }
 
-        /* Responsive */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            background: rgba(100,180,250,0.15);
+            border: 1px solid rgba(100,180,250,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
-            .dashboard-nav {
+            .nav-container {
                 flex-direction: column;
-                gap: 1rem;
             }
 
             .dashboard-content {
@@ -418,76 +311,81 @@
             }
 
             .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
                 gap: 1rem;
             }
 
             .hero-banner h1 {
-                font-size: 1.3rem;
+                font-size: 1.4rem;
             }
 
-            .search-bar {
-                flex-direction: column;
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Video Background -->
-    <video class="video-background" autoplay muted loop playsinline>
-        <!-- Option 1: Cyberpunk City (Default) -->
-        <source src="videos/v3.mp4" type="video/mp4">
-        <!-- Option 4: Local video (apni video dalni ho toh)
-        <source src="videos/background.mp4" type="video/mp4">
-        -->
-    </video>
-    <div class="overlay"></div>
-
     <div class="dashboard-container">
-        <!-- Glassmorphism Navbar -->
         <nav class="dashboard-nav">
-            <div class="logo">
-                <span class="logo-icon">🎬</span>
-                <span class="logo-text">FilmFusion</span>
-            </div>
-            <div class="nav-links">
-                <a href="user-dashboard.html" class="active">🏠 Home</a>
-                <a href="user-favorites.html">❤️ Favorites</a>
-                <a href="user-watchlist.html">📝 Watchlist</a>
-                <a href="user-profile.html">👤 Profile</a>
-                <button class="logout-btn" onclick="window.logout()">🚪 Logout</button>
+            <div class="nav-container">
+                <div class="logo"><span class="logo-icon">🎬</span><span class="logo-text">FilmFusion</span></div>
+                <div class="nav-links">
+                    <a href="user-dashboard.html" class="active"><i class="fas fa-home"></i> Home</a>
+                    <a href="user-favorites.html"><i class="fas fa-heart"></i> Favorites</a>
+                    <a href="user-watchlist.html"><i class="fas fa-clock"></i> Watchlist</a>
+                    <a href="user-history.html"><i class="fas fa-history"></i> History</a>
+                    <a href="user-profile.html"><i class="fas fa-user"></i> Profile</a>
+                </div>
+                <div class="user-section">
+                    <div class="user-profile-dropdown">
+                        <div class="user-avatar" id="navUserAvatar"><span>👤</span></div>
+                        <div class="dropdown-menu">
+                            <a href="user-profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+                            <a href="user-favorites.html" class="dropdown-item"><i class="fas fa-heart"></i> My Favorites</a>
+                            <a href="user-watchlist.html" class="dropdown-item"><i class="fas fa-clock"></i> My Watchlist</a>
+                            <a href="user-history.html" class="dropdown-item"><i class="fas fa-history"></i> Watch History</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item logout-dropdown" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
         <div class="dashboard-content">
-            <!-- Hero Banner -->
             <div class="hero-banner">
-                <h1>Welcome back, <span id="userNameDisplay">Movie Lover</span>! 🎬</h1>
-                <p>Discover your next favorite movie from our curated collection of thousands of films.</p>
+                <h1>Welcome back, <span id="userNameDisplay">Movie Lover</span>! 🎉</h1>
+                <p>Discover your next favorite movie from our collection.</p>
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="location.href='user-favorites.html'"><i class="fas fa-heart"></i> My Favorites</button>
+                    <button class="quick-action-btn" onclick="location.href='user-watchlist.html'"><i class="fas fa-clock"></i> My Watchlist</button>
+                    <button class="quick-action-btn" onclick="location.href='user-history.html'"><i class="fas fa-history"></i> Watch History</button>
+                </div>
             </div>
 
-            <!-- Movies Section -->
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-number" id="totalMovies">0</div><div class="stat-label">Total Movies</div></div>
+                <div class="stat-card"><div class="stat-number" id="favoritesCount">0</div><div class="stat-label">My Favorites</div></div>
+                <div class="stat-card"><div class="stat-number" id="watchlistCount">0</div><div class="stat-label">My Watchlist</div></div>
+                <div class="stat-card"><div class="stat-number" id="historyCount">0</div><div class="stat-label">Watch History</div></div>
+            </div>
+
             <div class="glass-card">
-                <h2 class="section-title">
-                    <span>🎯</span> Discover Movies
-                </h2>
+                <h2 style="color:white; margin-bottom:1rem;"><i class="fas fa-film"></i> Discover Movies</h2>
                 <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search movies by title, genre, or keywords..." onkeyup="window.searchMovies()">
-                    <select id="genreFilter" onchange="window.filterByGenre()">
+                    <input type="text" id="searchInput" placeholder="🔍 Search movies...">
+                    <select id="genreFilter">
                         <option value="">All Genres</option>
-                        <option value="action">🔥 Action</option>
-                        <option value="comedy">😂 Comedy</option>
-                        <option value="drama">🎭 Drama</option>
-                        <option value="horror">👻 Horror</option>
-                        <option value="sci-fi">🚀 Sci-Fi</option>
-                        <option value="romance">💕 Romance</option>
-                        <option value="thriller">🔪 Thriller</option>
-                        <option value="adventure">🗺️ Adventure</option>
-                        <option value="fantasy">✨ Fantasy</option>
+                        <option value="action">Action</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="drama">Drama</option>
+                        <option value="horror">Horror</option>
+                        <option value="sci-fi">Sci-Fi</option>
                     </select>
                 </div>
                 <div id="moviesGrid" class="movie-grid">
-                    <div class="loading">🎬 Loading amazing movies for you...</div>
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading movies...</div>
                 </div>
             </div>
         </div>
@@ -495,16 +393,72 @@
 
     <script src="script.js"></script>
     <script>
-        // Display user name in hero banner
+    (function() {
+        // SIMPLE AUTHENTICATION - NO REDIRECT LOOP
+        const userId = localStorage.getItem('userId');
         const userName = localStorage.getItem('userName');
-        if (userName) {
-            document.getElementById('userNameDisplay').innerText = userName;
+        const userEmail = localStorage.getItem('userEmail') || 'user@filmfusion.com';
+        const userAvatar = localStorage.getItem('userAvatar');
+
+        console.log('Dashboard Loaded - User:', userId, 'Name:', userName);
+
+        // ONLY redirect if NO userId
+        if (!userId || userId === 'null' || userId === 'undefined' || userId === '') {
+            console.log('No user found, redirecting to login');
+            window.location.href = 'index.html';
+            return;
         }
 
-        // Check authentication
-        if (!localStorage.getItem('userId')) {
-            window.location.href = 'index.html';
+        // Set welcome name
+        const nameSpan = document.getElementById('userNameDisplay');
+        if (nameSpan && userName && userName !== 'null') {
+            nameSpan.innerText = userName;
         }
+
+        // Set navbar name
+        const navNameSpan = document.getElementById('navUserName');
+        if (navNameSpan && userName && userName !== 'null') {
+            navNameSpan.innerText = userName;
+        }
+
+        // Set navbar email
+        const navEmailSpan = document.getElementById('navUserEmail');
+        if (navEmailSpan) {
+            navEmailSpan.innerText = userEmail;
+        }
+
+        // Set avatar
+        const navAvatar = document.getElementById('navUserAvatar');
+        if (navAvatar) {
+            if (userAvatar && userAvatar !== 'null') {
+                navAvatar.innerHTML = `<img src="${userAvatar}">`;
+            } else {
+                navAvatar.innerHTML = '<span>👤</span>';
+            }
+        }
+
+        // Load stats after delay
+        setTimeout(function() {
+            if (typeof window.loadUserStats === 'function') {
+                window.loadUserStats();
+            }
+        }, 500);
+
+        // Logout
+        const logoutBtn = document.getElementById('dropdownLogout');
+        if (logoutBtn) {
+            logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = 'index.html';
+            };
+        }
+
+        // Load movies
+        if (typeof loadMovies === 'function') {
+            loadMovies();
+        }
+    })();
     </script>
 </body>
 </html>

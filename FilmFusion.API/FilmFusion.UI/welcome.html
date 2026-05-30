@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilmFusion - Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>FilmFusion - Welcome to Ultimate Movie Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -35,7 +36,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 30, 60, 0.7));
             z-index: 1;
         }
 
@@ -53,7 +54,7 @@
 
         .particle {
             position: absolute;
-            background: rgba(100, 180, 250, 0.3);
+            background: rgba(100, 180, 250, 0.4);
             border-radius: 50%;
             animation: floatParticle 15s infinite ease-in-out;
         }
@@ -65,17 +66,38 @@
             }
 
             10% {
-                opacity: 0.5;
+                opacity: 0.6;
             }
 
             90% {
-                opacity: 0.5;
+                opacity: 0.6;
             }
 
             100% {
                 transform: translateY(-100vh) translateX(100px);
                 opacity: 0;
             }
+        }
+
+        /* Glow effect */
+        .glow {
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(58,134,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            top: 60%;
+            left: auto;
+            right: 5%;
+            background: radial-gradient(circle, rgba(100,180,250,0.1) 0%, transparent 70%);
         }
 
         /* Container */
@@ -92,11 +114,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 4rem;
-            background: rgba(10, 20, 30, 0.7);
+            padding: 1.2rem 4rem;
+            background: rgba(10, 20, 30, 0.6);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(100, 180, 250, 0.2);
             animation: slideDown 0.6s ease-out;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         @keyframes slideDown {
@@ -128,22 +153,24 @@
             }
 
             50% {
-                transform: translateY(-5px);
+                transform: translateY(-3px);
             }
         }
 
         .logo-text {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             background: linear-gradient(135deg, #64b4fa, #3a86ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
+            align-items: center;
         }
 
         .nav-link {
@@ -153,6 +180,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            font-size: 0.95rem;
         }
 
             .nav-link:hover {
@@ -174,6 +202,16 @@
                 width: 100%;
             }
 
+        .admin-link {
+            background: rgba(100, 180, 250, 0.15);
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+        }
+
+            .admin-link:hover {
+                background: rgba(100, 180, 250, 0.3);
+            }
+
         /* Hero Section */
         .hero {
             flex: 1;
@@ -182,7 +220,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
             animation: fadeInUp 0.8s ease-out;
         }
 
@@ -199,11 +237,13 @@
         }
 
         .hero-badge {
-            display: inline-block;
-            background: rgba(100, 180, 250, 0.15);
-            padding: 0.5rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(100, 180, 250, 0.12);
+            padding: 0.6rem 1.4rem;
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #64b4fa;
             margin-bottom: 1.5rem;
@@ -211,12 +251,17 @@
             backdrop-filter: blur(10px);
         }
 
+            .hero-badge i {
+                font-size: 0.9rem;
+            }
+
         .hero-title {
-            font-size: 4.5rem;
-            font-weight: 800;
+            font-size: 5rem;
+            font-weight: 900;
             color: white;
             margin-bottom: 1rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
         }
 
             .hero-title span {
@@ -224,20 +269,33 @@
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
+                position: relative;
             }
 
+                .hero-title span::before {
+                    content: '';
+                    position: absolute;
+                    bottom: 5px;
+                    left: 0;
+                    width: 100%;
+                    height: 8px;
+                    background: rgba(58, 134, 255, 0.3);
+                    border-radius: 10px;
+                    z-index: -1;
+                }
+
         .hero-description {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.7);
-            max-width: 600px;
-            margin-bottom: 2rem;
+            max-width: 650px;
+            margin-bottom: 2.5rem;
             line-height: 1.6;
         }
 
         /* CTA Buttons */
         .cta-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.2rem;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -246,30 +304,36 @@
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             color: white;
             border: none;
-            padding: 0.9rem 2rem;
+            padding: 1rem 2.5rem;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(58, 134, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
             .btn-primary:hover {
                 transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(58, 134, 255, 0.4);
+                box-shadow: 0 8px 30px rgba(58, 134, 255, 0.5);
             }
 
         .btn-outline {
             background: transparent;
             color: white;
             border: 2px solid rgba(100, 180, 250, 0.5);
-            padding: 0.9rem 2rem;
+            padding: 1rem 2.5rem;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
             .btn-outline:hover {
@@ -278,63 +342,109 @@
                 transform: translateY(-3px);
             }
 
-        /* Stats Section */
-        .stats {
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
             display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 4rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
         }
 
-        .stat-item {
-            text-align: center;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-        }
+            .scroll-indicator span {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 1.2rem;
+            }
 
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #64b4fa;
-        }
+            .scroll-indicator .mouse {
+                width: 26px;
+                height: 42px;
+                border: 2px solid rgba(255, 255, 255, 0.4);
+                border-radius: 20px;
+                position: relative;
+            }
 
-        .stat-label {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
+                .scroll-indicator .mouse::before {
+                    content: '';
+                    width: 4px;
+                    height: 8px;
+                    background: #64b4fa;
+                    position: absolute;
+                    top: 8px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border-radius: 2px;
+                    animation: scrollWheel 1.5s infinite;
+                }
+
+        @keyframes scrollWheel {
+            0% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(15px);
+            }
         }
 
         /* Features Section */
         .features {
-            background: rgba(10, 20, 30, 0.6);
+            background: rgba(10, 20, 30, 0.5);
             backdrop-filter: blur(10px);
             padding: 5rem 2rem;
-            margin-top: 3rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(100, 180, 250, 0.1);
+            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(100, 180, 250, 0.12);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64b4fa;
+            margin-bottom: 1rem;
         }
 
         .features-title {
-            text-align: center;
             color: white;
-            font-size: 2.2rem;
-            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2rem 1.8rem;
             border-radius: 24px;
             text-align: center;
             transition: all 0.4s ease;
-            border: 1px solid rgba(100, 180, 250, 0.1);
+            border: 1px solid rgba(100, 180, 250, 0.08);
             animation: fadeInUp 0.6s ease-out forwards;
             opacity: 0;
+            backdrop-filter: blur(10px);
         }
 
             .feature-card:nth-child(1) {
@@ -355,70 +465,129 @@
 
             .feature-card:hover {
                 transform: translateY(-8px);
-                background: rgba(100, 180, 250, 0.1);
+                background: rgba(100, 180, 250, 0.08);
                 border-color: rgba(100, 180, 250, 0.3);
             }
 
         .feature-icon {
             font-size: 3rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .feature-card h3 {
             color: white;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .feature-card p {
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         /* About Section */
         .about {
-            background: rgba(10, 20, 30, 0.8);
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             text-align: center;
+            background: linear-gradient(135deg, rgba(10, 20, 30, 0.4), rgba(10, 20, 30, 0.6));
         }
 
             .about h2 {
                 color: white;
-                font-size: 2rem;
-                margin-bottom: 1rem;
+                font-size: 2.2rem;
+                margin-bottom: 1.2rem;
+                font-weight: 700;
             }
 
             .about p {
                 color: rgba(255, 255, 255, 0.6);
-                max-width: 700px;
+                max-width: 750px;
                 margin: 0 auto;
-                line-height: 1.6;
+                line-height: 1.7;
+                font-size: 1.05rem;
+            }
+
+        .about-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .about-stat {
+            text-align: center;
+        }
+
+            .about-stat .number {
+                font-size: 2rem;
+                font-weight: 800;
+                color: #64b4fa;
+            }
+
+            .about-stat .label {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.8rem;
+            }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(100, 180, 250, 0.05));
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(100, 180, 250, 0.1);
+            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+        }
+
+            .cta-section h2 {
+                color: white;
+                font-size: 2rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .cta-section p {
+                color: rgba(255, 255, 255, 0.6);
+                margin-bottom: 2rem;
             }
 
         /* Footer */
         .footer {
             background: rgba(10, 20, 30, 0.9);
-            padding: 1.5rem;
+            padding: 2rem;
             text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer p {
             color: rgba(255, 255, 255, 0.4);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            cursor: pointer;
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
         }
 
-            .scroll-indicator span {
-                color: rgba(255, 255, 255, 0.5);
-                font-size: 2rem;
+            .social-links a {
+                color: rgba(255, 255, 255, 0.4);
+                transition: color 0.3s;
+                font-size: 1.2rem;
             }
+
+                .social-links a:hover {
+                    color: #64b4fa;
+                }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -432,21 +601,47 @@
                 font-size: 2.5rem;
             }
 
+            .hero-description {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+                width: 100%;
+                padding: 0 1rem;
             }
 
-            .stats {
-                gap: 2rem;
-            }
-
-            .stat-number {
-                font-size: 1.8rem;
+            .btn-primary, .btn-outline {
+                width: 100%;
+                justify-content: center;
             }
 
             .features-title {
+                font-size: 1.8rem;
+            }
+
+            .features-grid {
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+
+            .about h2 {
+                font-size: 1.6rem;
+            }
+
+            .cta-section h2 {
                 font-size: 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .scroll-indicator {
+                display: none;
             }
         }
     </style>
@@ -456,6 +651,8 @@
         <source src="videos/v2.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
+    <div class="glow"></div>
+    <div class="glow glow-2"></div>
     <div class="particles" id="particles"></div>
 
     <div class="container">
@@ -469,87 +666,137 @@
                 <a class="nav-link" id="homeNav">Home</a>
                 <a class="nav-link" id="featuresNav">Features</a>
                 <a class="nav-link" id="aboutNav">About</a>
+                <a class="nav-link admin-link" id="adminLink">Admin</a>
             </div>
         </nav>
 
         <!-- Hero Section -->
         <div id="home" class="hero">
             <div class="hero-badge">
-                <span>✨ AI-Powered Movie Discovery</span>
+                <i class="fas fa-robot"></i>
+                <span>AI-Powered Movie Discovery</span>
             </div>
             <h1 class="hero-title">
-                Where Movies <span>Fuse</span><br>With Your Taste
+                Where Movies <span>Fuse</span><br>With Your Soul
             </h1>
             <p class="hero-description">
-                Discover personalized movie recommendations powered by real data.
-                Find, save, and enjoy the perfect movie for every moment.
+                Discover cinematic masterpieces tailored to your unique taste.
+                Powered by real data from TMDB, FilmFusion brings you the perfect movie for every moment.
             </p>
             <div class="cta-buttons">
-                <button class="btn-primary" id="getStartedBtn">Get Started →</button>
-                <button class="btn-outline" id="exploreFeaturesBtn">Explore Features</button>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">10K+</div>
-                    <div class="stat-label">Movies</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Users</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">4.8★</div>
-                    <div class="stat-label">Avg Rating</div>
-                </div>
+                <button class="btn-primary" id="getStartedBtn">
+                    <i class="fas fa-play"></i> Get Started
+                </button>
+                <button class="btn-outline" id="exploreFeaturesBtn">
+                    <i class="fas fa-magic"></i> Explore Features
+                </button>
             </div>
 
             <!-- Scroll Indicator -->
             <div class="scroll-indicator" id="scrollIndicator">
-                <span>↓</span>
+                <div class="mouse"></div>
+                <span>Scroll</span>
             </div>
         </div>
 
         <!-- Features Section -->
         <div id="features" class="features">
-            <h2 class="features-title">Why Choose FilmFusion?</h2>
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-star"></i> Why Choose Us
+                </div>
+                <h2 class="features-title">Experience Cinema Like Never Before</h2>
+            </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
                     <h3>Personalized Picks</h3>
-                    <p>Get movie suggestions tailored to your unique taste</p>
+                    <p>Smart AI algorithms suggest movies that match your unique taste and viewing history</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">❤️</div>
                     <h3>Favorites & Watchlist</h3>
-                    <p>Save movies you love and plan what to watch next</p>
+                    <p>Build your personal collection. Save movies you love and plan your next movie night</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
                     <h3>Real TMDB Data</h3>
-                    <p>Powered by The Movie Database for accurate info</p>
+                    <p>Powered by The Movie Database - accurate, up-to-date information on thousands of films</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">⭐</div>
                     <h3>Rate & Review</h3>
-                    <p>Share your thoughts and rate movies you've watched</p>
+                    <p>Share your thoughts, rate movies, and connect with fellow cinephiles</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Seamless Experience</h3>
+                    <p>Beautiful, responsive design that works perfectly on all your devices</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Fast & Modern</h3>
+                    <p>Built with cutting-edge technology for lightning-fast performance</p>
                 </div>
             </div>
         </div>
 
         <!-- About Section -->
         <div id="about" class="about">
-            <h2>📖 About FilmFusion</h2>
+            <h2>📖 The FilmFusion Story</h2>
             <p>
-                FilmFusion is a modern movie recommendation platform that helps you discover movies based on your preferences.
-                Built with ASP.NET Core, PostgreSQL, and real TMDB data. Create your watchlist, save favorites, and explore thousands of movies.
+                FilmFusion was born from a simple idea: everyone deserves to find movies they'll truly love.
+                We've combined powerful recommendation algorithms with a beautiful, intuitive interface to create
+                the ultimate movie discovery platform. Whether you're a casual viewer or a dedicated cinephile,
+                FilmFusion helps you find your next favorite film.
             </p>
+            <div class="about-stats">
+                <div class="about-stat">
+                    <div class="number">10,000+</div>
+                    <div class="label">Movies Available</div>
+                </div>
+                <div class="about-stat">
+                    <div class="number">500+</div>
+                    <div class="label">Active Users</div>
+                </div>
+                <div class="about-stat">
+                    <div class="number">24/7</div>
+                    <div class="label">Access Anytime</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>Join thousands of movie lovers who discover their next favorite film with FilmFusion</p>
+            <button class="btn-primary" id="getStartedBtn2">
+                <i class="fas fa-film"></i> Start Watching Now
+            </button>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>&copy; 2026 FilmFusion. All rights reserved. Made with 🎬 for movie lovers.</p>
+            <div class="footer-content">
+                <p>&copy; 2026 FilmFusion. All rights reserved. Made with 🎬 for movie lovers.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 24px; padding: 2rem; max-width: 400px; width: 90%; border: 1px solid rgba(100,180,250,0.3);">
+            <h2 style="color: white; margin-bottom: 1.5rem; text-align: center;">Admin Login</h2>
+            <input type="email" id="adminEmail" placeholder="Admin Email" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 12px; border: 1px solid rgba(100,180,250,0.3); background: rgba(255,255,255,0.08); color: white;">
+            <input type="password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 12px; border: 1px solid rgba(100,180,250,0.3); background: rgba(255,255,255,0.08); color: white;">
+            <button id="adminLoginBtn" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #3a86ff, #64b4fa); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">Login</button>
+            <button id="closeAdminModal" style="width: 100%; margin-top: 1rem; padding: 0.8rem; background: transparent; border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; color: #e74c3c; cursor: pointer;">Cancel</button>
         </div>
     </div>
 

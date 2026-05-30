@@ -754,40 +754,21 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="script.js"></script>
     <script>
-        function clearCommentInput() { document.getElementById('commentInput').value = ''; }
-        if (!localStorage.getItem('userId')) { window.location.href = 'index.html'; }
-        const userId = localStorage.getItem('userId');
-        const userAvatar = localStorage.getItem('userAvatar');
-        if (userAvatar && document.getElementById('currentUserAvatar')) {
-            document.getElementById('currentUserAvatar').innerHTML = `<img src="${userAvatar}" alt="avatar">`;
+    // Check login
+    if (!localStorage.getItem('userId')) {
+        window.location.href = 'index.html';
+    }
+
+    // Load movie when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof loadMovieForWatch === 'function') {
+            loadMovieForWatch();
+        } else if (typeof window.loadMovieForWatch === 'function') {
+            window.loadMovieForWatch();
         }
-        let currentServer = 'vidsrc';
-        let currentMovieData = null;
-        document.querySelectorAll('.server-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.server-btn').forEach(function(b) { b.classList.remove('active'); });
-                this.classList.add('active');
-                currentServer = this.getAttribute('data-server');
-                loadVideo();
-            });
-        });
-        function loadVideo() {
-            var player = document.getElementById('moviePlayer');
-            if (!player || !currentMovieData) return;
-            var title = encodeURIComponent(currentMovieData.title);
-            var tmdbId = currentMovieData.tmdbId || '';
-            var videoUrl = '';
-            if (currentServer === 'vidsrc') {
-                videoUrl = tmdbId ? 'https://vidsrc.to/embed/movie/' + tmdbId : 'https://vidsrc.to/embed/movie?q=' + title;
-            } else if (currentServer === 'embed') {
-                videoUrl = tmdbId ? 'https://www.2embed.to/embed/tmdb/movie?id=' + tmdbId : 'https://www.2embed.to/embed/tmdb/movie?q=' + title;
-            } else {
-                videoUrl = 'https://www.youtube.com/embed?listType=search&q=' + title + '+trailer&autoplay=1';
-            }
-            player.src = videoUrl;
-        }
-        window.updateMoviePlayer = function(movieData) { currentMovieData = movieData; loadVideo(); };
+    });
     </script>
 </body>
 </html>

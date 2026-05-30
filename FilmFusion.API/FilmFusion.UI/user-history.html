@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Favorites - FilmFusion</title>
+    <title>My History - FilmFusion</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,14 +19,13 @@
             min-height: 100vh;
         }
 
-        /* Animated Background */
         .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(58,134,255,0.08) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 80%, rgba(58,134,255,0.08) 0%, transparent 60%);
             z-index: -1;
         }
 
@@ -125,18 +124,22 @@
 
         /* Dashboard Content */
         .dashboard-content {
-            max-width: 1400px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 2rem;
         }
 
         .page-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
             .page-header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
                 font-weight: 800;
                 background: linear-gradient(135deg, #64b4fa, #3a86ff);
                 -webkit-background-clip: text;
@@ -147,107 +150,145 @@
                 gap: 0.8rem;
             }
 
-            .page-header p {
-                color: rgba(255,255,255,0.5);
-                margin-top: 0.5rem;
-            }
-
-        /* Movies Grid */
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.8rem;
-        }
-
-        .movie-card {
-            background: rgba(20, 30, 40, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            overflow: hidden;
+        .clear-btn {
+            background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3);
+            color: #e74c3c;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(100,180,250,0.15);
-            position: relative;
-        }
-
-            .movie-card:hover {
-                transform: translateY(-8px);
-                border-color: rgba(100,180,250,0.5);
-                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            }
-
-        .movie-poster {
-            position: relative;
-            aspect-ratio: 2/3;
-            overflow: hidden;
-        }
-
-            .movie-poster img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.5s;
-            }
-
-        .movie-card:hover .movie-poster img {
-            transform: scale(1.08);
-        }
-
-        .movie-rating {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            color: #ffc107;
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
-        }
-
-        .remove-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(231,76,60,0.9);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            z-index: 10;
+            gap: 0.5rem;
         }
 
-            .remove-btn:hover {
-                background: #e74c3c;
-                transform: scale(1.1);
+            .clear-btn:hover {
+                background: rgba(231,76,60,0.3);
+                transform: translateY(-2px);
             }
 
-        .movie-info {
-            padding: 1rem;
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
         }
 
-        .movie-title {
+            .timeline::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(180deg, #3a86ff, #64b4fa, transparent);
+            }
+
+        .history-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            background: rgba(10,20,30,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(100,180,250,0.1);
+            margin-left: 1rem;
+        }
+
+            .history-item::before {
+                content: '';
+                position: absolute;
+                left: -1.8rem;
+                top: 1.5rem;
+                width: 12px;
+                height: 12px;
+                background: #64b4fa;
+                border-radius: 50%;
+                border: 2px solid #0a141e;
+            }
+
+            .history-item:hover {
+                transform: translateX(5px);
+                border-color: rgba(100,180,250,0.3);
+                background: rgba(100,180,250,0.05);
+            }
+
+        .history-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .history-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(100,180,250,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+            .history-icon.watch {
+                background: rgba(58,134,255,0.2);
+                color: #3a86ff;
+            }
+
+            .history-icon.like {
+                background: rgba(46,204,113,0.2);
+                color: #2ecc71;
+            }
+
+            .history-icon.dislike {
+                background: rgba(231,76,60,0.2);
+                color: #e74c3c;
+            }
+
+            .history-icon.favorite {
+                background: rgba(241,196,15,0.2);
+                color: #f1c40f;
+            }
+
+            .history-icon.watchlist {
+                background: rgba(155,89,182,0.2);
+                color: #d2b0e5;
+            }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-title {
             color: white;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 0.3rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .movie-year {
-            color: rgba(100,180,250,0.7);
+        .history-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .history-action {
+            background: rgba(100,180,250,0.15);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #64b4fa;
+            font-weight: 500;
+        }
+
+        .history-time {
+            color: rgba(255,255,255,0.4);
             font-size: 0.7rem;
         }
 
@@ -307,13 +348,16 @@
                 padding: 1rem;
             }
 
-            .movies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 1rem;
+            .timeline {
+                padding-left: 1rem;
+            }
+
+            .history-item::before {
+                left: -1.3rem;
             }
 
             .page-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -330,9 +374,9 @@
                 </div>
                 <div class="nav-links">
                     <a href="user-dashboard.html"><i class="fas fa-home"></i> Home</a>
-                    <a href="user-favorites.html" class="active"><i class="fas fa-heart"></i> Favorites</a>
+                    <a href="user-favorites.html"><i class="fas fa-heart"></i> Favorites</a>
                     <a href="user-watchlist.html"><i class="fas fa-clock"></i> Watchlist</a>
-                    <a href="user-history.html"><i class="fas fa-history"></i> History</a>
+                    <a href="user-history.html" class="active"><i class="fas fa-history"></i> History</a>
                     <a href="user-profile.html"><i class="fas fa-user"></i> Profile</a>
                 </div>
                 <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -341,17 +385,17 @@
 
         <div class="dashboard-content">
             <div class="page-header">
-                <h1><i class="fas fa-heart" style="color:#e74c3c;"></i> My Favorites</h1>
-                <p>Movies you've loved and saved</p>
+                <h1><i class="fas fa-history"></i> Activity History</h1>
+                <button class="clear-btn" onclick="clearHistory()"><i class="fas fa-trash-alt"></i> Clear All</button>
             </div>
-            <div id="favoritesGrid" class="movies-grid"></div>
+            <div id="historyList" class="timeline"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
         if (!localStorage.getItem('userId')) window.location.href = 'index.html';
-        if (window.loadFavoritesPage) window.loadFavoritesPage();
+        if (window.loadHistoryPage) window.loadHistoryPage();
 
         function logout() {
             localStorage.clear();

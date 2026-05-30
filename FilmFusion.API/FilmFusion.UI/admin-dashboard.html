@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - FilmFusion</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -14,30 +15,43 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .video-background {
+        .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 50%, #0a1a2a 100%);
             z-index: -2;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 50, 100, 0.5));
-            z-index: -1;
+            .animated-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle at 20% 50%, rgba(58, 134, 255, 0.15) 0%, transparent 50%);
+                animation: pulse 8s ease-in-out infinite;
+            }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
         }
 
         .dashboard-container {
@@ -46,22 +60,31 @@
             z-index: 1;
         }
 
+        /* Admin Navbar - Only Dashboard & Movies */
         .dashboard-nav {
-            background: rgba(10, 20, 30, 0.8);
+            background: rgba(10, 20, 30, 0.95);
             backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -73,7 +96,7 @@
         }
 
         @keyframes bounce {
-            0%,100% {
+            0%, 100% {
                 transform: translateY(0);
             }
 
@@ -89,6 +112,7 @@
             color: transparent;
         }
 
+        /* Admin Nav Links - ONLY Dashboard and Movies */
         .nav-links {
             display: flex;
             gap: 0.5rem;
@@ -100,21 +124,23 @@
                 text-decoration: none;
                 color: rgba(255, 255, 255, 0.7);
                 font-weight: 500;
-                padding: 0.5rem 1rem;
-                border-radius: 12px;
+                padding: 0.6rem 1.2rem;
+                border-radius: 40px;
                 transition: all 0.3s ease;
                 display: flex;
                 align-items: center;
-                gap: 0.3rem;
+                gap: 0.5rem;
+                font-size: 0.9rem;
             }
 
                 .nav-links a:hover {
                     color: #64b4fa;
                     background: rgba(100, 180, 250, 0.1);
+                    transform: translateY(-2px);
                 }
 
                 .nav-links a.active {
-                    background: rgba(100, 180, 250, 0.15);
+                    background: linear-gradient(135deg, rgba(58, 134, 255, 0.2), rgba(100, 180, 250, 0.1));
                     color: #64b4fa;
                 }
 
@@ -143,6 +169,7 @@
             padding: 2rem;
         }
 
+        /* Quick Actions */
         .quick-actions {
             display: flex;
             gap: 1rem;
@@ -169,9 +196,10 @@
                 box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
             }
 
+        /* Stats Cards */
         .admin-stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -179,8 +207,8 @@
         .admin-stat-card {
             background: rgba(10, 20, 30, 0.6);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.2rem;
+            border-radius: 24px;
+            padding: 1.3rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -195,26 +223,27 @@
             }
 
         .stat-info h3 {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #64b4fa;
             margin-bottom: 0.3rem;
         }
 
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: white;
         }
 
         .stat-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             opacity: 0.7;
         }
 
+        /* Chart Card */
         .chart-card {
             background: rgba(10, 20, 30, 0.6);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 1.5rem;
             border: 1px solid rgba(100, 180, 250, 0.15);
             margin-bottom: 1.5rem;
@@ -232,10 +261,11 @@
             max-height: 250px;
         }
 
+        /* Glass Card */
         .glass-card {
             background: rgba(10, 20, 30, 0.6);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 1.5rem;
             border: 1px solid rgba(100, 180, 250, 0.15);
             margin-bottom: 1.5rem;
@@ -249,15 +279,16 @@
                 gap: 0.5rem;
             }
 
+        /* Activity Grid */
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .activity-list {
-            max-height: 400px;
+            max-height: 350px;
             overflow-y: auto;
         }
 
@@ -272,6 +303,7 @@
 
             .activity-item:hover {
                 background: rgba(100, 180, 250, 0.05);
+                border-radius: 12px;
             }
 
         .activity-icon {
@@ -307,6 +339,11 @@
             .activity-icon.favorite {
                 background: rgba(241, 196, 15, 0.2);
                 color: #f1c40f;
+            }
+
+            .activity-icon.movie {
+                background: rgba(58, 134, 255, 0.2);
+                color: #3a86ff;
             }
 
         .activity-details {
@@ -377,6 +414,7 @@
             border-radius: 2px;
         }
 
+        /* Users Table */
         .table-container {
             overflow-x: auto;
         }
@@ -420,6 +458,7 @@
             color: rgba(255,255,255,0.7);
         }
 
+        /* Movies Grid */
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -441,10 +480,28 @@
                 border-color: #3a86ff;
             }
 
-            .movie-card img {
+        .movie-poster {
+            position: relative;
+            aspect-ratio: 2/3;
+            overflow: hidden;
+        }
+
+            .movie-poster img {
                 width: 100%;
-                height: auto;
+                height: 100%;
+                object-fit: cover;
             }
+
+        .movie-rating-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #ffc107;
+        }
 
         .movie-info {
             padding: 0.8rem;
@@ -453,7 +510,7 @@
         .movie-title {
             font-weight: 600;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -494,6 +551,7 @@
                 cursor: pointer;
             }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -501,7 +559,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
@@ -510,8 +568,8 @@
 
         .modal-content {
             background: #0a141e;
-            border-radius: 20px;
-            padding: 1.5rem;
+            border-radius: 24px;
+            padding: 1.8rem;
             width: 90%;
             max-width: 500px;
             border: 1px solid #3a86ff;
@@ -519,21 +577,25 @@
 
             .modal-content h2 {
                 color: white;
-                margin-bottom: 1rem;
+                margin-bottom: 1.2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             }
 
             .modal-content input, .modal-content textarea {
                 width: 100%;
-                padding: 0.7rem;
+                padding: 0.8rem;
                 margin-bottom: 0.8rem;
                 background: rgba(255,255,255,0.08);
                 border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 10px;
+                border-radius: 12px;
                 color: white;
             }
 
-                .modal-content input::placeholder {
-                    color: rgba(255,255,255,0.5);
+                .modal-content input:focus, .modal-content textarea:focus {
+                    outline: none;
+                    border-color: #64b4fa;
                 }
 
         #tmdbResults {
@@ -551,11 +613,6 @@
                 color: white;
             }
 
-            #tmdbResults span {
-                color: white;
-                font-size: 0.85rem;
-            }
-
             #tmdbResults button {
                 background: linear-gradient(135deg, #3a86ff, #64b4fa);
                 color: white;
@@ -563,7 +620,6 @@
                 padding: 0.2rem 0.8rem;
                 border-radius: 8px;
                 cursor: pointer;
-                font-size: 0.7rem;
             }
 
         .btn-primary, .save-btn {
@@ -571,7 +627,7 @@
             color: white;
             border: none;
             padding: 0.7rem 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             width: 100%;
@@ -582,16 +638,21 @@
             color: rgba(255,255,255,0.7);
             border: none;
             padding: 0.7rem 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             margin-top: 0.5rem;
             width: 100%;
         }
 
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64b4fa;
+        }
+
         @media (max-width: 768px) {
-            .dashboard-nav {
+            .nav-container {
                 flex-direction: column;
-                gap: 1rem;
             }
 
             .dashboard-content {
@@ -609,120 +670,139 @@
     </style>
 </head>
 <body>
-    <video class="video-background" autoplay muted loop playsinline>
-        <source src="videos/v8.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
+    <div class="animated-bg"></div>
 
     <div class="dashboard-container">
+        <!-- Admin Navbar - ONLY Dashboard and Movies options -->
         <nav class="dashboard-nav">
-            <div class="logo">
-                <span class="logo-icon">🎬</span>
-                <span class="logo-text">FilmFusion Admin</span>
-            </div>
-            <div class="nav-links">
-                <a href="admin-dashboard.html" class="active">📊 Dashboard</a>
-                <a href="user-dashboard.html">🎬 Movies</a>
-                <button class="logout-btn" onclick="window.logout()">🚪 Logout</button>
+            <div class="nav-container">
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <span class="logo-text">FilmFusion Admin</span>
+                </div>
+                <div class="nav-links">
+                    <a href="admin-dashboard.html" class="active" id="dashboardNavBtn">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                    <a href="#" id="moviesNavBtn">
+                        <i class="fas fa-film"></i> Movies
+                    </a>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
             </div>
         </nav>
 
         <div class="dashboard-content">
             <!-- Quick Actions -->
             <div class="quick-actions">
-                <button class="quick-action-btn" onclick="window.showImportModal()">➕ Import from TMDB</button>
-                <button class="quick-action-btn" onclick="window.showAddMovieModal()">🎬 Add Movie</button>
-                <button class="quick-action-btn" onclick="window.refreshData()">🔄 Refresh Data</button>
-                <button class="quick-action-btn" onclick="window.exportData()">📊 Export Report</button>
-                <button class="quick-action-btn" onclick="window.exportUsersCSV()">👥 Export Users</button>
-                <button class="quick-action-btn" onclick="window.exportMoviesCSV()">🎬 Export Movies</button>
+                <button class="quick-action-btn" onclick="window.showImportModal()"><i class="fas fa-download"></i> Import from TMDB</button>
+                <button class="quick-action-btn" onclick="window.showAddMovieModal()"><i class="fas fa-plus"></i> Add Movie</button>
+                <button class="quick-action-btn" onclick="window.refreshData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                <button class="quick-action-btn" onclick="window.exportData()"><i class="fas fa-file-export"></i> Export Report</button>
+                <button class="quick-action-btn" onclick="window.exportUsersCSV()"><i class="fas fa-users"></i> Export Users</button>
+                <button class="quick-action-btn" onclick="window.exportMoviesCSV()"><i class="fas fa-film"></i> Export Movies</button>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="admin-stats-grid" id="statsGrid"></div>
+            <!-- Dashboard Sections (Visible by default) -->
+            <div id="dashboardSections">
+                <!-- Stats Cards -->
+                <div class="admin-stats-grid" id="statsGrid"></div>
 
-            <!-- User Growth Chart -->
-            <div class="chart-card">
-                <h3>📈 User Growth (Last 6 Months)</h3>
-                <canvas id="userGrowthChart"></canvas>
-            </div>
+                <!-- User Growth Chart -->
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-line"></i> User Growth (Last 6 Months)</h3>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
 
-            <!-- User Activity Sections -->
-            <div class="activity-grid">
-                <div class="glass-card">
-                    <h3>👍 Recent Likes</h3>
-                    <div id="likesActivity" class="activity-list">
-                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading likes...</div>
+                <!-- User Activity Sections -->
+                <div class="activity-grid">
+                    <div class="glass-card">
+                        <h3><i class="fas fa-thumbs-up"></i> Recent Likes</h3>
+                        <div id="likesActivity" class="activity-list">
+                            <div class="loading">Loading likes...</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3><i class="fas fa-thumbs-down"></i> Recent Dislikes</h3>
+                        <div id="dislikesActivity" class="activity-list">
+                            <div class="loading">Loading dislikes...</div>
+                        </div>
                     </div>
                 </div>
 
+                <div class="activity-grid">
+                    <div class="glass-card">
+                        <h3><i class="fas fa-comment"></i> Recent Comments</h3>
+                        <div id="commentsActivity" class="activity-list">
+                            <div class="loading">Loading comments...</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3><i class="fas fa-clock"></i> Watchlist Additions</h3>
+                        <div id="watchlistActivity" class="activity-list">
+                            <div class="loading">Loading watchlist...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-grid">
+                    <div class="glass-card">
+                        <h3><i class="fas fa-heart"></i> Favorites Additions</h3>
+                        <div id="favoritesActivity" class="activity-list">
+                            <div class="loading">Loading favorites...</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3><i class="fas fa-trophy"></i> Top Rated Movies</h3>
+                        <div id="topMoviesList" class="activity-list">
+                            <div class="loading">Loading top movies...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Genre Distribution -->
                 <div class="glass-card">
-                    <h3>👎 Recent Dislikes</h3>
-                    <div id="dislikesActivity" class="activity-list">
-                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading dislikes...</div>
+                    <h3><i class="fas fa-tags"></i> Genre Distribution</h3>
+                    <div id="genreDistribution" class="activity-list">
+                        <div class="loading">Loading genres...</div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="glass-card">
+                    <h3><i class="fas fa-users"></i> All Users</h3>
+                    <div class="table-container" id="usersList">
+                        <div class="loading">Loading users...</div>
                     </div>
                 </div>
             </div>
 
-            <div class="activity-grid">
+            <!-- Movies Section (Hidden by default, shows when Movies tab clicked) -->
+            <div id="moviesSection" style="display: none;">
                 <div class="glass-card">
-                    <h3>💬 Recent Comments</h3>
-                    <div id="commentsActivity" class="activity-list">
-                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading comments...</div>
+                    <h3><i class="fas fa-film"></i> All Movies</h3>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="🔍 Search movies by title..." onkeyup="window.searchMovies()">
+                        <select id="genreFilter" onchange="window.filterByGenre()">
+                            <option value="">All Genres</option>
+                            <option value="action">🔥 Action</option>
+                            <option value="comedy">😂 Comedy</option>
+                            <option value="drama">🎭 Drama</option>
+                            <option value="horror">👻 Horror</option>
+                            <option value="sci-fi">🚀 Sci-Fi</option>
+                            <option value="romance">💕 Romance</option>
+                            <option value="thriller">🔪 Thriller</option>
+                            <option value="adventure">🗺️ Adventure</option>
+                            <option value="fantasy">✨ Fantasy</option>
+                            <option value="animation">🐭 Animation</option>
+                        </select>
+                    </div>
+                    <div id="moviesGrid" class="movie-grid">
+                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading movies...</div>
                     </div>
                 </div>
-
-                <div class="glass-card">
-                    <h3>📝 Watchlist Additions</h3>
-                    <div id="watchlistActivity" class="activity-list">
-                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading watchlist...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="activity-grid">
-                <div class="glass-card">
-                    <h3>❤️ Favorites Additions</h3>
-                    <div id="favoritesActivity" class="activity-list">
-                        <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">Loading favorites...</div>
-                    </div>
-                </div>
-
-                <div class="glass-card">
-                    <h3>🏆 Top Rated Movies</h3>
-                    <div id="topMoviesList" class="activity-list"></div>
-                </div>
-            </div>
-
-            <!-- Genre Distribution -->
-            <div class="glass-card">
-                <h3>🎭 Genre Distribution</h3>
-                <div id="genreDistribution" class="activity-list"></div>
-            </div>
-
-            <!-- Users Table -->
-            <div class="glass-card">
-                <h3>👥 All Users</h3>
-                <div class="table-container" id="usersList"></div>
-            </div>
-
-            <!-- Movies Grid -->
-            <div class="glass-card">
-                <h3>🎬 All Movies</h3>
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search movies..." onkeyup="window.searchMovies()">
-                    <select id="genreFilter" onchange="window.filterByGenre()">
-                        <option value="">All Genres</option>
-                        <option value="action">Action</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="drama">Drama</option>
-                        <option value="horror">Horror</option>
-                        <option value="sci-fi">Sci-Fi</option>
-                        <option value="romance">Romance</option>
-                        <option value="thriller">Thriller</option>
-                    </select>
-                </div>
-                <div id="moviesGrid" class="movie-grid"></div>
             </div>
         </div>
     </div>
@@ -730,10 +810,10 @@
     <!-- Import Modal -->
     <div id="importModal" class="modal">
         <div class="modal-content">
-            <h2>🎬 Import from TMDB</h2>
+            <h2><i class="fas fa-download"></i> Import from TMDB</h2>
             <input type="text" id="tmdbSearchQuery" placeholder="Search movie...">
             <button class="btn-primary" onclick="window.searchTMDB()">Search</button>
-            <div id="tmdbResults" style="margin-top: 1rem; max-height: 300px; overflow-y: auto;"></div>
+            <div id="tmdbResults"></div>
             <button class="cancel-btn" onclick="window.closeModals()">Close</button>
         </div>
     </div>
@@ -741,13 +821,12 @@
     <!-- Add Movie Modal -->
     <div id="addMovieModal" class="modal">
         <div class="modal-content">
-            <h2>🎬 Add Movie</h2>
+            <h2><i class="fas fa-plus-circle"></i> Add Movie</h2>
             <input type="text" id="movieTitle" placeholder="Title">
             <input type="text" id="movieGenre" placeholder="Genre">
             <input type="number" id="movieYear" placeholder="Year">
             <input type="number" id="movieRating" step="0.1" placeholder="Rating">
             <textarea id="movieDescription" placeholder="Description" rows="3"></textarea>
-            <input type="text" id="movieTags" placeholder="Tags">
             <button class="save-btn" onclick="window.addMovie()">Add Movie</button>
             <button class="cancel-btn" onclick="window.closeModals()">Cancel</button>
         </div>
@@ -755,10 +834,56 @@
 
     <script src="script.js"></script>
     <script>
-        // Authentication check
-        if (!localStorage.getItem('userId') || localStorage.getItem('userRole') !== 'Admin') {
-            window.location.href = 'index.html';
-        }
+        // Authentication check - Only Admin can access
+        (function() {
+            const userId = localStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole');
+
+            console.log('Admin Dashboard - User:', userId, 'Role:', userRole);
+
+            if (!userId || userRole !== 'Admin') {
+                console.log('Access denied - Redirecting to login');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Tab switching - Dashboard vs Movies
+            const dashboardBtn = document.getElementById('dashboardNavBtn');
+            const moviesBtn = document.getElementById('moviesNavBtn');
+            const dashboardSections = document.getElementById('dashboardSections');
+            const moviesSection = document.getElementById('moviesSection');
+
+            function showDashboard() {
+                if (dashboardSections) dashboardSections.style.display = 'block';
+                if (moviesSection) moviesSection.style.display = 'none';
+                if (dashboardBtn) dashboardBtn.classList.add('active');
+                if (moviesBtn) moviesBtn.classList.remove('active');
+            }
+
+            function showMovies() {
+                if (dashboardSections) dashboardSections.style.display = 'none';
+                if (moviesSection) moviesSection.style.display = 'block';
+                if (moviesBtn) moviesBtn.classList.add('active');
+                if (dashboardBtn) dashboardBtn.classList.remove('active');
+
+                // Load movies when switching to movies tab
+                if (typeof window.loadMoviesForAdmin === 'function') {
+                    window.loadMoviesForAdmin();
+                }
+            }
+
+            if (dashboardBtn) dashboardBtn.onclick = showDashboard;
+            if (moviesBtn) moviesBtn.onclick = showMovies;
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.onclick = function() {
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                };
+            }
+        })();
     </script>
 </body>
 </html>
