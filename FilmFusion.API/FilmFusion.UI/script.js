@@ -11,7 +11,7 @@ function initializeDefaultUser() {
             username: 'Demo User',
             email: 'demo@filmfusion.com',
             password: 'demo123',
-            bio: 'Movie enthusiast who loves discovering new films.',
+     
             role: 'Movie Lover',
             createdAt: new Date().toISOString(),
             profilePicture: null
@@ -905,7 +905,9 @@ window.changePassword = function () {
     document.getElementById('confirmPassword').value = '';
 
     if (confirm('Password changed! Please login again with your new password.')) {
-        localStorage.clear();
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userPassword');
         window.location.href = 'index.html';
     }
 };

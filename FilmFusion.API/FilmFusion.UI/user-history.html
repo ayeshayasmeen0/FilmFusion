@@ -19,13 +19,24 @@
             min-height: 100vh;
         }
 
-        .animated-bg {
+        /* Video Background */
+        .video-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(58,134,255,0.08) 0%, transparent 60%);
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 30, 60, 0.75));
             z-index: -1;
         }
 
@@ -33,7 +44,7 @@
         .dashboard-nav {
             background: rgba(10, 20, 30, 0.95);
             backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
+            padding: 0.8rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -51,7 +62,7 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -59,7 +70,7 @@
         }
 
         .logo-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             animation: bounce 2s ease-in-out infinite;
         }
 
@@ -82,8 +93,7 @@
 
         .nav-links {
             display: flex;
-            gap: 0.5rem;
-            align-items: center;
+            gap: 0.3rem;
             flex-wrap: wrap;
         }
 
@@ -91,13 +101,13 @@
                 text-decoration: none;
                 color: rgba(255,255,255,0.7);
                 font-weight: 500;
-                padding: 0.6rem 1.2rem;
+                padding: 0.5rem 1rem;
                 border-radius: 40px;
                 transition: all 0.3s;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
 
                 .nav-links a:hover, .nav-links a.active {
@@ -115,6 +125,7 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
             .logout-btn:hover {
@@ -126,7 +137,7 @@
         .dashboard-content {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .page-header {
@@ -139,25 +150,20 @@
         }
 
             .page-header h1 {
-                font-size: 2rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #64b4fa, #3a86ff);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.8rem;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+                letter-spacing: -0.02em;
             }
 
         .clear-btn {
             background: rgba(231,76,60,0.15);
             border: 1px solid rgba(231,76,60,0.3);
             color: #e74c3c;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border-radius: 40px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             transition: all 0.3s;
             display: flex;
@@ -173,7 +179,7 @@
         /* Timeline */
         .timeline {
             position: relative;
-            padding-left: 2rem;
+            padding-left: 1.5rem;
         }
 
             .timeline::before {
@@ -188,11 +194,11 @@
 
         .history-item {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             background: rgba(10,20,30,0.5);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.2rem;
+            border-radius: 18px;
+            padding: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             border: 1px solid rgba(100,180,250,0.1);
@@ -202,10 +208,10 @@
             .history-item::before {
                 content: '';
                 position: absolute;
-                left: -1.8rem;
-                top: 1.5rem;
-                width: 12px;
-                height: 12px;
+                left: -1.6rem;
+                top: 1.3rem;
+                width: 10px;
+                height: 10px;
                 background: #64b4fa;
                 border-radius: 50%;
                 border: 2px solid #0a141e;
@@ -225,14 +231,14 @@
         }
 
         .history-icon {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             background: rgba(100,180,250,0.15);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
 
             .history-icon.watch {
@@ -267,8 +273,8 @@
         .history-title {
             color: white;
             font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
         }
 
         .history-meta {
@@ -280,61 +286,63 @@
 
         .history-action {
             background: rgba(100,180,250,0.15);
-            padding: 0.2rem 0.8rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #64b4fa;
             font-weight: 500;
         }
 
         .history-time {
             color: rgba(255,255,255,0.4);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 4rem;
+            padding: 3rem;
             background: rgba(10,20,30,0.5);
-            border-radius: 28px;
+            border-radius: 24px;
             backdrop-filter: blur(10px);
         }
 
         .empty-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 0.8rem;
             opacity: 0.5;
         }
 
         .empty-state h3 {
             color: white;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
         }
 
         .empty-state p {
             color: rgba(255,255,255,0.5);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
         }
 
         .btn-explore {
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             border: none;
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 0.6rem 1.5rem;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
             .btn-explore:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 20px rgba(58,134,255,0.4);
+                box-shadow: 0 5px 15px rgba(58,134,255,0.4);
             }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .nav-container {
                 flex-direction: column;
@@ -357,13 +365,28 @@
             }
 
             .page-header h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            .history-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.1rem;
+            }
+
+            .history-title {
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
+    <!-- Video Background -->
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v5.mp4" type="video/mp4">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
 
     <div class="dashboard-container">
         <nav class="dashboard-nav">
@@ -385,7 +408,7 @@
 
         <div class="dashboard-content">
             <div class="page-header">
-                <h1><i class="fas fa-history"></i> Activity History</h1>
+                <h1>Activity History</h1>
                 <button class="clear-btn" onclick="clearHistory()"><i class="fas fa-trash-alt"></i> Clear All</button>
             </div>
             <div id="historyList" class="timeline"></div>

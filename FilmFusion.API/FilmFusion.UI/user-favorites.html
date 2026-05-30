@@ -18,15 +18,28 @@
             background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
             min-height: 100vh;
         }
+        body {
+            font-size: 14px; /* All text will be 14px base */
+        }
 
-        /* Animated Background */
-        .animated-bg {
+        /* Video Background */
+        .video-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(58,134,255,0.08) 0%, transparent 50%);
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 30, 60, 0.75));
             z-index: -1;
         }
 
@@ -34,7 +47,7 @@
         .dashboard-nav {
             background: rgba(10, 20, 30, 0.95);
             backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
+            padding: 0.8rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -52,7 +65,7 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -60,7 +73,7 @@
         }
 
         .logo-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             animation: bounce 2s ease-in-out infinite;
         }
 
@@ -83,8 +96,7 @@
 
         .nav-links {
             display: flex;
-            gap: 0.5rem;
-            align-items: center;
+            gap: 0.3rem;
             flex-wrap: wrap;
         }
 
@@ -92,13 +104,13 @@
                 text-decoration: none;
                 color: rgba(255,255,255,0.7);
                 font-weight: 500;
-                padding: 0.6rem 1.2rem;
+                padding: 0.5rem 1rem;
                 border-radius: 40px;
                 transition: all 0.3s;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
 
                 .nav-links a:hover, .nav-links a.active {
@@ -116,6 +128,7 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
             .logout-btn:hover {
@@ -127,53 +140,50 @@
         .dashboard-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
+        /* Page Header */
         .page-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
             .page-header h1 {
-                font-size: 2.5rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #64b4fa, #3a86ff);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.8rem;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+                letter-spacing: -0.02em;
             }
 
             .page-header p {
                 color: rgba(255,255,255,0.5);
-                margin-top: 0.5rem;
+                margin-top: 0.3rem;
+                font-size: 0.85rem;
             }
 
         /* Movies Grid */
         .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.8rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
         }
 
         .movie-card {
-            background: rgba(20, 30, 40, 0.85);
+            background: rgba(25, 35, 45, 0.8);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 18px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(100,180,250,0.15);
+            transition: all 0.35s ease;
+            border: 1px solid rgba(100,180,250,0.12);
             position: relative;
         }
 
             .movie-card:hover {
-                transform: translateY(-8px);
-                border-color: rgba(100,180,250,0.5);
-                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                transform: translateY(-6px);
+                border-color: rgba(100,180,250,0.35);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             }
 
         .movie-poster {
@@ -186,61 +196,65 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                transition: transform 0.5s;
+                transition: transform 0.4s ease;
             }
 
         .movie-card:hover .movie-poster img {
-            transform: scale(1.08);
+            transform: scale(1.05);
         }
 
         .movie-rating {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            padding: 0.2rem 0.6rem;
+            backdrop-filter: blur(4px);
+            padding: 0.2rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
+            font-weight: 600;
             color: #ffc107;
             display: flex;
             align-items: center;
             gap: 0.2rem;
+            z-index: 2;
         }
 
         .remove-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             background: rgba(231,76,60,0.9);
             border: none;
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             z-index: 10;
+            opacity: 0.9;
         }
 
             .remove-btn:hover {
                 background: #e74c3c;
                 transform: scale(1.1);
+                opacity: 1;
             }
 
         .movie-info {
-            padding: 1rem;
+            padding: 0.8rem;
         }
 
         .movie-title {
             color: white;
             font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -248,49 +262,53 @@
 
         .movie-year {
             color: rgba(100,180,250,0.7);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 4rem;
+            padding: 3rem;
             background: rgba(10,20,30,0.5);
-            border-radius: 28px;
+            border-radius: 24px;
             backdrop-filter: blur(10px);
+            grid-column: 1 / -1;
         }
 
         .empty-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 0.8rem;
             opacity: 0.5;
         }
 
         .empty-state h3 {
             color: white;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
         }
 
         .empty-state p {
             color: rgba(255,255,255,0.5);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
         }
 
         .btn-explore {
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             border: none;
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 0.6rem 1.5rem;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
             .btn-explore:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 20px rgba(58,134,255,0.4);
+                box-shadow: 0 5px 15px rgba(58,134,255,0.4);
             }
 
         /* Responsive */
@@ -308,18 +326,42 @@
             }
 
             .movies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 1rem;
             }
 
             .page-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.3rem;
+            }
+
+            .empty-icon {
+                font-size: 2.5rem;
+            }
+
+            .empty-state h3 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 0.8rem;
+            }
+
+            .movie-title {
+                font-size: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
+    <!-- Video Background -->
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v4.mp4" type="video/mp4">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
 
     <div class="dashboard-container">
         <nav class="dashboard-nav">
@@ -341,7 +383,7 @@
 
         <div class="dashboard-content">
             <div class="page-header">
-                <h1><i class="fas fa-heart" style="color:#e74c3c;"></i> My Favorites</h1>
+                <h1>My Favorites</h1>
                 <p>Movies you've loved and saved</p>
             </div>
             <div id="favoritesGrid" class="movies-grid"></div>

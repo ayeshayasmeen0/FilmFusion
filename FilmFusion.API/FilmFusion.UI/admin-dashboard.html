@@ -21,36 +21,56 @@
             overflow-x: hidden;
         }
 
-        .animated-bg {
+        /* Premium Video Background */
+        .video-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 50%, #0a1a2a 100%);
+            object-fit: cover;
             z-index: -2;
         }
 
-            .animated-bg::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle at 20% 50%, rgba(58, 134, 255, 0.15) 0%, transparent 50%);
-                animation: pulse 8s ease-in-out infinite;
-            }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.88), rgba(0, 30, 60, 0.7));
+            z-index: -1;
+        }
 
-        @keyframes pulse {
+        /* Animated Background Glow */
+        .glow-orb {
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(58,134,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+
+        .glow-orb-2 {
+            top: 60%;
+            left: auto;
+            right: 5%;
+            background: radial-gradient(circle, rgba(100,180,250,0.08) 0%, transparent 70%);
+            animation: floatOrb 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatOrb {
             0%, 100% {
-                opacity: 0.5;
-                transform: scale(1);
+                transform: translate(0, 0) scale(1);
             }
 
             50% {
-                opacity: 1;
-                transform: scale(1.05);
+                transform: translate(50px, -30px) scale(1.1);
             }
         }
 
@@ -60,20 +80,20 @@
             z-index: 1;
         }
 
-        /* Admin Navbar - Only Dashboard & Movies */
+        /* Premium Navbar */
         .dashboard-nav {
-            background: rgba(10, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(10, 20, 30, 0.92);
+            backdrop-filter: blur(24px);
             padding: 0.8rem 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(100, 180, 250, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .nav-container {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -83,7 +103,7 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -91,12 +111,12 @@
         }
 
         .logo-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             animation: bounce 2s ease-in-out infinite;
         }
 
         @keyframes bounce {
-            0%, 100% {
+            0%,100% {
                 transform: translateY(0);
             }
 
@@ -112,7 +132,6 @@
             color: transparent;
         }
 
-        /* Admin Nav Links - ONLY Dashboard and Movies */
         .nav-links {
             display: flex;
             gap: 0.5rem;
@@ -122,54 +141,58 @@
 
             .nav-links a {
                 text-decoration: none;
-                color: rgba(255, 255, 255, 0.7);
+                color: rgba(255, 255, 255, 0.75);
                 font-weight: 500;
                 padding: 0.6rem 1.2rem;
                 border-radius: 40px;
                 transition: all 0.3s ease;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
-                font-size: 0.9rem;
+                gap: 0.6rem;
+                font-size: 0.85rem;
+                letter-spacing: 0.3px;
             }
 
                 .nav-links a:hover {
                     color: #64b4fa;
-                    background: rgba(100, 180, 250, 0.1);
+                    background: rgba(100, 180, 250, 0.12);
                     transform: translateY(-2px);
                 }
 
                 .nav-links a.active {
                     background: linear-gradient(135deg, rgba(58, 134, 255, 0.2), rgba(100, 180, 250, 0.1));
                     color: #64b4fa;
+                    border: 1px solid rgba(100, 180, 250, 0.25);
                 }
 
         .logout-btn {
-            background: rgba(231, 76, 60, 0.2);
+            background: rgba(231, 76, 60, 0.15);
             border: 1px solid rgba(231, 76, 60, 0.3);
             color: #e74c3c;
             padding: 0.5rem 1rem;
-            border-radius: 12px;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.5rem;
+            font-size: 0.85rem;
         }
 
             .logout-btn:hover {
-                background: rgba(231, 76, 60, 0.3);
+                background: rgba(231, 76, 60, 0.25);
                 transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
             }
 
         .dashboard-content {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.8rem;
         }
 
-        /* Quick Actions */
+        /* Premium Quick Actions */
         .quick-actions {
             display: flex;
             gap: 1rem;
@@ -178,172 +201,233 @@
         }
 
         .quick-action-btn {
-            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.85), rgba(100, 180, 250, 0.85));
+            backdrop-filter: blur(10px);
             color: white;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.7rem 1.3rem;
+            border-radius: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
             transition: all 0.3s ease;
             font-weight: 500;
+            font-size: 0.85rem;
         }
 
             .quick-action-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(58, 134, 255, 0.35);
+                border-color: rgba(255, 255, 255, 0.2);
             }
 
-        /* Stats Cards */
+        /* Premium Stats Cards */
         .admin-stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .admin-stat-card {
-            background: rgba(10, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 20, 30, 0.55);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.3rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(100, 180, 250, 0.15);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
+            .admin-stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(100, 180, 250, 0.08), transparent);
+                transition: left 0.5s;
+            }
+
+            .admin-stat-card:hover::before {
+                left: 100%;
+            }
+
             .admin-stat-card:hover {
-                transform: translateY(-5px);
-                border-color: #3a86ff;
+                transform: translateY(-6px);
+                border-color: rgba(100, 180, 250, 0.4);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             }
 
         .stat-info h3 {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #64b4fa;
             margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
             color: white;
+            letter-spacing: -0.02em;
         }
 
         .stat-icon {
-            font-size: 2.2rem;
-            opacity: 0.7;
+            font-size: 2.5rem;
+            opacity: 0.6;
         }
 
-        /* Chart Card */
+        /* Premium Chart Card */
         .chart-card {
-            background: rgba(10, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 20, 30, 0.55);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100, 180, 250, 0.15);
+            border: 1px solid rgba(100, 180, 250, 0.12);
             margin-bottom: 1.5rem;
+            transition: all 0.3s;
         }
+
+            .chart-card:hover {
+                border-color: rgba(100, 180, 250, 0.25);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            }
 
             .chart-card h3 {
                 color: white;
                 margin-bottom: 1rem;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.6rem;
+                font-size: 1rem;
+                font-weight: 600;
             }
 
         canvas {
-            max-height: 250px;
+            max-height: 260px;
         }
 
-        /* Glass Card */
+        /* Premium Glass Card */
         .glass-card {
-            background: rgba(10, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 20, 30, 0.5);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100, 180, 250, 0.15);
+            border: 1px solid rgba(100, 180, 250, 0.1);
             margin-bottom: 1.5rem;
+            transition: all 0.3s;
         }
+
+            .glass-card:hover {
+                border-color: rgba(100, 180, 250, 0.2);
+            }
 
             .glass-card h3 {
                 color: white;
                 margin-bottom: 1rem;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.6rem;
+                font-size: 1rem;
+                font-weight: 600;
             }
 
         /* Activity Grid */
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .activity-list {
-            max-height: 350px;
+            max-height: 380px;
             overflow-y: auto;
+            scrollbar-width: thin;
         }
+
+            .activity-list::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .activity-list::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+            }
+
+            .activity-list::-webkit-scrollbar-thumb {
+                background: #3a86ff;
+                border-radius: 10px;
+            }
 
         .activity-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.8rem;
-            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+            padding: 0.9rem;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.08);
             transition: all 0.3s ease;
         }
 
             .activity-item:hover {
-                background: rgba(100, 180, 250, 0.05);
-                border-radius: 12px;
+                background: rgba(100, 180, 250, 0.06);
+                border-radius: 16px;
+                transform: translateX(4px);
             }
 
         .activity-icon {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
             .activity-icon.like {
-                background: rgba(46, 204, 113, 0.2);
+                background: rgba(46, 204, 113, 0.15);
                 color: #2ecc71;
             }
 
             .activity-icon.dislike {
-                background: rgba(231, 76, 60, 0.2);
+                background: rgba(231, 76, 60, 0.15);
                 color: #e74c3c;
             }
 
             .activity-icon.comment {
-                background: rgba(100, 180, 250, 0.2);
+                background: rgba(100, 180, 250, 0.15);
                 color: #64b4fa;
             }
 
             .activity-icon.watchlist {
-                background: rgba(155, 89, 182, 0.2);
+                background: rgba(155, 89, 182, 0.15);
                 color: #d2b0e5;
             }
 
             .activity-icon.favorite {
-                background: rgba(241, 196, 15, 0.2);
+                background: rgba(241, 196, 15, 0.15);
                 color: #f1c40f;
             }
 
             .activity-icon.movie {
-                background: rgba(58, 134, 255, 0.2);
+                background: rgba(58, 134, 255, 0.15);
                 color: #3a86ff;
+            }
+
+            .activity-icon.user {
+                background: rgba(52, 152, 219, 0.15);
+                color: #3498db;
             }
 
         .activity-details {
@@ -353,65 +437,67 @@
         .activity-title {
             font-weight: 600;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .activity-subtitle {
             font-size: 0.7rem;
             color: #64b4fa;
+            margin-top: 0.1rem;
         }
 
         .activity-time {
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.35);
             margin-top: 0.2rem;
         }
 
         .activity-type {
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.65rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.6rem;
             font-weight: 600;
         }
 
         .type-like {
-            background: rgba(46, 204, 113, 0.2);
+            background: rgba(46, 204, 113, 0.15);
             color: #2ecc71;
         }
 
         .type-dislike {
-            background: rgba(231, 76, 60, 0.2);
+            background: rgba(231, 76, 60, 0.15);
             color: #e74c3c;
         }
 
         .type-comment {
-            background: rgba(100, 180, 250, 0.2);
+            background: rgba(100, 180, 250, 0.15);
             color: #64b4fa;
         }
 
         .type-watchlist {
-            background: rgba(155, 89, 182, 0.2);
+            background: rgba(155, 89, 182, 0.15);
             color: #d2b0e5;
         }
 
         .type-favorite {
-            background: rgba(241, 196, 15, 0.2);
+            background: rgba(241, 196, 15, 0.15);
             color: #f1c40f;
         }
 
         .progress-bar {
             width: 100%;
             height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
             overflow: hidden;
-            margin-top: 0.3rem;
+            margin-top: 0.4rem;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
-            border-radius: 2px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
 
         /* Users Table */
@@ -425,26 +511,28 @@
         }
 
         th, td {
-            padding: 0.75rem;
+            padding: 0.9rem 0.8rem;
             text-align: left;
-            border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+            border-bottom: 1px solid rgba(100, 180, 250, 0.08);
         }
 
         th {
-            background: rgba(100, 180, 250, 0.1);
+            background: rgba(100, 180, 250, 0.08);
             color: #64b4fa;
             font-weight: 600;
+            font-size: 0.8rem;
         }
 
         td {
-            color: white;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.8rem;
         }
 
         .badge {
             display: inline-block;
             padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
+            border-radius: 30px;
+            font-size: 0.65rem;
             font-weight: 600;
         }
 
@@ -454,30 +542,47 @@
         }
 
         .badge-user {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: rgba(255,255,255,0.7);
         }
+
+        .delete-user-btn {
+            background: rgba(231, 76, 60, 0.15);
+            border: none;
+            color: #e74c3c;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+        }
+
+            .delete-user-btn:hover {
+                background: rgba(231, 76, 60, 0.3);
+                transform: scale(1.05);
+            }
 
         /* Movies Grid */
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+            gap: 1.2rem;
             margin-top: 1rem;
         }
 
         .movie-card {
-            background: rgba(20, 30, 40, 0.8);
-            border-radius: 16px;
+            background: rgba(25, 35, 45, 0.75);
+            border-radius: 18px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.35s ease;
             border: 1px solid rgba(100, 180, 250, 0.1);
         }
 
             .movie-card:hover {
-                transform: translateY(-5px);
-                border-color: #3a86ff;
+                transform: translateY(-6px);
+                border-color: rgba(100, 180, 250, 0.35);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
             }
 
         .movie-poster {
@@ -490,18 +595,49 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                transition: transform 0.4s ease;
             }
+
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.05);
+        }
 
         .movie-rating-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
             padding: 0.2rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
         }
+
+        .delete-movie-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(231,76,60,0.9);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.7rem;
+            z-index: 10;
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+
+            .delete-movie-btn:hover {
+                background: #e74c3c;
+                transform: scale(1.1);
+            }
 
         .movie-info {
             padding: 0.8rem;
@@ -510,44 +646,48 @@
         .movie-title {
             font-weight: 600;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .movie-year {
-            font-size: 0.7rem;
-            color: #64b4fa;
+            font-size: 0.65rem;
+            color: rgba(100,180,250,0.7);
+            margin-top: 0.2rem;
         }
 
         .search-bar {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
             flex-wrap: wrap;
         }
 
             .search-bar input {
                 flex: 1;
-                padding: 0.7rem 1rem;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 12px;
+                padding: 0.7rem 1.2rem;
+                background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(100,180,250,0.25);
+                border-radius: 40px;
                 color: white;
+                font-size: 0.85rem;
             }
 
                 .search-bar input:focus {
                     outline: none;
                     border-color: #64b4fa;
+                    background: rgba(255,255,255,0.1);
                 }
 
             .search-bar select {
-                padding: 0.7rem 1rem;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 12px;
+                padding: 0.7rem 1.2rem;
+                background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(100,180,250,0.25);
+                border-radius: 40px;
                 color: white;
+                font-size: 0.85rem;
                 cursor: pointer;
             }
 
@@ -559,20 +699,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
         }
 
         .modal-content {
-            background: #0a141e;
-            border-radius: 24px;
-            padding: 1.8rem;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 28px;
+            padding: 2rem;
+            max-width: 520px;
             width: 90%;
-            max-width: 500px;
-            border: 1px solid #3a86ff;
+            border: 1px solid rgba(100,180,250,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
         }
 
             .modal-content h2 {
@@ -580,17 +721,19 @@
                 margin-bottom: 1.2rem;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.6rem;
+                font-size: 1.3rem;
             }
 
             .modal-content input, .modal-content textarea {
                 width: 100%;
-                padding: 0.8rem;
+                padding: 0.8rem 1rem;
                 margin-bottom: 0.8rem;
                 background: rgba(255,255,255,0.08);
                 border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 12px;
+                border-radius: 14px;
                 color: white;
+                font-size: 0.85rem;
             }
 
                 .modal-content input:focus, .modal-content textarea:focus {
@@ -600,7 +743,7 @@
 
         #tmdbResults {
             margin-top: 1rem;
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
         }
 
@@ -608,9 +751,13 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.5rem;
-                border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+                padding: 0.7rem;
+                border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+            }
+
+            #tmdbResults span {
                 color: white;
+                font-size: 0.85rem;
             }
 
             #tmdbResults button {
@@ -618,37 +765,47 @@
                 color: white;
                 border: none;
                 padding: 0.2rem 0.8rem;
-                border-radius: 8px;
+                border-radius: 20px;
                 cursor: pointer;
+                font-size: 0.7rem;
             }
 
         .btn-primary, .save-btn {
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             color: white;
             border: none;
-            padding: 0.7rem 1rem;
-            border-radius: 12px;
+            padding: 0.8rem;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
             width: 100%;
+            font-size: 0.85rem;
         }
 
         .cancel-btn {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: rgba(255,255,255,0.7);
-            border: none;
-            padding: 0.7rem 1rem;
-            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.8rem;
+            border-radius: 40px;
             cursor: pointer;
             margin-top: 0.5rem;
             width: 100%;
+            font-size: 0.85rem;
         }
 
         .loading {
             text-align: center;
             padding: 2rem;
             color: #64b4fa;
+            font-size: 0.85rem;
         }
+
+            .loading i {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
 
         @media (max-width: 768px) {
             .nav-container {
@@ -661,19 +818,35 @@
 
             .admin-stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
             }
 
             .activity-grid {
                 grid-template-columns: 1fr;
             }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
+    <!-- Premium Video Background -->
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="videos/v5.mp4" type="video/mp4">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="glow-orb"></div>
+    <div class="glow-orb glow-orb-2"></div>
 
     <div class="dashboard-container">
-        <!-- Admin Navbar - ONLY Dashboard and Movies options -->
+        <!-- Premium Navbar -->
         <nav class="dashboard-nav">
             <div class="nav-container">
                 <div class="logo">
@@ -681,7 +854,7 @@
                     <span class="logo-text">FilmFusion Admin</span>
                 </div>
                 <div class="nav-links">
-                    <a href="admin-dashboard.html" class="active" id="dashboardNavBtn">
+                    <a href="#" class="active" id="dashboardNavBtn">
                         <i class="fas fa-chart-line"></i> Dashboard
                     </a>
                     <a href="#" id="moviesNavBtn">
@@ -699,35 +872,35 @@
             <div class="quick-actions">
                 <button class="quick-action-btn" onclick="window.showImportModal()"><i class="fas fa-download"></i> Import from TMDB</button>
                 <button class="quick-action-btn" onclick="window.showAddMovieModal()"><i class="fas fa-plus"></i> Add Movie</button>
-                <button class="quick-action-btn" onclick="window.refreshData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
-                <button class="quick-action-btn" onclick="window.exportData()"><i class="fas fa-file-export"></i> Export Report</button>
+                <button class="quick-action-btn" onclick="window.refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <button class="quick-action-btn" onclick="window.exportData()"><i class="fas fa-file-export"></i> Export</button>
                 <button class="quick-action-btn" onclick="window.exportUsersCSV()"><i class="fas fa-users"></i> Export Users</button>
                 <button class="quick-action-btn" onclick="window.exportMoviesCSV()"><i class="fas fa-film"></i> Export Movies</button>
             </div>
 
-            <!-- Dashboard Sections (Visible by default) -->
+            <!-- Dashboard Sections -->
             <div id="dashboardSections">
                 <!-- Stats Cards -->
                 <div class="admin-stats-grid" id="statsGrid"></div>
 
                 <!-- User Growth Chart -->
                 <div class="chart-card">
-                    <h3><i class="fas fa-chart-line"></i> User Growth (Last 6 Months)</h3>
+                    <h3><i class="fas fa-chart-line"></i> User Growth Analytics</h3>
                     <canvas id="userGrowthChart"></canvas>
                 </div>
 
-                <!-- User Activity Sections -->
+                <!-- Activity Grid -->
                 <div class="activity-grid">
                     <div class="glass-card">
                         <h3><i class="fas fa-thumbs-up"></i> Recent Likes</h3>
                         <div id="likesActivity" class="activity-list">
-                            <div class="loading">Loading likes...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-thumbs-down"></i> Recent Dislikes</h3>
                         <div id="dislikesActivity" class="activity-list">
-                            <div class="loading">Loading dislikes...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                 </div>
@@ -736,13 +909,13 @@
                     <div class="glass-card">
                         <h3><i class="fas fa-comment"></i> Recent Comments</h3>
                         <div id="commentsActivity" class="activity-list">
-                            <div class="loading">Loading comments...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-clock"></i> Watchlist Additions</h3>
                         <div id="watchlistActivity" class="activity-list">
-                            <div class="loading">Loading watchlist...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                 </div>
@@ -751,13 +924,13 @@
                     <div class="glass-card">
                         <h3><i class="fas fa-heart"></i> Favorites Additions</h3>
                         <div id="favoritesActivity" class="activity-list">
-                            <div class="loading">Loading favorites...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-trophy"></i> Top Rated Movies</h3>
                         <div id="topMoviesList" class="activity-list">
-                            <div class="loading">Loading top movies...</div>
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                         </div>
                     </div>
                 </div>
@@ -766,25 +939,25 @@
                 <div class="glass-card">
                     <h3><i class="fas fa-tags"></i> Genre Distribution</h3>
                     <div id="genreDistribution" class="activity-list">
-                        <div class="loading">Loading genres...</div>
+                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                     </div>
                 </div>
 
                 <!-- Users Table -->
                 <div class="glass-card">
-                    <h3><i class="fas fa-users"></i> All Users</h3>
+                    <h3><i class="fas fa-users"></i> User Management</h3>
                     <div class="table-container" id="usersList">
-                        <div class="loading">Loading users...</div>
+                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Movies Section (Hidden by default, shows when Movies tab clicked) -->
+            <!-- Movies Section -->
             <div id="moviesSection" style="display: none;">
                 <div class="glass-card">
-                    <h3><i class="fas fa-film"></i> All Movies</h3>
+                    <h3><i class="fas fa-film"></i> Movie Catalog</h3>
                     <div class="search-bar">
-                        <input type="text" id="searchInput" placeholder="🔍 Search movies by title..." onkeyup="window.searchMovies()">
+                        <input type="text" id="searchInput" placeholder="🔍 Search movies..." onkeyup="window.searchMovies()">
                         <select id="genreFilter" onchange="window.filterByGenre()">
                             <option value="">All Genres</option>
                             <option value="action">🔥 Action</option>
@@ -834,20 +1007,17 @@
 
     <script src="script.js"></script>
     <script>
-        // Authentication check - Only Admin can access
+        // Authentication check
         (function() {
             const userId = localStorage.getItem('userId');
             const userRole = localStorage.getItem('userRole');
 
-            console.log('Admin Dashboard - User:', userId, 'Role:', userRole);
-
             if (!userId || userRole !== 'Admin') {
-                console.log('Access denied - Redirecting to login');
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Tab switching - Dashboard vs Movies
+            // Tab switching
             const dashboardBtn = document.getElementById('dashboardNavBtn');
             const moviesBtn = document.getElementById('moviesNavBtn');
             const dashboardSections = document.getElementById('dashboardSections');
@@ -865,8 +1035,6 @@
                 if (moviesSection) moviesSection.style.display = 'block';
                 if (moviesBtn) moviesBtn.classList.add('active');
                 if (dashboardBtn) dashboardBtn.classList.remove('active');
-
-                // Load movies when switching to movies tab
                 if (typeof window.loadMoviesForAdmin === 'function') {
                     window.loadMoviesForAdmin();
                 }

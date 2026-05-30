@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Your existing CSS - keep as is */
         * {
             margin: 0;
             padding: 0;
@@ -16,18 +15,62 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #0a141e 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
+        /* ========== ENHANCED VIDEO BACKGROUND ========== */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 30, 60, 0.75));
+            z-index: -1;
+        }
+
+        /* ========== GLOW EFFECT ========== */
+        .glow {
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(58,134,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            top: 60%;
+            left: auto;
+            right: 5%;
+            background: radial-gradient(circle, rgba(100,180,250,0.1) 0%, transparent 70%);
+        }
+
+        /* ========== ENHANCED NAVBAR ========== */
         .dashboard-nav {
-            background: rgba(10, 20, 30, 0.95);
+            background: rgba(10, 20, 30, 0.92);
             backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
+            padding: 0.8rem 2rem;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .nav-container {
@@ -41,7 +84,7 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -49,7 +92,18 @@
         }
 
         .logo-icon {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%,100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
         }
 
         .logo-text {
@@ -61,26 +115,30 @@
 
         .nav-links {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.3rem;
             flex-wrap: wrap;
         }
 
             .nav-links a {
                 text-decoration: none;
                 color: rgba(255,255,255,0.7);
-                padding: 0.6rem 1.2rem;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
                 border-radius: 40px;
-                transition: 0.3s;
+                transition: all 0.3s;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
+                font-size: 0.85rem;
             }
 
                 .nav-links a:hover, .nav-links a.active {
                     background: rgba(100,180,250,0.15);
                     color: #64b4fa;
+                    transform: translateY(-2px);
                 }
 
+        /* User Section */
         .user-section {
             display: flex;
             align-items: center;
@@ -88,15 +146,23 @@
         }
 
         .user-avatar {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(100,180,250,0.3);
         }
+
+            .user-avatar:hover {
+                transform: scale(1.05);
+                border-color: #64b4fa;
+            }
 
             .user-avatar img {
                 width: 100%;
@@ -106,14 +172,17 @@
 
         .dropdown-menu {
             position: absolute;
-            top: 55px;
+            top: 50px;
             right: 0;
             background: rgba(20,30,40,0.98);
-            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
             min-width: 220px;
             opacity: 0;
             visibility: hidden;
-            transition: 0.3s;
+            transition: all 0.3s;
+            z-index: 1000;
+            border: 1px solid rgba(100,180,250,0.2);
         }
 
         .user-profile-dropdown {
@@ -127,12 +196,13 @@
             }
 
         .dropdown-item {
-            padding: 0.8rem 1.2rem;
+            padding: 0.7rem 1.2rem;
             display: flex;
             align-items: center;
             gap: 0.8rem;
             color: rgba(255,255,255,0.8);
             text-decoration: none;
+            font-size: 0.85rem;
         }
 
             .dropdown-item:hover {
@@ -144,101 +214,231 @@
             color: #e74c3c;
         }
 
+        /* ========== DASHBOARD CONTENT ========== */
+        .dashboard-container {
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
         .dashboard-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
+        /* ========== ENHANCED HERO BANNER ========== */
         .hero-banner {
-            background: linear-gradient(135deg, rgba(58,134,255,0.15), rgba(100,180,250,0.05));
-            border-radius: 32px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(58,134,255,0.12), rgba(100,180,250,0.05));
+            border-radius: 28px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.8rem;
             border: 1px solid rgba(100,180,250,0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
 
-            .hero-banner h1 {
-                font-size: 2rem;
-                color: white;
+            .hero-banner::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(circle, rgba(100,180,250,0.15), transparent);
+                border-radius: 50%;
+                animation: float 6s ease-in-out infinite;
             }
 
-                .hero-banner h1 span {
-                    color: #64b4fa;
-                }
+        @keyframes float {
+            0%,100% {
+                transform: translate(0,0);
+            }
 
+            50% {
+                transform: translate(-20px,-20px);
+            }
+        }
+
+        .hero-banner h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 2;
+        }
+
+            .hero-banner h1 span {
+                background: linear-gradient(135deg, #64b4fa, #3a86ff);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+        .hero-banner p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========== ENHANCED STATS CARDS ========== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.8rem;
         }
 
         .stat-card {
-            background: rgba(10,20,30,0.6);
+            background: rgba(10,20,30,0.55);
+            backdrop-filter: blur(12px);
             border-radius: 20px;
-            padding: 1.2rem;
+            padding: 1rem 1.2rem;
             border: 1px solid rgba(100,180,250,0.15);
+            transition: all 0.3s;
+            cursor: pointer;
         }
 
+            .stat-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(100,180,250,0.4);
+                background: rgba(100,180,250,0.08);
+            }
+
+            .stat-card .stat-icon {
+                font-size: 1.6rem;
+                margin-bottom: 0.3rem;
+            }
+
             .stat-card .stat-number {
-                font-size: 2rem;
-                font-weight: 800;
+                font-size: 1.6rem;
+                font-weight: 700;
                 color: white;
             }
 
             .stat-card .stat-label {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
                 color: rgba(255,255,255,0.5);
+                margin-top: 0.2rem;
             }
 
+        /* ========== ENHANCED GLASS CARD ========== */
         .glass-card {
-            background: rgba(10,20,30,0.5);
+            background: rgba(10,20,30,0.45);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100,180,250,0.15);
+            border: 1px solid rgba(100,180,250,0.12);
+            transition: all 0.3s;
         }
 
+            .glass-card:hover {
+                border-color: rgba(100,180,250,0.25);
+            }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .section-title i {
+                color: #64b4fa;
+                font-size: 1.2rem;
+            }
+
+        /* ========== ENHANCED SEARCH BAR ========== */
         .search-bar {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
 
             .search-bar input {
                 flex: 1;
-                padding: 0.8rem 1.2rem;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 50px;
+                padding: 0.7rem 1.2rem;
+                background: rgba(255,255,255,0.07);
+                border: 1px solid rgba(100,180,250,0.25);
+                border-radius: 40px;
+                font-size: 0.85rem;
                 color: white;
+                transition: all 0.3s;
             }
+
+                .search-bar input:focus {
+                    outline: none;
+                    border-color: #64b4fa;
+                    background: rgba(255,255,255,0.12);
+                    box-shadow: 0 0 15px rgba(100,180,250,0.15);
+                }
+
+                .search-bar input::placeholder {
+                    color: rgba(255,255,255,0.4);
+                    font-size: 0.8rem;
+                }
 
             .search-bar select {
-                padding: 0.8rem 1.2rem;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 50px;
+                padding: 0.7rem 1.2rem;
+                background: rgba(255,255,255,0.07);
+                border: 1px solid rgba(100,180,250,0.25);
+                border-radius: 40px;
                 color: white;
+                font-size: 0.85rem;
+                cursor: pointer;
             }
 
+                .search-bar select:focus {
+                    outline: none;
+                    border-color: #64b4fa;
+                }
+
+        /* ========== ENHANCED MOVIE GRID ========== */
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
         }
 
         .movie-card {
-            background: rgba(20,30,40,0.85);
+            background: rgba(25,35,45,0.8);
             border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(100,180,250,0.1);
+            position: relative;
         }
 
+            .movie-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(58,134,255,0), rgba(58,134,255,0.05));
+                opacity: 0;
+                transition: opacity 0.3s;
+                pointer-events: none;
+            }
+
+            .movie-card:hover::after {
+                opacity: 1;
+            }
+
             .movie-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-6px);
+                border-color: rgba(100,180,250,0.4);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             }
 
         .movie-poster {
@@ -251,56 +451,117 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                transition: transform 0.4s ease;
             }
+
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.05);
+        }
 
         .movie-rating-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
             padding: 0.2rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
+            font-weight: 600;
             color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            z-index: 2;
         }
 
         .movie-info {
-            padding: 0.8rem;
+            padding: 0.7rem;
         }
 
         .movie-title {
             color: white;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .movie-year {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: rgba(100,180,250,0.7);
         }
 
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #64b4fa;
-        }
-
+        /* ========== QUICK ACTIONS ========== */
         .quick-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             margin-top: 1rem;
             flex-wrap: wrap;
         }
 
         .quick-action-btn {
-            background: rgba(100,180,250,0.15);
-            border: 1px solid rgba(100,180,250,0.3);
-            padding: 0.5rem 1rem;
+            background: rgba(100,180,250,0.1);
+            border: 1px solid rgba(100,180,250,0.25);
+            padding: 0.4rem 1rem;
             border-radius: 30px;
             color: white;
             cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
         }
 
+            .quick-action-btn:hover {
+                background: rgba(100,180,250,0.2);
+                transform: translateY(-2px);
+                border-color: #64b4fa;
+            }
+
+        /* ========== LOADING & EMPTY STATES ========== */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64b4fa;
+            font-size: 0.9rem;
+        }
+
+            .loading i {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(10,20,30,0.5);
+            border-radius: 20px;
+        }
+
+            .empty-state .empty-icon {
+                font-size: 3rem;
+                margin-bottom: 0.8rem;
+                opacity: 0.5;
+            }
+
+            .empty-state h3 {
+                color: white;
+                font-size: 1rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .empty-state p {
+                color: rgba(255,255,255,0.5);
+                font-size: 0.8rem;
+            }
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .nav-container {
                 flex-direction: column;
@@ -311,25 +572,68 @@
             }
 
             .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 1rem;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 0.8rem;
             }
 
             .hero-banner h1 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .stat-card .stat-number {
+                font-size: 1.3rem;
+            }
+
+            .section-title {
+                font-size: 1rem;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .movie-title {
+                font-size: 0.75rem;
             }
         }
     </style>
 </head>
+
 <body>
+    <!-- ========== ENHANCED VIDEO BACKGROUND ========== -->
+    <video class="video-background" autoplay muted loop playsinline>
+        <!-- Option 1: Local video -->
+        <source src="videos/v3.mp4" type="video/mp4">
+        <!-- Option 2: Online fallback video -->
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="glow"></div>
+    <div class="glow glow-2"></div>
+
     <div class="dashboard-container">
+        <!-- ========== ENHANCED NAVBAR ========== -->
         <nav class="dashboard-nav">
             <div class="nav-container">
-                <div class="logo"><span class="logo-icon">🎬</span><span class="logo-text">FilmFusion</span></div>
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <span class="logo-text">FilmFusion</span>
+                </div>
                 <div class="nav-links">
                     <a href="user-dashboard.html" class="active"><i class="fas fa-home"></i> Home</a>
                     <a href="user-favorites.html"><i class="fas fa-heart"></i> Favorites</a>
@@ -341,11 +645,15 @@
                     <div class="user-profile-dropdown">
                         <div class="user-avatar" id="navUserAvatar"><span>👤</span></div>
                         <div class="dropdown-menu">
+                            <div class="dropdown-header" style="padding:0.8rem 1.2rem; border-bottom:1px solid rgba(100,180,250,0.1);">
+                                <div class="user-name" id="navUserName" style="color:white; font-weight:600; font-size:0.85rem;">User</div>
+                                <div class="user-email" id="navUserEmail" style="color:rgba(255,255,255,0.5); font-size:0.7rem;">user@filmfusion.com</div>
+                            </div>
                             <a href="user-profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
                             <a href="user-favorites.html" class="dropdown-item"><i class="fas fa-heart"></i> My Favorites</a>
                             <a href="user-watchlist.html" class="dropdown-item"><i class="fas fa-clock"></i> My Watchlist</a>
                             <a href="user-history.html" class="dropdown-item"><i class="fas fa-history"></i> Watch History</a>
-                            <div class="dropdown-divider"></div>
+                            <div style="height:1px; background:rgba(100,180,250,0.1); margin:0.3rem 0;"></div>
                             <a href="#" class="dropdown-item logout-dropdown" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </div>
                     </div>
@@ -353,39 +661,67 @@
             </div>
         </nav>
 
+        <!-- ========== DASHBOARD CONTENT ========== -->
         <div class="dashboard-content">
+            <!-- Hero Banner -->
             <div class="hero-banner">
                 <h1>Welcome back, <span id="userNameDisplay">Movie Lover</span>! 🎉</h1>
-                <p>Discover your next favorite movie from our collection.</p>
+                <p>Discover your next favorite movie from our curated collection of thousands of films.</p>
                 <div class="quick-actions">
-                    <button class="quick-action-btn" onclick="location.href='user-favorites.html'"><i class="fas fa-heart"></i> My Favorites</button>
-                    <button class="quick-action-btn" onclick="location.href='user-watchlist.html'"><i class="fas fa-clock"></i> My Watchlist</button>
-                    <button class="quick-action-btn" onclick="location.href='user-history.html'"><i class="fas fa-history"></i> Watch History</button>
+                    <button class="quick-action-btn" onclick="location.href='user-favorites.html'"><i class="fas fa-heart"></i> Favorites</button>
+                    <button class="quick-action-btn" onclick="location.href='user-watchlist.html'"><i class="fas fa-clock"></i> Watchlist</button>
+                    <button class="quick-action-btn" onclick="location.href='user-history.html'"><i class="fas fa-history"></i> History</button>
                 </div>
             </div>
 
+            <!-- Stats Cards -->
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-number" id="totalMovies">0</div><div class="stat-label">Total Movies</div></div>
-                <div class="stat-card"><div class="stat-number" id="favoritesCount">0</div><div class="stat-label">My Favorites</div></div>
-                <div class="stat-card"><div class="stat-number" id="watchlistCount">0</div><div class="stat-label">My Watchlist</div></div>
-                <div class="stat-card"><div class="stat-number" id="historyCount">0</div><div class="stat-label">Watch History</div></div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎬</div>
+                    <div class="stat-number" id="totalMovies">0</div>
+                    <div class="stat-label">Total Movies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-number" id="favoritesCount">0</div>
+                    <div class="stat-label">My Favorites</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-number" id="watchlistCount">0</div>
+                    <div class="stat-label">My Watchlist</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📜</div>
+                    <div class="stat-number" id="historyCount">0</div>
+                    <div class="stat-label">Watch History</div>
+                </div>
             </div>
 
+            <!-- Movies Section -->
             <div class="glass-card">
-                <h2 style="color:white; margin-bottom:1rem;"><i class="fas fa-film"></i> Discover Movies</h2>
+                <h2 class="section-title">
+                    <i class="fas fa-film"></i> Discover Movies
+                </h2>
                 <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="🔍 Search movies...">
-                    <select id="genreFilter">
-                        <option value="">All Genres</option>
-                        <option value="action">Action</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="drama">Drama</option>
-                        <option value="horror">Horror</option>
-                        <option value="sci-fi">Sci-Fi</option>
+                    <input type="text" id="searchInput" placeholder="🔍 Search movies by title..." onkeyup="window.searchMovies()">
+                    <select id="genreFilter" onchange="window.filterByGenre()">
+                        <option value="">🎯 All Genres</option>
+                        <option value="action">🔥 Action</option>
+                        <option value="adventure">🗺️ Adventure</option>
+                        <option value="comedy">😂 Comedy</option>
+                        <option value="drama">🎭 Drama</option>
+                        <option value="horror">👻 Horror</option>
+                        <option value="romance">💕 Romance</option>
+                        <option value="sci-fi">🚀 Sci-Fi</option>
+                        <option value="thriller">🔪 Thriller</option>
                     </select>
                 </div>
                 <div id="moviesGrid" class="movie-grid">
-                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading movies...</div>
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Loading amazing movies...
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,7 +730,7 @@
     <script src="script.js"></script>
     <script>
     (function() {
-        // SIMPLE AUTHENTICATION - NO REDIRECT LOOP
+        // Get user data
         const userId = localStorage.getItem('userId');
         const userName = localStorage.getItem('userName');
         const userEmail = localStorage.getItem('userEmail') || 'user@filmfusion.com';
@@ -402,7 +738,7 @@
 
         console.log('Dashboard Loaded - User:', userId, 'Name:', userName);
 
-        // ONLY redirect if NO userId
+        // Redirect if no user
         if (!userId || userId === 'null' || userId === 'undefined' || userId === '') {
             console.log('No user found, redirecting to login');
             window.location.href = 'index.html';
@@ -413,15 +749,16 @@
         const nameSpan = document.getElementById('userNameDisplay');
         if (nameSpan && userName && userName !== 'null') {
             nameSpan.innerText = userName;
+        } else if (nameSpan) {
+            nameSpan.innerText = 'Movie Lover';
         }
 
-        // Set navbar name
+        // Set navbar user info
         const navNameSpan = document.getElementById('navUserName');
         if (navNameSpan && userName && userName !== 'null') {
             navNameSpan.innerText = userName;
         }
 
-        // Set navbar email
         const navEmailSpan = document.getElementById('navUserEmail');
         if (navEmailSpan) {
             navEmailSpan.innerText = userEmail;
@@ -430,14 +767,16 @@
         // Set avatar
         const navAvatar = document.getElementById('navUserAvatar');
         if (navAvatar) {
-            if (userAvatar && userAvatar !== 'null') {
-                navAvatar.innerHTML = `<img src="${userAvatar}">`;
+            if (userAvatar && userAvatar !== 'null' && userAvatar !== 'undefined') {
+                navAvatar.innerHTML = `<img src="${userAvatar}" alt="avatar">`;
+            } else if (userName) {
+                navAvatar.innerHTML = `<span style="font-size:1rem;">${userName.charAt(0).toUpperCase()}</span>`;
             } else {
                 navAvatar.innerHTML = '<span>👤</span>';
             }
         }
 
-        // Load stats after delay
+        // Load stats
         setTimeout(function() {
             if (typeof window.loadUserStats === 'function') {
                 window.loadUserStats();
