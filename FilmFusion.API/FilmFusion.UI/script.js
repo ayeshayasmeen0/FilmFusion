@@ -911,7 +911,6 @@ window.changePassword = function () {
         window.location.href = 'index.html';
     }
 };
-
 window.openAvatarModal = function () {
     const modal = document.getElementById('avatarModal');
     if (modal) modal.classList.add('active');
