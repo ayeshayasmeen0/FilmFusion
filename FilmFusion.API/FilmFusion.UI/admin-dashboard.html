@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        /* Premium Video Background */
+        /* Video Background */
         .video-background {
             position: fixed;
             top: 0;
@@ -42,7 +42,6 @@
             z-index: -1;
         }
 
-        /* Animated Background Glow */
         .glow-orb {
             position: fixed;
             top: 20%;
@@ -65,8 +64,8 @@
         }
 
         @keyframes floatOrb {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
+            0%,100% {
+                transform: translate(0,0) scale(1);
             }
 
             50% {
@@ -80,7 +79,7 @@
             z-index: 1;
         }
 
-        /* Premium Navbar */
+        /* Navbar */
         .dashboard-nav {
             background: rgba(10, 20, 30, 0.92);
             backdrop-filter: blur(24px);
@@ -141,7 +140,7 @@
 
             .nav-links a {
                 text-decoration: none;
-                color: rgba(255, 255, 255, 0.75);
+                color: rgba(255,255,255,0.75);
                 font-weight: 500;
                 padding: 0.6rem 1.2rem;
                 border-radius: 40px;
@@ -150,30 +149,29 @@
                 align-items: center;
                 gap: 0.6rem;
                 font-size: 0.85rem;
-                letter-spacing: 0.3px;
             }
 
                 .nav-links a:hover {
                     color: #64b4fa;
-                    background: rgba(100, 180, 250, 0.12);
+                    background: rgba(100,180,250,0.12);
                     transform: translateY(-2px);
                 }
 
                 .nav-links a.active {
-                    background: linear-gradient(135deg, rgba(58, 134, 255, 0.2), rgba(100, 180, 250, 0.1));
+                    background: linear-gradient(135deg, rgba(58,134,255,0.2), rgba(100,180,250,0.1));
                     color: #64b4fa;
-                    border: 1px solid rgba(100, 180, 250, 0.25);
+                    border: 1px solid rgba(100,180,250,0.25);
                 }
 
         .logout-btn {
-            background: rgba(231, 76, 60, 0.15);
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3);
             color: #e74c3c;
             padding: 0.5rem 1rem;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -181,9 +179,8 @@
         }
 
             .logout-btn:hover {
-                background: rgba(231, 76, 60, 0.25);
+                background: rgba(231,76,60,0.25);
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
             }
 
         .dashboard-content {
@@ -192,7 +189,7 @@
             padding: 1.8rem;
         }
 
-        /* Premium Quick Actions */
+        /* Quick Actions */
         .quick-actions {
             display: flex;
             gap: 1rem;
@@ -201,28 +198,27 @@
         }
 
         .quick-action-btn {
-            background: linear-gradient(135deg, rgba(58, 134, 255, 0.85), rgba(100, 180, 250, 0.85));
+            background: linear-gradient(135deg, rgba(58,134,255,0.85), rgba(100,180,250,0.85));
             backdrop-filter: blur(10px);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             padding: 0.7rem 1.3rem;
             border-radius: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             font-weight: 500;
             font-size: 0.85rem;
         }
 
             .quick-action-btn:hover {
                 transform: translateY(-3px);
-                box-shadow: 0 8px 20px rgba(58, 134, 255, 0.35);
-                border-color: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 20px rgba(58,134,255,0.35);
             }
 
-        /* Premium Stats Cards */
+        /* Stats Cards */
         .admin-stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -231,16 +227,15 @@
         }
 
         .admin-stat-card {
-            background: rgba(10, 20, 30, 0.55);
+            background: rgba(10,20,30,0.55);
             backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.3rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(100, 180, 250, 0.15);
-            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+            border: 1px solid rgba(100,180,250,0.15);
             position: relative;
             overflow: hidden;
         }
@@ -252,7 +247,7 @@
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(100, 180, 250, 0.08), transparent);
+                background: linear-gradient(90deg, transparent, rgba(100,180,250,0.08), transparent);
                 transition: left 0.5s;
             }
 
@@ -262,15 +257,14 @@
 
             .admin-stat-card:hover {
                 transform: translateY(-6px);
-                border-color: rgba(100, 180, 250, 0.4);
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+                border-color: rgba(100,180,250,0.4);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             }
 
         .stat-info h3 {
             font-size: 0.75rem;
             color: #64b4fa;
             margin-bottom: 0.3rem;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
@@ -278,7 +272,6 @@
             font-size: 2.2rem;
             font-weight: 800;
             color: white;
-            letter-spacing: -0.02em;
         }
 
         .stat-icon {
@@ -286,20 +279,18 @@
             opacity: 0.6;
         }
 
-        /* Premium Chart Card */
+        /* Chart Card */
         .chart-card {
-            background: rgba(10, 20, 30, 0.55);
+            background: rgba(10,20,30,0.55);
             backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100, 180, 250, 0.12);
+            border: 1px solid rgba(100,180,250,0.12);
             margin-bottom: 1.5rem;
-            transition: all 0.3s;
         }
 
             .chart-card:hover {
-                border-color: rgba(100, 180, 250, 0.25);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+                border-color: rgba(100,180,250,0.25);
             }
 
             .chart-card h3 {
@@ -309,26 +300,24 @@
                 align-items: center;
                 gap: 0.6rem;
                 font-size: 1rem;
-                font-weight: 600;
             }
 
         canvas {
             max-height: 260px;
         }
 
-        /* Premium Glass Card */
+        /* Glass Card */
         .glass-card {
-            background: rgba(10, 20, 30, 0.5);
+            background: rgba(10,20,30,0.5);
             backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(100, 180, 250, 0.1);
+            border: 1px solid rgba(100,180,250,0.1);
             margin-bottom: 1.5rem;
-            transition: all 0.3s;
         }
 
             .glass-card:hover {
-                border-color: rgba(100, 180, 250, 0.2);
+                border-color: rgba(100,180,250,0.2);
             }
 
             .glass-card h3 {
@@ -338,7 +327,6 @@
                 align-items: center;
                 gap: 0.6rem;
                 font-size: 1rem;
-                font-weight: 600;
             }
 
         /* Activity Grid */
@@ -352,7 +340,6 @@
         .activity-list {
             max-height: 380px;
             overflow-y: auto;
-            scrollbar-width: thin;
         }
 
             .activity-list::-webkit-scrollbar {
@@ -360,7 +347,7 @@
             }
 
             .activity-list::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.05);
+                background: rgba(255,255,255,0.05);
                 border-radius: 10px;
             }
 
@@ -374,12 +361,12 @@
             align-items: center;
             gap: 1rem;
             padding: 0.9rem;
-            border-bottom: 1px solid rgba(100, 180, 250, 0.08);
-            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(100,180,250,0.08);
+            transition: all 0.3s;
         }
 
             .activity-item:hover {
-                background: rgba(100, 180, 250, 0.06);
+                background: rgba(100,180,250,0.06);
                 border-radius: 16px;
                 transform: translateX(4px);
             }
@@ -396,38 +383,33 @@
         }
 
             .activity-icon.like {
-                background: rgba(46, 204, 113, 0.15);
+                background: rgba(46,204,113,0.15);
                 color: #2ecc71;
             }
 
             .activity-icon.dislike {
-                background: rgba(231, 76, 60, 0.15);
+                background: rgba(231,76,60,0.15);
                 color: #e74c3c;
             }
 
             .activity-icon.comment {
-                background: rgba(100, 180, 250, 0.15);
+                background: rgba(100,180,250,0.15);
                 color: #64b4fa;
             }
 
             .activity-icon.watchlist {
-                background: rgba(155, 89, 182, 0.15);
+                background: rgba(155,89,182,0.15);
                 color: #d2b0e5;
             }
 
             .activity-icon.favorite {
-                background: rgba(241, 196, 15, 0.15);
+                background: rgba(241,196,15,0.15);
                 color: #f1c40f;
             }
 
             .activity-icon.movie {
-                background: rgba(58, 134, 255, 0.15);
+                background: rgba(58,134,255,0.15);
                 color: #3a86ff;
-            }
-
-            .activity-icon.user {
-                background: rgba(52, 152, 219, 0.15);
-                color: #3498db;
             }
 
         .activity-details {
@@ -448,7 +430,7 @@
 
         .activity-time {
             font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.35);
+            color: rgba(255,255,255,0.35);
             margin-top: 0.2rem;
         }
 
@@ -460,27 +442,27 @@
         }
 
         .type-like {
-            background: rgba(46, 204, 113, 0.15);
+            background: rgba(46,204,113,0.15);
             color: #2ecc71;
         }
 
         .type-dislike {
-            background: rgba(231, 76, 60, 0.15);
+            background: rgba(231,76,60,0.15);
             color: #e74c3c;
         }
 
         .type-comment {
-            background: rgba(100, 180, 250, 0.15);
+            background: rgba(100,180,250,0.15);
             color: #64b4fa;
         }
 
         .type-watchlist {
-            background: rgba(155, 89, 182, 0.15);
+            background: rgba(155,89,182,0.15);
             color: #d2b0e5;
         }
 
         .type-favorite {
-            background: rgba(241, 196, 15, 0.15);
+            background: rgba(241,196,15,0.15);
             color: #f1c40f;
         }
 
@@ -497,12 +479,13 @@
             height: 100%;
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             border-radius: 4px;
-            transition: width 0.5s ease;
+            transition: width 0.5s;
         }
 
-        /* Users Table */
+        /* Users Table - Enhanced */
         .table-container {
             overflow-x: auto;
+            border-radius: 16px;
         }
 
         table {
@@ -510,22 +493,24 @@
             border-collapse: collapse;
         }
 
-        th, td {
-            padding: 0.9rem 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(100, 180, 250, 0.08);
-        }
-
         th {
-            background: rgba(100, 180, 250, 0.08);
+            background: linear-gradient(135deg, rgba(58,134,255,0.15), rgba(100,180,250,0.08));
             color: #64b4fa;
             font-weight: 600;
             font-size: 0.8rem;
+            padding: 1rem 0.8rem;
+            text-align: left;
         }
 
         td {
-            color: rgba(255, 255, 255, 0.85);
+            padding: 0.9rem 0.8rem;
+            color: rgba(255,255,255,0.85);
             font-size: 0.8rem;
+            border-bottom: 1px solid rgba(100,180,250,0.08);
+        }
+
+        tr:hover td {
+            background: rgba(100,180,250,0.05);
         }
 
         .badge {
@@ -537,17 +522,19 @@
         }
 
         .badge-admin {
-            background: rgba(58, 134, 255, 0.2);
+            background: linear-gradient(135deg, rgba(58,134,255,0.2), rgba(100,180,250,0.1));
             color: #64b4fa;
+            border: 1px solid rgba(58,134,255,0.3);
         }
 
         .badge-user {
             background: rgba(255,255,255,0.08);
             color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .delete-user-btn {
-            background: rgba(231, 76, 60, 0.15);
+            background: rgba(231,76,60,0.15);
             border: none;
             color: #e74c3c;
             padding: 0.3rem 0.8rem;
@@ -558,7 +545,7 @@
         }
 
             .delete-user-btn:hover {
-                background: rgba(231, 76, 60, 0.3);
+                background: rgba(231,76,60,0.3);
                 transform: scale(1.05);
             }
 
@@ -571,18 +558,18 @@
         }
 
         .movie-card {
-            background: rgba(25, 35, 45, 0.75);
+            background: rgba(25,35,45,0.75);
             border-radius: 18px;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.35s ease;
-            border: 1px solid rgba(100, 180, 250, 0.1);
+            transition: all 0.35s;
+            border: 1px solid rgba(100,180,250,0.1);
+            position: relative;
         }
 
             .movie-card:hover {
                 transform: translateY(-6px);
-                border-color: rgba(100, 180, 250, 0.35);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+                border-color: rgba(100,180,250,0.35);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             }
 
         .movie-poster {
@@ -595,7 +582,7 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                transition: transform 0.4s ease;
+                transition: transform 0.4s;
             }
 
         .movie-card:hover .movie-poster img {
@@ -612,9 +599,6 @@
             border-radius: 20px;
             font-size: 0.6rem;
             color: #ffc107;
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
         }
 
         .delete-movie-btn {
@@ -630,7 +614,6 @@
             cursor: pointer;
             font-size: 0.7rem;
             z-index: 10;
-            opacity: 0.9;
             transition: all 0.3s;
         }
 
@@ -752,7 +735,7 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 0.7rem;
-                border-bottom: 1px solid rgba(100, 180, 250, 0.1);
+                border-bottom: 1px solid rgba(100,180,250,0.1);
             }
 
             #tmdbResults span {
@@ -817,7 +800,7 @@
             }
 
             .admin-stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
                 gap: 0.8rem;
             }
 
@@ -836,7 +819,6 @@
     </style>
 </head>
 <body>
-    <!-- Premium Video Background -->
     <video class="video-background" autoplay muted loop playsinline>
         <source src="videos/v5.mp4" type="video/mp4">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
@@ -846,7 +828,6 @@
     <div class="glow-orb glow-orb-2"></div>
 
     <div class="dashboard-container">
-        <!-- Premium Navbar -->
         <nav class="dashboard-nav">
             <div class="nav-container">
                 <div class="logo">
@@ -873,9 +854,11 @@
                 <button class="quick-action-btn" onclick="window.showImportModal()"><i class="fas fa-download"></i> Import from TMDB</button>
                 <button class="quick-action-btn" onclick="window.showAddMovieModal()"><i class="fas fa-plus"></i> Add Movie</button>
                 <button class="quick-action-btn" onclick="window.refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                <button class="quick-action-btn" onclick="window.exportData()"><i class="fas fa-file-export"></i> Export</button>
+                <button class="quick-action-btn" onclick="window.exportData()"><i class="fas fa-file-export"></i> Export Report</button>
                 <button class="quick-action-btn" onclick="window.exportUsersCSV()"><i class="fas fa-users"></i> Export Users</button>
                 <button class="quick-action-btn" onclick="window.exportMoviesCSV()"><i class="fas fa-film"></i> Export Movies</button>
+                <button class="quick-action-btn" onclick="window.backupData()"><i class="fas fa-database"></i> Backup</button>
+                <button class="quick-action-btn" onclick="window.clearCache()"><i class="fas fa-trash-alt"></i> Clear Cache</button>
             </div>
 
             <!-- Dashboard Sections -->
@@ -893,57 +876,43 @@
                 <div class="activity-grid">
                     <div class="glass-card">
                         <h3><i class="fas fa-thumbs-up"></i> Recent Likes</h3>
-                        <div id="likesActivity" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="likesActivity" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-thumbs-down"></i> Recent Dislikes</h3>
-                        <div id="dislikesActivity" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="dislikesActivity" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                 </div>
 
                 <div class="activity-grid">
                     <div class="glass-card">
                         <h3><i class="fas fa-comment"></i> Recent Comments</h3>
-                        <div id="commentsActivity" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="commentsActivity" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-clock"></i> Watchlist Additions</h3>
-                        <div id="watchlistActivity" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="watchlistActivity" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                 </div>
 
                 <div class="activity-grid">
                     <div class="glass-card">
                         <h3><i class="fas fa-heart"></i> Favorites Additions</h3>
-                        <div id="favoritesActivity" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="favoritesActivity" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                     <div class="glass-card">
                         <h3><i class="fas fa-trophy"></i> Top Rated Movies</h3>
-                        <div id="topMoviesList" class="activity-list">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                        </div>
+                        <div id="topMoviesList" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                     </div>
                 </div>
 
                 <!-- Genre Distribution -->
                 <div class="glass-card">
                     <h3><i class="fas fa-tags"></i> Genre Distribution</h3>
-                    <div id="genreDistribution" class="activity-list">
-                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                    </div>
+                    <div id="genreDistribution" class="activity-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
                 </div>
 
-                <!-- Users Table -->
+                <!-- Users Table - Enhanced -->
                 <div class="glass-card">
                     <h3><i class="fas fa-users"></i> User Management</h3>
                     <div class="table-container" id="usersList">
@@ -957,8 +926,8 @@
                 <div class="glass-card">
                     <h3><i class="fas fa-film"></i> Movie Catalog</h3>
                     <div class="search-bar">
-                        <input type="text" id="searchInput" placeholder="🔍 Search movies..." onkeyup="window.searchMovies()">
-                        <select id="genreFilter" onchange="window.filterByGenre()">
+                        <input type="text" id="searchInput" placeholder="🔍 Search movies by title..." onkeyup="window.searchMoviesAdmin()">
+                        <select id="genreFilter" onchange="window.filterByGenreAdmin()">
                             <option value="">All Genres</option>
                             <option value="action">🔥 Action</option>
                             <option value="comedy">😂 Comedy</option>
@@ -1007,7 +976,6 @@
 
     <script src="script.js"></script>
     <script>
-        // Authentication check
         (function() {
             const userId = localStorage.getItem('userId');
             const userRole = localStorage.getItem('userRole');
@@ -1017,7 +985,6 @@
                 return;
             }
 
-            // Tab switching
             const dashboardBtn = document.getElementById('dashboardNavBtn');
             const moviesBtn = document.getElementById('moviesNavBtn');
             const dashboardSections = document.getElementById('dashboardSections');
@@ -1043,7 +1010,6 @@
             if (dashboardBtn) dashboardBtn.onclick = showDashboard;
             if (moviesBtn) moviesBtn.onclick = showMovies;
 
-            // Logout
             const logoutBtn = document.getElementById('logoutBtn');
             if (logoutBtn) {
                 logoutBtn.onclick = function() {

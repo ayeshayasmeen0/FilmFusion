@@ -138,11 +138,49 @@
                     transform: translateY(-2px);
                 }
 
-        /* User Section */
+        /* User Section with Notification Bell */
         .user-section {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            background: rgba(100, 180, 250, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+            .notification-bell:hover {
+                background: rgba(100, 180, 250, 0.2);
+                transform: scale(1.05);
+            }
+
+            .notification-bell i {
+                font-size: 1.2rem;
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-avatar {
@@ -617,9 +655,7 @@
 <body>
     <!-- ========== ENHANCED VIDEO BACKGROUND ========== -->
     <video class="video-background" autoplay muted loop playsinline>
-        <!-- Option 1: Local video -->
         <source src="videos/v3.mp4" type="video/mp4">
-        <!-- Option 2: Online fallback video -->
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
@@ -627,7 +663,7 @@
     <div class="glow glow-2"></div>
 
     <div class="dashboard-container">
-        <!-- ========== ENHANCED NAVBAR ========== -->
+        <!-- ========== ENHANCED NAVBAR WITH NOTIFICATION BELL ========== -->
         <nav class="dashboard-nav">
             <div class="nav-container">
                 <div class="logo">
@@ -642,6 +678,12 @@
                     <a href="user-profile.html"><i class="fas fa-user"></i> Profile</a>
                 </div>
                 <div class="user-section">
+                    <!-- Notification Bell -->
+                    <div class="notification-bell" id="notificationBell" onclick="showNotificationsModal()">
+                        <i class="fas fa-bell"></i>
+                        <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                    </div>
+
                     <div class="user-profile-dropdown">
                         <div class="user-avatar" id="navUserAvatar"><span>👤</span></div>
                         <div class="dropdown-menu">
@@ -796,6 +838,20 @@
         // Load movies
         if (typeof loadMovies === 'function') {
             loadMovies();
+        }
+
+        // Initialize notification styles and badge
+        if (typeof addNotificationStyles === 'function') {
+            addNotificationStyles();
+        }
+        if (typeof updateNotificationBadge === 'function') {
+            updateNotificationBadge();
+        }
+        if (typeof addWelcomeNotification === 'function') {
+            addWelcomeNotification();
+        }
+        if (typeof addDailyNotification === 'function') {
+            addDailyNotification();
         }
     })();
     </script>

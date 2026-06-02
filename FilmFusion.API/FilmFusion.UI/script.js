@@ -1,17 +1,276 @@
 // @ts-nocheck
 const API_URL = 'https://localhost:7249/api';
+const TMDB_API_KEY = '0fef51148b56778e567f9ceeac3fbc13';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+// ========== GLOBAL VARIABLES ==========
+let allMovies = [];
+let currentMovieId = null;
+let currentMovieData = null;
+
+// ========== NOTIFICATION SYSTEM ==========
+
+async function sendNotificationToAllUsers(title, message, type = 'movie') {
+    try {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const currentUserId = localStorage.getItem('userId');
+        const currentUserEmail = localStorage.getItem('userEmail');
+
+        if (currentUserId && !users.find(u => u.id === currentUserId)) {
+            users.push({
+                id: currentUserId,
+                username: localStorage.getItem('userName') || 'User',
+                email: currentUserEmail || 'user@example.com'
+            });
+        }
+
+        if (!users.find(u => u.email === 'demo@filmfusion.com')) {
+            users.push({ id: 'demo123', username: 'Demo User', email: 'demo@filmfusion.com' });
+        }
+
+        let notificationSent = 0;
+        for (let user of users) {
+            let userNotifications = JSON.parse(localStorage.getItem(`notifications_${user.id}`)) || [];
+            userNotifications.unshift({
+                id: Date.now() + Math.random(),
+                title: title,
+                message: message,
+                type: type,
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                timestamp: new Date().toLocaleString()
+            });
+            if (userNotifications.length > 50) userNotifications = userNotifications.slice(0, 50);
+            localStorage.setItem(`notifications_${user.id}`, JSON.stringify(userNotifications));
+            notificationSent++;
+        }
+        console.log(`✅ Notification sent to ${notificationSent} users`);
+        return true;
+    } catch (error) {
+        console.error('Error sending notification:', error);
+        return false;
+    }
+}
+
+function getUserNotifications() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return [];
+    return JSON.parse(localStorage.getItem(`notifications_${userId}`)) || [];
+}
+
+function saveUserNotifications(notifications) {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+    localStorage.setItem(`notifications_${userId}`, JSON.stringify(notifications));
+}
+
+function updateNotificationBadge() {
+    const notifications = getUserNotifications();
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const badge = document.getElementById('notificationBadge');
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.style.display = 'flex';
+            badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+function loadNotificationsList() {
+    const notifications = getUserNotifications();
+    const container = document.getElementById('notificationsList');
+    const countSpan = document.getElementById('notificationsCount');
+    if (!container) return;
+    if (countSpan) countSpan.innerText = notifications.length;
+
+    if (notifications.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);"><i class="fas fa-bell-slash" style="font-size:2rem; margin-bottom:0.5rem; display:block;"></i>No notifications yet</div>`;
+        return;
+    }
+
+    container.innerHTML = notifications.map(notif => `
+        <div class="notification-item" style="padding:0.8rem; border-bottom:1px solid rgba(100,180,250,0.1); background: ${notif.isRead ? 'rgba(255,255,255,0.02)' : 'rgba(58,134,255,0.1)'};">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div style="flex:1;">
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; flex-wrap:wrap;">
+                        <i class="fas ${notif.type === 'movie' ? 'fa-film' : notif.type === 'update' ? 'fa-sync-alt' : 'fa-bell'}" style="color:#64b4fa; font-size:0.8rem;"></i>
+                        <span style="font-weight:600; color:white; font-size:0.85rem;">${escapeHtml(notif.title)}</span>
+                        ${!notif.isRead ? '<span style="background:#3a86ff; padding:0.1rem 0.4rem; border-radius:10px; font-size:0.6rem;">New</span>' : ''}
+                    </div>
+                    <div style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-bottom:0.3rem;">${escapeHtml(notif.message)}</div>
+                    <div style="color:rgba(255,255,255,0.4); font-size:0.6rem;"><i class="far fa-clock"></i> ${notif.timestamp}</div>
+                </div>
+                <div style="display:flex; gap:0.3rem;">
+                    ${!notif.isRead ? `<button onclick="markNotificationAsRead(${notif.id})" class="notif-action-btn" style="background:rgba(100,180,250,0.2); border:none; color:#64b4fa; padding:0.2rem 0.5rem; border-radius:12px; cursor:pointer; font-size:0.6rem;">Read</button>` : ''}
+                    <button onclick="deleteNotification(${notif.id})" class="notif-action-btn" style="background:rgba(231,76,60,0.2); border:none; color:#e74c3c; padding:0.2rem 0.5rem; border-radius:12px; cursor:pointer; font-size:0.6rem;">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showNotificationsModal() {
+    let modal = document.getElementById('notificationsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'notificationsModal';
+        modal.className = 'notifications-modal';
+        document.body.appendChild(modal);
+    }
+    loadNotificationsList();
+    modal.innerHTML = `
+        <div class="notifications-modal-content">
+            <div class="notifications-modal-header">
+                <h3><i class="fas fa-bell"></i> Notifications <span id="notificationsCount" style="background:#3a86ff; padding:0.1rem 0.5rem; border-radius:20px; font-size:0.7rem; margin-left:0.5rem;">0</span></h3>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="markAllNotificationsAsRead()" class="notif-header-btn" style="background:rgba(100,180,250,0.2); border:none; color:#64b4fa; padding:0.3rem 0.8rem; border-radius:20px; cursor:pointer; font-size:0.7rem;">Mark all read</button>
+                    <button onclick="clearAllNotifications()" class="notif-header-btn" style="background:rgba(231,76,60,0.2); border:none; color:#e74c3c; padding:0.3rem 0.8rem; border-radius:20px; cursor:pointer; font-size:0.7rem;">Clear all</button>
+                    <button onclick="closeNotificationsModal()" style="background:transparent; border:none; color:white; font-size:1.2rem; cursor:pointer;">&times;</button>
+                </div>
+            </div>
+            <div id="notificationsList" class="notifications-list" style="max-height:400px; overflow-y:auto;"></div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    updateNotificationBadge();
+}
+
+function closeNotificationsModal() {
+    const modal = document.getElementById('notificationsModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function markNotificationAsRead(notificationId) {
+    const notifications = getUserNotifications();
+    const notification = notifications.find(n => n.id == notificationId);
+    if (notification) {
+        notification.isRead = true;
+        saveUserNotifications(notifications);
+        updateNotificationBadge();
+        loadNotificationsList();
+    }
+}
+
+function markAllNotificationsAsRead() {
+    const notifications = getUserNotifications();
+    notifications.forEach(n => n.isRead = true);
+    saveUserNotifications(notifications);
+    updateNotificationBadge();
+    loadNotificationsList();
+    alert('✅ All notifications marked as read');
+}
+
+function deleteNotification(notificationId) {
+    if (!confirm('Delete this notification?')) return;
+    let notifications = getUserNotifications();
+    notifications = notifications.filter(n => n.id != notificationId);
+    saveUserNotifications(notifications);
+    updateNotificationBadge();
+    loadNotificationsList();
+    alert('✅ Notification deleted');
+}
+
+function clearAllNotifications() {
+    if (!confirm('Delete all notifications? This cannot be undone.')) return;
+    saveUserNotifications([]);
+    updateNotificationBadge();
+    loadNotificationsList();
+    alert('✅ All notifications cleared');
+}
+
+function addDailyNotification() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+    const lastNotificationDate = localStorage.getItem(`lastDailyNotification_${userId}`);
+    const today = new Date().toDateString();
+    if (lastNotificationDate !== today) {
+        const notifications = getUserNotifications();
+        const hasTodayNotif = notifications.some(n => n.title === 'Daily Movie Recommendation' && new Date(n.createdAt).toDateString() === today);
+        if (!hasTodayNotif) {
+            notifications.unshift({
+                id: Date.now() + Math.random(),
+                title: '🎬 Daily Movie Recommendation',
+                message: 'Check out our newly added movies! Discover your next favorite film today.',
+                type: 'update',
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                timestamp: new Date().toLocaleString()
+            });
+            saveUserNotifications(notifications);
+            localStorage.setItem(`lastDailyNotification_${userId}`, today);
+            updateNotificationBadge();
+        }
+    }
+}
+
+function addWelcomeNotification() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+    const welcomeSent = localStorage.getItem(`welcomeNotification_${userId}`);
+    if (!welcomeSent) {
+        const notifications = getUserNotifications();
+        notifications.unshift({
+            id: Date.now() + Math.random(),
+            title: '👋 Welcome to FilmFusion!',
+            message: 'Start exploring movies, add to your favorites, and create your watchlist. Enjoy your cinematic journey!',
+            type: 'welcome',
+            isRead: false,
+            createdAt: new Date().toISOString(),
+            timestamp: new Date().toLocaleString()
+        });
+        saveUserNotifications(notifications);
+        localStorage.setItem(`welcomeNotification_${userId}`, 'true');
+        updateNotificationBadge();
+    }
+}
+
+function addNotificationStyles() {
+    if (document.getElementById('notificationStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'notificationStyles';
+    style.textContent = `
+        .notifications-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 2000; justify-content: center; align-items: center; }
+        .notifications-modal-content { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 24px; width: 90%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid rgba(100,180,250,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .notifications-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.2rem; border-bottom: 1px solid rgba(100,180,250,0.15); background: rgba(10,20,30,0.8); border-radius: 24px 24px 0 0; }
+        .notifications-modal-header h3 { color: white; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .notifications-list { flex: 1; overflow-y: auto; padding: 0.5rem; }
+        .notification-item { padding: 0.8rem; border-bottom: 1px solid rgba(100,180,250,0.1); transition: all 0.3s; }
+        .notification-item:hover { background: rgba(100,180,250,0.05); }
+        .notif-action-btn:hover, .notif-header-btn:hover { transform: scale(1.05); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .notification-bell { position: relative; cursor: pointer; background: rgba(100,180,250,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .notification-bell:hover { background: rgba(100,180,250,0.2); transform: scale(1.05); }
+        .notification-bell i { font-size: 1.2rem; color: rgba(255,255,255,0.8); }
+        .notification-badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+    `;
+    document.head.appendChild(style);
+}
+
+// Make notification functions global
+window.sendNotificationToAllUsers = sendNotificationToAllUsers;
+window.getUserNotifications = getUserNotifications;
+window.markNotificationAsRead = markNotificationAsRead;
+window.markAllNotificationsAsRead = markAllNotificationsAsRead;
+window.deleteNotification = deleteNotification;
+window.clearAllNotifications = clearAllNotifications;
+window.showNotificationsModal = showNotificationsModal;
+window.closeNotificationsModal = closeNotificationsModal;
+window.updateNotificationBadge = updateNotificationBadge;
+window.addDailyNotification = addDailyNotification;
+window.addWelcomeNotification = addWelcomeNotification;
+window.addNotificationStyles = addNotificationStyles;
 
 // ========== INITIALIZE DEFAULT USER ==========
 function initializeDefaultUser() {
     let users = JSON.parse(localStorage.getItem('users')) || [];
-
     if (users.length === 0) {
         const defaultUser = {
             id: 'user_001',
             username: 'Demo User',
             email: 'demo@filmfusion.com',
             password: 'demo123',
-     
             role: 'Movie Lover',
             createdAt: new Date().toISOString(),
             profilePicture: null
@@ -135,40 +394,11 @@ function setupForgotPassword() {
     if (forgotLink) forgotLink.onclick = (e) => { e.preventDefault(); alert('Contact admin to reset password: admin@filmfusion.com'); };
 }
 
-// ========== FIXED: LOCAL LOGIN (WORKS PERFECTLY) ==========
+// ========== LOGIN FUNCTIONS ==========
 function handleLocalLogin(email, password) {
-    console.log('=== LOCAL LOGIN ATTEMPT ===');
-    console.log('Email:', email);
-    console.log('Password:', password);
-
     let users = JSON.parse(localStorage.getItem('users')) || [];
-    console.log('Total users in storage:', users.length);
-
-    // Debug: Show all users
-    users.forEach((u, i) => {
-        console.log(`User ${i}: Email="${u.email}", Password="${u.password}"`);
-    });
-
-    // Try multiple matching strategies
-    let user = null;
-
-    // Strategy 1: Exact match
-    user = users.find(u => u.email === email && u.password === password);
-
-    // Strategy 2: Case insensitive email
-    if (!user) {
-        user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    }
-
-    // Strategy 3: Case insensitive both
-    if (!user) {
-        user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password.toLowerCase() === password.toLowerCase());
-    }
-
+    let user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
     if (user) {
-        console.log('✅ LOGIN SUCCESS! User found:', user.username);
-
-        // Save all user data to localStorage
         localStorage.setItem('userId', user.id);
         localStorage.setItem('userName', user.username);
         localStorage.setItem('userEmail', user.email);
@@ -177,58 +407,31 @@ function handleLocalLogin(email, password) {
         localStorage.setItem('userBio', user.bio || 'Movie enthusiast');
         localStorage.setItem('userJoined', user.createdAt ? new Date(user.createdAt).toLocaleDateString() : new Date().toLocaleDateString());
         localStorage.setItem('userAvatar', user.profilePicture || '');
-
-        // Redirect to dashboard
         window.location.href = 'user-dashboard.html';
     } else {
-        console.log('❌ LOGIN FAILED!');
-
-        // Check if email exists (wrong password case)
-        const emailExists = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (emailExists) {
-            alert(`Invalid password! Please try again.\n\nHint: Your password is: ${emailExists.password}`);
-        } else {
-            alert('User not found! Please sign up first.\n\nDemo login: demo@filmfusion.com / demo123');
-        }
+        alert('Invalid credentials! Demo: demo@filmfusion.com / demo123');
     }
 }
 
-// ========== FIXED: MAIN LOGIN FUNCTION ==========
 async function handleUserLogin(email, password) {
-    console.log('=== LOGIN ATTEMPT ===');
-    console.log('Email:', email);
-    console.log('Password:', password);
-
     try {
-        // Try backend first
-        const res = await fetch(`${API_URL}/Auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-
+        const res = await fetch(`${API_URL}/Auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
         if (res.ok) {
             const data = await res.json();
-            console.log('Backend login success');
-
-            const userId = data.userId;
-            const userName = data.username;
-
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('userName', userName);
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('userName', data.username);
             localStorage.setItem('userRole', 'User');
             localStorage.setItem('userEmail', email);
             localStorage.setItem('userPassword', password);
             localStorage.setItem('userJoined', new Date().toLocaleDateString());
             localStorage.setItem('userBio', data.bio || 'Movie enthusiast');
 
-            // Update users array
             let users = JSON.parse(localStorage.getItem('users')) || [];
             const existingUser = users.find(u => u.email === email);
             if (!existingUser) {
                 users.push({
-                    id: userId,
-                    username: userName,
+                    id: data.userId,
+                    username: data.username,
                     email: email,
                     password: password,
                     bio: data.bio || 'Movie enthusiast',
@@ -239,59 +442,40 @@ async function handleUserLogin(email, password) {
                 localStorage.setItem('users', JSON.stringify(users));
             } else {
                 existingUser.password = password;
-                existingUser.username = userName;
+                existingUser.username = data.username;
                 localStorage.setItem('users', JSON.stringify(users));
             }
-
             window.location.href = 'user-dashboard.html';
             return;
         }
     } catch (err) {
-        console.log('Backend not available, using local login');
+        console.log('Backend error, using local login');
     }
-
-    // Fallback to local login
     handleLocalLogin(email, password);
 }
 
-// ========== USER SIGNUP ==========
 async function handleUserSignup(username, email, password, confirmPassword) {
     if (password !== confirmPassword) { alert('Passwords do not match!'); return; }
     if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
-
     try {
-        const res = await fetch(`${API_URL}/Auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password })
-        });
-
+        const res = await fetch(`${API_URL}/Auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, email, password }) });
         if (res.ok) {
             alert('Signup successful! Please login.');
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            if (loginForm) loginForm.style.display = 'block';
-            if (signupForm) signupForm.style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
             return;
         }
-    } catch (err) {
-        console.log('Backend not available, using local signup');
-    }
-
-    // Local signup
+    } catch (err) { }
     handleLocalSignup(username, email, password);
 }
 
 function handleLocalSignup(username, email, password) {
     let users = JSON.parse(localStorage.getItem('users')) || [];
-
-    // Check if email already exists
     if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
         alert('Email already exists!');
         return;
     }
-
-    const newUser = {
+    users.push({
         id: Date.now().toString(),
         username: username,
         email: email,
@@ -300,25 +484,16 @@ function handleLocalSignup(username, email, password) {
         role: 'Movie Lover',
         createdAt: new Date().toISOString(),
         profilePicture: null
-    };
-
-    users.push(newUser);
+    });
     localStorage.setItem('users', JSON.stringify(users));
-
-    console.log('New user created:', newUser.email, newUser.password);
     alert('Signup successful! Please login.');
-
-    // Switch to login form
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    if (loginForm) loginForm.style.display = 'block';
-    if (signupForm) signupForm.style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('signupForm').style.display = 'none';
 }
 
 function setupUserAuthButtons() {
     const loginSubmitBtn = document.getElementById('loginSubmitBtn');
     const signupSubmitBtn = document.getElementById('signupSubmitBtn');
-
     if (loginSubmitBtn) {
         loginSubmitBtn.onclick = () => {
             const email = document.getElementById('loginEmail').value;
@@ -327,7 +502,6 @@ function setupUserAuthButtons() {
             handleUserLogin(email, password);
         };
     }
-
     if (signupSubmitBtn) {
         signupSubmitBtn.onclick = () => {
             const username = document.getElementById('signupUsername').value;
@@ -342,29 +516,22 @@ function setupUserAuthButtons() {
 
 // ========== VIEW MOVIE ==========
 window.viewMovie = function (id) {
-    if (id) {
-        console.log('Viewing movie:', id);
-        window.location.href = `watch-movie.html?id=${id}`;
-    }
+    if (id) window.location.href = `watch-movie.html?id=${id}`;
 };
 
 // ========== WATCH MOVIE PAGE ==========
 window.loadMovieForWatch = async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
-
     if (!movieId) {
         alert('No movie selected');
         window.location.href = 'user-dashboard.html';
         return;
     }
-
     try {
         const res = await fetch(`${API_URL}/Movies/${movieId}`);
         if (!res.ok) throw new Error('Movie not found');
-
         const movie = await res.json();
-
         const titleEl = document.getElementById('movieTitle');
         const yearEl = document.getElementById('movieYear');
         const genreEl = document.getElementById('movieGenre');
@@ -372,7 +539,6 @@ window.loadMovieForWatch = async function () {
         const overviewEl = document.getElementById('movieOverview');
         const directorEl = document.getElementById('movieDirector');
         const castEl = document.getElementById('movieCast');
-
         if (titleEl) titleEl.innerText = movie.title;
         if (yearEl) yearEl.innerText = movie.year;
         if (genreEl) genreEl.innerText = movie.genre;
@@ -380,16 +546,13 @@ window.loadMovieForWatch = async function () {
         if (overviewEl) overviewEl.innerText = movie.overview;
         if (directorEl) directorEl.innerText = movie.director || 'Not specified';
         if (castEl) castEl.innerText = movie.cast || 'Not specified';
-
         const player = document.getElementById('moviePlayer');
         if (player) {
             const tmdbId = movie.tmdbId || movie.id;
             player.src = `https://vidsrc.to/embed/movie/${tmdbId}`;
         }
-
         addToHistory('watch', movie);
         await loadCommentsForWatch(movieId);
-
     } catch (error) {
         console.error('Error loading movie:', error);
         alert('Failed to load movie details');
@@ -402,28 +565,21 @@ let currentCommentsCache = {};
 async function loadCommentsForWatch(movieId) {
     const currentMovieId = movieId || new URLSearchParams(window.location.search).get('id');
     if (!currentMovieId) return;
-
     try {
         const res = await fetch(`${API_URL}/Movies/${currentMovieId}/comments-with-details?sortBy=latest`);
         const data = await res.json();
         const container = document.getElementById('commentsList');
         const countSpan = document.getElementById('commentsCount');
-
         if (!container) return;
-
         currentCommentsCache[currentMovieId] = data.comments || [];
-
         if (!data.comments || data.comments.length === 0) {
             container.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
             if (countSpan) countSpan.innerText = '0 Comments';
             return;
         }
-
         if (countSpan) countSpan.innerText = `${data.totalCount} Comment${data.totalCount !== 1 ? 's' : ''}`;
-
         const currentUser = localStorage.getItem('userName');
         const userId = localStorage.getItem('userId');
-
         container.innerHTML = data.comments.map(c => `
             <div class="comment-item" data-comment-id="${c.id}" style="margin-bottom:1rem; border-bottom:1px solid rgba(100,180,250,0.1); padding-bottom:0.8rem;">
                 <div style="display:flex; gap:0.8rem;">
@@ -440,9 +596,7 @@ async function loadCommentsForWatch(movieId) {
                             <button onclick="window.toggleCommentLike(${c.id})" style="background:transparent; border:none; color:#64b4fa; cursor:pointer; font-size:0.7rem;">👍 Like (${c.likesCount || 0})</button>
                             <button onclick="window.showReplyInput(${c.id})" style="background:transparent; border:none; color:#64b4fa; cursor:pointer; font-size:0.7rem;">💬 Reply</button>
                         </div>
-                        ${c.username === currentUser ? `
-                            <button onclick="window.deleteComment(${c.id})" style="background:rgba(231,76,60,0.2); border:none; color:#e74c3c; cursor:pointer; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.7rem; margin-top:0.3rem;">Delete</button>
-                        ` : ''}
+                        ${c.username === currentUser ? `<button onclick="window.deleteComment(${c.id})" style="background:rgba(231,76,60,0.2); border:none; color:#e74c3c; cursor:pointer; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.7rem; margin-top:0.3rem;">Delete</button>` : ''}
                         <div id="reply-input-${c.id}" class="reply-input-area" style="display:none; margin-top:0.5rem;">
                             <input type="text" id="reply-text-${c.id}" placeholder="Write a reply..." style="width:100%; padding:0.4rem; background:rgba(255,255,255,0.08); border:1px solid rgba(100,180,250,0.3); border-radius:20px; color:white; font-size:0.75rem;">
                             <div style="display:flex; gap:0.5rem; margin-top:0.3rem;">
@@ -472,7 +626,6 @@ async function loadCommentsForWatch(movieId) {
                 </div>
             </div>
         `).join('');
-
     } catch (error) {
         console.error('Error loading comments:', error);
         const container = document.getElementById('commentsList');
@@ -484,20 +637,15 @@ window.addCommentForWatch = async function () {
     const input = document.getElementById('commentInput');
     const comment = input?.value.trim();
     if (!comment) { alert('Please write a comment'); return; }
-
     const userId = localStorage.getItem('userId');
     if (!userId) return;
-
     const currentMovieId = new URLSearchParams(window.location.search).get('id');
     if (!currentMovieId) return;
-
     try {
         const response = await fetch(`${API_URL}/Movies/comment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: parseInt(userId), movieId: parseInt(currentMovieId), comment })
         });
-
         if (response.ok) {
             input.value = '';
             await loadCommentsForWatch(currentMovieId);
@@ -615,15 +763,19 @@ window.markAsWatched = function () { alert('✅ Marked as watched!'); };
 window.updateMoviePlayer = function (movieData) { const playerEl = document.getElementById('moviePlayer'); if (playerEl && movieData) { const videoId = movieData.trailerUrl?.split('v=')[1]; playerEl.src = videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : `https://www.youtube.com/embed?listType=search&q=${encodeURIComponent(movieData.title + ' full movie')}&autoplay=1`; } };
 
 // ========== MOVIES FUNCTIONS ==========
-async function loadMovies() { try { const res = await fetch(`${API_URL}/Movies`); const movies = await res.json(); displayMovies(movies); } catch (e) { console.error(e); } }
+async function loadMovies() {
+    try {
+        const res = await fetch(`${API_URL}/Movies`);
+        const movies = await res.json();
+        displayMovies(movies);
+    } catch (e) { console.error(e); }
+}
 
 function displayMovies(movies) {
     const grid = document.getElementById('moviesGrid');
     if (!grid) return;
     if (!movies?.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🎬</div><h3>No movies found</h3><p>Try searching for something else</p></div>'; return; }
-
     const isAdmin = localStorage.getItem('userRole') === 'Admin';
-
     if (isAdmin) {
         grid.innerHTML = movies.map(m => `
             <div class="movie-card" style="cursor:default;">
@@ -664,6 +816,57 @@ function closeModals() { ['loginModal', 'signupModal', 'addMovieModal', 'importM
 window.showAddMovieModal = function () { const modal = document.getElementById('addMovieModal'); if (modal) modal.style.display = 'flex'; };
 window.showImportModal = function () { const modal = document.getElementById('importModal'); if (modal) modal.style.display = 'flex'; };
 
+// ========== IMPORT MOVIE WITH NOTIFICATION ==========
+window.importMovie = async function (tmdbId) {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}&language=en-US`);
+        const movie = await response.json();
+        const newMovie = {
+            id: movie.id,
+            tmdbId: movie.id,
+            title: movie.title,
+            year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+            genre: movie.genres?.map(g => g.name).join(', ') || 'General',
+            rating: movie.vote_average ? movie.vote_average.toFixed(1) : '0',
+            overview: movie.overview || 'No description available.',
+            posterPath: movie.poster_path
+        };
+        let cachedMovies = JSON.parse(localStorage.getItem('cached_movies')) || [];
+        const exists = cachedMovies.find(m => m.id == newMovie.id);
+        if (!exists) {
+            cachedMovies.push(newMovie);
+            localStorage.setItem('cached_movies', JSON.stringify(cachedMovies));
+            allMovies.push(newMovie);
+
+            // 🔔 SEND NOTIFICATION TO ALL USERS
+            await sendNotificationToAllUsers(
+                '🎬 New Movie Added!',
+                `${movie.title} (${newMovie.year}) has been added to the library. Check it out now!`,
+                'movie'
+            );
+        }
+        displayMovies(allMovies);
+        updateTotalMoviesCount(allMovies.length);
+        if (document.getElementById('statsGrid')) {
+            loadAdminStats();
+            loadTopMoviesList();
+            loadGenreDistributionList();
+        }
+        alert(`✅ "${movie.title}" imported successfully!`);
+        window.closeModals();
+        document.getElementById('tmdbSearchQuery').value = '';
+        document.getElementById('tmdbResults').innerHTML = '';
+    } catch (error) {
+        console.error('Error importing movie:', error);
+        alert('Error importing movie. Please check your internet connection.');
+    }
+};
+
+function updateTotalMoviesCount(count) {
+    const totalMoviesEl = document.getElementById('totalMovies');
+    if (totalMoviesEl) totalMoviesEl.innerText = count;
+}
+
 // ========== FAVORITES PAGE ==========
 async function loadFavorites() {
     const userId = localStorage.getItem('userId');
@@ -698,12 +901,11 @@ window.removeFromWatchlist = removeFromWatchlist;
 
 // ========== ADMIN FUNCTIONS ==========
 async function loadDashboardStats() { const res = await fetch(`${API_URL}/Admin/dashboard`); const stats = await res.json(); const grid = document.getElementById('statsGrid'); if (grid) grid.innerHTML = `<div class="stat-card"><div class="stat-number">${stats.totalUsers}</div><div>Total Users</div></div><div class="stat-card"><div class="stat-number">${stats.totalMovies}</div><div>Total Movies</div></div>`; }
-async function loadAllUsers() { const res = await fetch(`${API_URL}/Admin/users`); const users = await res.json(); const container = document.getElementById('usersList'); if (!container) return; if (!users?.length) { container.innerHTML = '<p>No users.</p>'; return; } let html = '<table style="width:100%; border-collapse:collapse;"><tr style="background:#f0f0f0;"><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Action</th><tr>'; for (let u of users) html += `<tr><td style="padding:0.5rem;">${u.id}</td><td style="padding:0.5rem;">${u.username}</td><td style="padding:0.5rem;">${u.email}</td><td style="padding:0.5rem;">${u.role}</td><td style="padding:0.5rem;"><button class="btn btn-danger" onclick="deleteUser(${u.id})">Delete</button></td></tr>`; html += '</table>'; container.innerHTML = html; }
+async function loadAllUsers() { const res = await fetch(`${API_URL}/Admin/users`); const users = await res.json(); const container = document.getElementById('usersList'); if (!container) return; if (!users?.length) { container.innerHTML = '<p>No users.</p>'; return; } let html = '<table style="width:100%; border-collapse:collapse;"><tr style="background:#f0f0f0;"><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Action</th></table>'; for (let u of users) html += `<tr><td style="padding:0.5rem;">${u.id}</td><td style="padding:0.5rem;">${u.username}</td><td style="padding:0.5rem;">${u.email}</td><td style="padding:0.5rem;">${u.role}</td><td style="padding:0.5rem;"><button class="btn btn-danger" onclick="deleteUser(${u.id})">Delete</button></td></tr>`; html += '</table>'; container.innerHTML = html; }
 async function deleteUser(id) { if (!confirm('Delete user?')) return; const res = await fetch(`${API_URL}/Admin/user/${id}`, { method: 'DELETE' }); if (res.ok) { loadAllUsers(); loadDashboardStats(); alert('User deleted'); } }
 
-// ========== TMDB IMPORT ==========
+// ========== TMDB IMPORT SEARCH ==========
 window.searchTMDB = async function () { const q = document.getElementById('tmdbSearchQuery')?.value; if (!q) return; const res = await fetch(`${API_URL}/Movies/search-tmdb?query=${encodeURIComponent(q)}`); const results = await res.json(); const container = document.getElementById('tmdbResults'); if (container) { let html = ''; for (let m of results) html += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #ddd;"><span style="color:white;">${m.title} (${m.release_date?.split('-')[0] || 'N/A'})</span><button onclick="importMovie(${m.id})" style="background: linear-gradient(135deg,#3a86ff,#64b4fa); color:white; border:none; padding:0.2rem 0.8rem; border-radius:8px; cursor:pointer;">Import</button></div>`; container.innerHTML = html; } };
-window.importMovie = async function (tmdbId) { const res = await fetch(`${API_URL}/Movies/import/${tmdbId}`, { method: 'POST' }); if (res.ok) { alert('Movie imported!'); closeModals(); loadMovies(); } else alert('Import failed'); };
 window.refreshData = async function () { await loadDashboardStats(); await loadAllUsers(); await loadMovies(); alert('✅ All data refreshed!'); };
 
 // ========== EXPORT FUNCTIONS ==========
@@ -764,14 +966,12 @@ window.loadProfile = function () {
     const userBio = localStorage.getItem('userBio') || 'Movie enthusiast who loves discovering new films.';
     const userJoined = localStorage.getItem('userJoined') || new Date().toLocaleDateString();
     const userAvatar = localStorage.getItem('userAvatar');
-
     const nameEl = document.getElementById('profileName');
     const emailEl = document.getElementById('profileEmail');
     const roleEl = document.getElementById('profileUserRole');
     const bioEl = document.getElementById('profileBio');
     const joinedEl = document.getElementById('profileJoined');
     const avatarEl = document.getElementById('profileAvatar');
-
     if (nameEl) nameEl.textContent = userName;
     if (emailEl) emailEl.textContent = userEmail;
     if (roleEl) roleEl.textContent = 'Movie Lover';
@@ -803,37 +1003,28 @@ window.saveProfile = function () {
     const newUsername = document.getElementById('editUsername').value;
     const newEmail = document.getElementById('editEmail').value;
     const newBio = document.getElementById('editBio').value;
-
     if (!newUsername || !newEmail) {
         alert('Username and email are required!');
         return;
     }
-
     localStorage.setItem('userName', newUsername);
     localStorage.setItem('userEmail', newEmail);
     localStorage.setItem('userBio', newBio);
-
     let users = JSON.parse(localStorage.getItem('users')) || [];
     let userIndex = users.findIndex(u => u.email === localStorage.getItem('userEmail'));
-
-    if (userIndex === -1) {
-        userIndex = users.findIndex(u => String(u.id) === String(userId));
-    }
-
+    if (userIndex === -1) userIndex = users.findIndex(u => String(u.id) === String(userId));
     if (userIndex !== -1) {
         users[userIndex].username = newUsername;
         users[userIndex].email = newEmail;
         users[userIndex].bio = newBio;
         localStorage.setItem('users', JSON.stringify(users));
     }
-
     const nameEl = document.getElementById('profileName');
     const emailEl = document.getElementById('profileEmail');
     const bioEl = document.getElementById('profileBio');
     if (nameEl) nameEl.textContent = newUsername;
     if (emailEl) emailEl.textContent = newEmail;
     if (bioEl) bioEl.textContent = newBio;
-
     window.closeEditModal();
     alert('✅ Profile updated successfully!');
 };
@@ -858,59 +1049,47 @@ window.changePassword = function () {
     const oldPassword = document.getElementById('oldPassword').value;
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-
     if (!userEmail) {
         alert('Please login again!');
         window.location.href = 'index.html';
         return;
     }
-
     if (!oldPassword || !newPassword || !confirmPassword) {
         alert('Please fill all fields');
         return;
     }
-
     if (newPassword !== confirmPassword) {
         alert('New passwords do not match!');
         return;
     }
-
     if (newPassword.length < 6) {
         alert('Password must be at least 6 characters');
         return;
     }
-
     let users = JSON.parse(localStorage.getItem('users')) || [];
     let userIndex = users.findIndex(u => u.email === userEmail);
-
     if (userIndex === -1) {
         alert('User not found! Please login again.');
         return;
     }
-
     if (users[userIndex].password !== oldPassword) {
         alert('Current password is incorrect!');
         return;
     }
-
     users[userIndex].password = newPassword;
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('userPassword', newPassword);
-
     alert('✅ Password changed successfully!');
     window.closePasswordModal();
-
     document.getElementById('oldPassword').value = '';
     document.getElementById('newPassword').value = '';
     document.getElementById('confirmPassword').value = '';
-
     if (confirm('Password changed! Please login again with your new password.')) {
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userPassword');
+        localStorage.clear();
         window.location.href = 'index.html';
     }
 };
+
 window.openAvatarModal = function () {
     const modal = document.getElementById('avatarModal');
     if (modal) modal.classList.add('active');
@@ -939,18 +1118,14 @@ window.handleGalleryUpload = function (input) {
 window.setAvatar = function (imageUrl) {
     const userEmail = localStorage.getItem('userEmail');
     localStorage.setItem('userAvatar', imageUrl);
-
     let users = JSON.parse(localStorage.getItem('users')) || [];
     const userIndex = users.findIndex(u => u.email === userEmail);
-
     if (userIndex !== -1) {
         users[userIndex].profilePicture = imageUrl;
         localStorage.setItem('users', JSON.stringify(users));
     }
-
     const avatarEl = document.getElementById('profileAvatar');
     if (avatarEl) avatarEl.src = imageUrl;
-
     window.closeAvatarModal();
     alert('✅ Profile picture updated!');
 };
@@ -1136,49 +1311,6 @@ async function initUserGrowthChart() {
     } catch (e) { console.error(e); }
 }
 
-async function loadNotificationCount() {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return;
-    try {
-        const res = await fetch(`${API_URL}/Movies/notifications/${userId}`);
-        const notifications = await res.json();
-        const unreadCount = notifications.filter(n => !n.isRead).length;
-        const badge = document.getElementById('notificationBadge');
-        if (badge) {
-            if (unreadCount > 0) { badge.style.display = 'flex'; badge.innerText = unreadCount > 9 ? '9+' : unreadCount; }
-            else badge.style.display = 'none';
-        }
-    } catch (error) { console.error('Error loading notifications:', error); }
-}
-
-window.toggleNotifications = async function () {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return;
-    try {
-        const res = await fetch(`${API_URL}/Movies/notifications/${userId}`);
-        const notifications = await res.json();
-        const modal = document.createElement('div');
-        modal.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#1a2634; border-radius:16px; padding:1rem; max-width:350px; width:90%; max-height:400px; overflow-y:auto; z-index:1000; border:1px solid #3a86ff;';
-        modal.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <h3 style="color:white;">🔔 Notifications</h3>
-                <button onclick="this.parentElement.parentElement.remove()" style="background:transparent; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button>
-            </div>
-            <div>${notifications.map(n => `
-                <div class="notification-item" style="padding:0.8rem; border-bottom:1px solid rgba(100,180,250,0.1); ${n.isRead ? 'opacity:0.6;' : ''}">
-                    <div style="font-size:0.8rem;">${escapeHtml(n.message)}</div>
-                    <div style="font-size:0.65rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">${new Date(n.createdAt).toLocaleString()}</div>
-                </div>
-            `).join('') || '<div style="text-align:center; padding:1rem;">No notifications</div>'}</div>
-        `;
-        document.body.appendChild(modal);
-        for (let n of notifications.filter(n => !n.isRead)) {
-            await fetch(`${API_URL}/Movies/notifications/${n.id}/read`, { method: 'PUT' });
-        }
-        await loadNotificationCount();
-    } catch (error) { console.error('Error loading notifications:', error); }
-};
-
 function loadAdminDashboardData() {
     loadAdminStats();
     loadLikesActivity();
@@ -1200,13 +1332,21 @@ document.addEventListener('DOMContentLoaded', function () {
     setupForgotPassword();
     setupUserAuthButtons();
 
+    // User Dashboard
     if (document.getElementById('moviesGrid') && !document.getElementById('statsGrid')) {
         const userId = localStorage.getItem('userId');
         if (userId && userId !== 'null' && userId !== 'undefined') {
             loadMovies();
+
+            // 🔔 INITIALIZE NOTIFICATIONS FOR USER DASHBOARD
+            addNotificationStyles();
+            updateNotificationBadge();
+            addWelcomeNotification();
+            addDailyNotification();
         }
     }
 
+    // Admin Dashboard
     if (document.getElementById('statsGrid')) {
         const userId = localStorage.getItem('userId');
         const userRole = localStorage.getItem('userRole');
