@@ -19,7 +19,6 @@
             overflow-x: hidden;
         }
 
-        /* Video Background */
         .video-background {
             position: fixed;
             top: 0;
@@ -40,46 +39,6 @@
             z-index: 1;
         }
 
-        /* Animated Particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(100, 180, 250, 0.4);
-            border-radius: 50%;
-            animation: floatParticle 15s infinite ease-in-out;
-        }
-
-        @keyframes floatParticle {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.6;
-            }
-
-            90% {
-                opacity: 0.6;
-            }
-
-            100% {
-                transform: translateY(-100vh) translateX(100px);
-                opacity: 0;
-            }
-        }
-
-        /* Glow effect */
         .glow {
             position: fixed;
             top: 20%;
@@ -100,7 +59,6 @@
             background: radial-gradient(circle, rgba(100,180,250,0.1) 0%, transparent 70%);
         }
 
-        /* Container */
         .container {
             position: relative;
             z-index: 10;
@@ -251,10 +209,6 @@
             backdrop-filter: blur(10px);
         }
 
-            .hero-badge i {
-                font-size: 0.9rem;
-            }
-
         .hero-title {
             font-size: 5rem;
             font-weight: 900;
@@ -271,18 +225,6 @@
                 color: transparent;
                 position: relative;
             }
-
-                .hero-title span::before {
-                    content: '';
-                    position: absolute;
-                    bottom: 5px;
-                    left: 0;
-                    width: 100%;
-                    height: 8px;
-                    background: rgba(58, 134, 255, 0.3);
-                    border-radius: 10px;
-                    z-index: -1;
-                }
 
         .hero-description {
             font-size: 1.2rem;
@@ -358,7 +300,7 @@
 
             .scroll-indicator span {
                 color: rgba(255, 255, 255, 0.5);
-                font-size: 1.2rem;
+                font-size: 0.8rem;
             }
 
             .scroll-indicator .mouse {
@@ -463,6 +405,14 @@
                 animation-delay: 0.3s;
             }
 
+            .feature-card:nth-child(5) {
+                animation-delay: 0.4s;
+            }
+
+            .feature-card:nth-child(6) {
+                animation-delay: 0.5s;
+            }
+
             .feature-card:hover {
                 transform: translateY(-8px);
                 background: rgba(100, 180, 250, 0.08);
@@ -517,20 +467,16 @@
             flex-wrap: wrap;
         }
 
-        .about-stat {
-            text-align: center;
+        .about-stat .number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #64b4fa;
         }
 
-            .about-stat .number {
-                font-size: 2rem;
-                font-weight: 800;
-                color: #64b4fa;
-            }
-
-            .about-stat .label {
-                color: rgba(255, 255, 255, 0.5);
-                font-size: 0.8rem;
-            }
+        .about-stat .label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
 
         /* CTA Section */
         .cta-section {
@@ -588,6 +534,101 @@
                 .social-links a:hover {
                     color: #64b4fa;
                 }
+
+        /* Admin Modal */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .admin-modal.active {
+                display: flex;
+            }
+
+        .admin-modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 28px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(100, 180, 250, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-modal-content h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .admin-modal-content input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(100, 180, 250, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+            .admin-modal-content input:focus {
+                outline: none;
+                border-color: #64b4fa;
+            }
+
+        .admin-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+            .admin-modal-buttons button {
+                flex: 1;
+                padding: 0.8rem;
+                border: none;
+                border-radius: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+        .admin-login-btn {
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            color: white;
+        }
+
+        .admin-cancel-btn {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+            .admin-cancel-btn:hover, .admin-login-btn:hover {
+                transform: translateY(-2px);
+            }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -649,11 +690,11 @@
 <body>
     <video class="video-background" autoplay muted loop playsinline>
         <source src="videos/v2.mp4" type="video/mp4">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
     <div class="glow"></div>
-    <div class="glow glow-2"></div>
-    <div class="particles" id="particles"></div>
+    <div class="glow-2"></div>
 
     <div class="container">
         <!-- Navigation -->
@@ -695,7 +736,7 @@
             <!-- Scroll Indicator -->
             <div class="scroll-indicator" id="scrollIndicator">
                 <div class="mouse"></div>
-                <span>Scroll</span>
+                <span>Scroll to explore</span>
             </div>
         </div>
 
@@ -711,27 +752,27 @@
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
                     <h3>Personalized Picks</h3>
-                    <p>Smart AI algorithms suggest movies that match your unique taste and viewing history</p>
+                    <p>Smart AI algorithms suggest movies that match your unique taste</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">❤️</div>
                     <h3>Favorites & Watchlist</h3>
-                    <p>Build your personal collection. Save movies you love and plan your next movie night</p>
+                    <p>Build your personal collection. Save movies you love</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
                     <h3>Real TMDB Data</h3>
-                    <p>Powered by The Movie Database - accurate, up-to-date information on thousands of films</p>
+                    <p>Powered by The Movie Database - accurate film information</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">⭐</div>
                     <h3>Rate & Review</h3>
-                    <p>Share your thoughts, rate movies, and connect with fellow cinephiles</p>
+                    <p>Share your thoughts and connect with fellow cinephiles</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📱</div>
                     <h3>Seamless Experience</h3>
-                    <p>Beautiful, responsive design that works perfectly on all your devices</p>
+                    <p>Beautiful design that works perfectly on all your devices</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🚀</div>
@@ -789,14 +830,16 @@
         </div>
     </div>
 
-    <!-- Admin Login Modal -->
-    <div id="adminModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 24px; padding: 2rem; max-width: 400px; width: 90%; border: 1px solid rgba(100,180,250,0.3);">
-            <h2 style="color: white; margin-bottom: 1.5rem; text-align: center;">Admin Login</h2>
-            <input type="email" id="adminEmail" placeholder="Admin Email" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 12px; border: 1px solid rgba(100,180,250,0.3); background: rgba(255,255,255,0.08); color: white;">
-            <input type="password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 12px; border: 1px solid rgba(100,180,250,0.3); background: rgba(255,255,255,0.08); color: white;">
-            <button id="adminLoginBtn" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #3a86ff, #64b4fa); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">Login</button>
-            <button id="closeAdminModal" style="width: 100%; margin-top: 1rem; padding: 0.8rem; background: transparent; border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; color: #e74c3c; cursor: pointer;">Cancel</button>
+    <!-- Admin Modal -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <h2><i class="fas fa-shield-alt"></i> Admin Login</h2>
+            <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@filmfusion.com">
+            <input type="password" id="adminPassword" placeholder="Password" value="admin123">
+            <div class="admin-modal-buttons">
+                <button id="adminLoginBtn" class="admin-login-btn">Login</button>
+                <button id="closeAdminModal" class="admin-cancel-btn">Cancel</button>
+            </div>
         </div>
     </div>
 
