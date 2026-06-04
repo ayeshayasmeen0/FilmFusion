@@ -20,7 +20,6 @@
             overflow-x: hidden;
         }
 
-        /* Video Background */
         .video-background {
             position: fixed;
             top: 0;
@@ -41,14 +40,13 @@
             z-index: -1;
         }
 
-        /* Glow Effects */
         .glow {
             position: fixed;
             top: 20%;
             left: 10%;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(58,134,255,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(58,134,255,0.1) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(60px);
             z-index: -1;
@@ -59,7 +57,6 @@
             top: 60%;
             left: auto;
             right: 5%;
-            background: radial-gradient(circle, rgba(100,180,250,0.1) 0%, transparent 70%);
         }
 
         /* Navbar */
@@ -161,7 +158,7 @@
 
         /* Dashboard Content */
         .dashboard-content {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
@@ -188,15 +185,13 @@
 
                 .page-header h1 i {
                     background: none;
-                    -webkit-background-clip: unset;
-                    background-clip: unset;
                     color: #64b4fa;
                     margin-right: 0.5rem;
                 }
 
         .stats-badge {
-            background: rgba(58,134,255,0.15);
-            border: 1px solid rgba(58,134,255,0.3);
+            background: rgba(58,134,255,0.12);
+            border: 1px solid rgba(58,134,255,0.25);
             padding: 0.4rem 1rem;
             border-radius: 40px;
             font-size: 0.8rem;
@@ -207,8 +202,8 @@
         }
 
         .clear-btn {
-            background: rgba(231,76,60,0.15);
-            border: 1px solid rgba(231,76,60,0.3);
+            background: rgba(231,76,60,0.12);
+            border: 1px solid rgba(231,76,60,0.25);
             color: #e74c3c;
             padding: 0.6rem 1.2rem;
             border-radius: 40px;
@@ -222,49 +217,49 @@
         }
 
             .clear-btn:hover {
-                background: rgba(231,76,60,0.3);
+                background: rgba(231,76,60,0.25);
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(231,76,60,0.2);
             }
 
-        /* Stats Cards */
-        .stats-row {
+        /* Stats Cards - Minimal */
+        .stats-mini {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
             margin-bottom: 2rem;
+            justify-content: space-between;
         }
 
-        .stat-card-small {
-            background: rgba(20,25,35,0.6);
+        .stat-mini-item {
+            background: rgba(20,25,35,0.5);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 0.8rem 1.2rem;
-            flex: 1;
-            min-width: 100px;
+            border-radius: 16px;
+            padding: 0.6rem 1rem;
             text-align: center;
-            border: 1px solid rgba(100,180,250,0.1);
+            border: 1px solid rgba(100,180,250,0.08);
             transition: all 0.3s;
+            min-width: 70px;
         }
 
-            .stat-card-small:hover {
-                border-color: rgba(58,134,255,0.3);
-                transform: translateY(-3px);
+            .stat-mini-item:hover {
+                border-color: rgba(58,134,255,0.25);
+                transform: translateY(-2px);
             }
 
-        .stat-number-small {
-            font-size: 1.5rem;
+        .stat-mini-number {
+            font-size: 1.3rem;
             font-weight: 700;
             color: #64b4fa;
         }
 
-        .stat-label-small {
-            font-size: 0.65rem;
+        .stat-mini-label {
+            font-size: 0.6rem;
             color: rgba(255,255,255,0.5);
             margin-top: 0.2rem;
         }
 
-        /* Timeline - Enhanced */
+        /* Timeline */
         .timeline {
             position: relative;
             padding-left: 2rem;
@@ -273,11 +268,11 @@
             .timeline::before {
                 content: '';
                 position: absolute;
-                left: 0.5rem;
+                left: 0.7rem;
                 top: 0;
                 bottom: 0;
                 width: 2px;
-                background: linear-gradient(180deg, #3a86ff, #64b4fa, #2ecc71, #f1c40f, #e74c3c, transparent);
+                background: linear-gradient(180deg, #3a86ff, #64b4fa, #2ecc71, #f1c40f, #9b59b6, transparent);
                 border-radius: 2px;
             }
 
@@ -285,13 +280,13 @@
         .history-item {
             position: relative;
             margin-bottom: 1rem;
-            background: rgba(10,20,30,0.5);
+            background: rgba(10,20,30,0.4);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 1rem 1.2rem;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid rgba(100,180,250,0.08);
+            border: 1px solid rgba(100,180,250,0.06);
             margin-left: 0.5rem;
             overflow: hidden;
         }
@@ -299,10 +294,10 @@
             .history-item::before {
                 content: '';
                 position: absolute;
-                left: -1.8rem;
+                left: -1.7rem;
                 top: 1.4rem;
-                width: 12px;
-                height: 12px;
+                width: 10px;
+                height: 10px;
                 background: #64b4fa;
                 border-radius: 50%;
                 border: 2px solid #0a141e;
@@ -310,22 +305,10 @@
                 transition: all 0.3s;
             }
 
-            .history-item::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: linear-gradient(135deg, rgba(58,134,255,0), rgba(58,134,255,0.03));
-                pointer-events: none;
-                border-radius: 20px;
-            }
-
             .history-item:hover {
-                transform: translateX(8px);
-                border-color: rgba(100,180,250,0.3);
-                background: rgba(100,180,250,0.08);
+                transform: translateX(6px);
+                border-color: rgba(100,180,250,0.2);
+                background: rgba(100,180,250,0.05);
                 box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             }
 
@@ -348,12 +331,12 @@
         .history-icon {
             width: 48px;
             height: 48px;
-            background: rgba(100,180,250,0.12);
+            background: rgba(100,180,250,0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             transition: all 0.3s;
             flex-shrink: 0;
         }
@@ -363,32 +346,27 @@
         }
 
         .history-icon.watch {
-            background: rgba(58,134,255,0.2);
+            background: rgba(58,134,255,0.15);
             color: #3a86ff;
         }
 
         .history-icon.like {
-            background: rgba(46,204,113,0.2);
+            background: rgba(46,204,113,0.15);
             color: #2ecc71;
         }
 
-        .history-icon.dislike {
-            background: rgba(231,76,60,0.2);
-            color: #e74c3c;
-        }
-
         .history-icon.favorite {
-            background: rgba(241,196,15,0.2);
+            background: rgba(241,196,15,0.15);
             color: #f1c40f;
         }
 
         .history-icon.watchlist {
-            background: rgba(155,89,182,0.2);
+            background: rgba(155,89,182,0.15);
             color: #d2b0e5;
         }
 
         .history-icon.comment {
-            background: rgba(100,180,250,0.2);
+            background: rgba(100,180,250,0.15);
             color: #64b4fa;
         }
 
@@ -400,9 +378,8 @@
         .history-title {
             color: white;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 0.3rem;
-            letter-spacing: -0.3px;
         }
 
         .history-meta {
@@ -412,81 +389,50 @@
             align-items: center;
         }
 
-        .history-action {
-            background: linear-gradient(135deg, rgba(58,134,255,0.15), rgba(100,180,250,0.08));
-            padding: 0.25rem 0.8rem;
+        .history-badge {
+            background: rgba(58,134,255,0.12);
+            padding: 0.2rem 0.7rem;
             border-radius: 30px;
-            font-size: 0.65rem;
-            color: #64b4fa;
+            font-size: 0.6rem;
             font-weight: 600;
-            letter-spacing: 0.3px;
         }
 
-            .history-action.watch-action {
+            .history-badge.watch {
                 color: #3a86ff;
             }
 
-            .history-action.like-action {
+            .history-badge.like {
                 color: #2ecc71;
             }
 
-            .history-action.favorite-action {
+            .history-badge.favorite {
                 color: #f1c40f;
             }
 
-            .history-action.watchlist-action {
+            .history-badge.watchlist {
                 color: #d2b0e5;
             }
 
-        .history-time {
+            .history-badge.comment {
+                color: #64b4fa;
+            }
+
+        .history-date {
             color: rgba(255,255,255,0.4);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             display: flex;
             align-items: center;
             gap: 0.3rem;
-        }
-
-            .history-time i {
-                font-size: 0.55rem;
-            }
-
-        /* Grouped by Date */
-        .date-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .date-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            margin-left: 0.5rem;
-        }
-
-        .date-badge {
-            background: rgba(58,134,255,0.15);
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #64b4fa;
-            border: 1px solid rgba(58,134,255,0.2);
-        }
-
-        .date-line {
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(100,180,250,0.3), transparent);
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
-            background: rgba(10,20,30,0.5);
+            background: rgba(10,20,30,0.4);
             border-radius: 28px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(100,180,250,0.1);
+            border: 1px solid rgba(100,180,250,0.08);
         }
 
         .empty-icon {
@@ -541,6 +487,18 @@
                 display: block;
             }
 
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-container {
@@ -564,9 +522,10 @@
                 }
 
             .history-item::before {
-                left: -1.2rem;
+                left: -1.1rem;
                 width: 8px;
                 height: 8px;
+                top: 1.2rem;
             }
 
             .page-header h1 {
@@ -583,16 +542,16 @@
                 font-size: 0.85rem;
             }
 
-            .stats-row {
-                gap: 0.8rem;
+            .stats-mini {
+                gap: 0.6rem;
             }
 
-            .stat-number-small {
-                font-size: 1.2rem;
+            .stat-mini-number {
+                font-size: 1rem;
             }
 
-            .date-header {
-                margin-left: 0;
+            .stat-mini-label {
+                font-size: 0.55rem;
             }
         }
 
@@ -606,21 +565,22 @@
                 height: 36px;
             }
 
-            .history-meta {
-                margin-top: 0.3rem;
+            .stats-mini {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Video Background -->
     <video class="video-background" autoplay muted loop playsinline>
         <source src="videos/v5.mp4" type="video/mp4">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
     <div class="glow"></div>
-    <div class="glow glow-2"></div>
+    <div class="glow-2"></div>
 
     <div class="dashboard-container">
         <nav class="dashboard-nav">
@@ -636,7 +596,7 @@
                     <a href="user-history.html" class="active"><i class="fas fa-history"></i> History</a>
                     <a href="user-profile.html"><i class="fas fa-user"></i> Profile</a>
                 </div>
-                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </nav>
 
@@ -644,34 +604,10 @@
             <div class="page-header">
                 <h1><i class="fas fa-history"></i> Activity History</h1>
                 <div class="stats-badge" id="historyStats">
-                    <i class="fas fa-chart-line"></i>
-                    <span id="totalCount">0</span> activities
+                    <i class="fas fa-film"></i>
+                    <span id="totalCount">0</span> total
                 </div>
-                <button class="clear-btn" onclick="clearHistory()"><i class="fas fa-trash-alt"></i> Clear All</button>
-            </div>
-
-            <!-- Stats Row -->
-            <div class="stats-row" id="activityStats">
-                <div class="stat-card-small">
-                    <div class="stat-number-small" id="watchCount">0</div>
-                    <div class="stat-label-small"><i class="fas fa-play"></i> Watched</div>
-                </div>
-                <div class="stat-card-small">
-                    <div class="stat-number-small" id="likeCount">0</div>
-                    <div class="stat-label-small"><i class="fas fa-heart"></i> Likes</div>
-                </div>
-                <div class="stat-card-small">
-                    <div class="stat-number-small" id="favoriteCount">0</div>
-                    <div class="stat-label-small"><i class="fas fa-star"></i> Favorites</div>
-                </div>
-                <div class="stat-card-small">
-                    <div class="stat-number-small" id="watchlistCountStat">0</div>
-                    <div class="stat-label-small"><i class="fas fa-bookmark"></i> Watchlist</div>
-                </div>
-                <div class="stat-card-small">
-                    <div class="stat-number-small" id="commentCount">0</div>
-                    <div class="stat-label-small"><i class="fas fa-comment"></i> Comments</div>
-                </div>
+                <button class="clear-btn" id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> Clear All</button>
             </div>
 
             <!-- History Timeline -->
@@ -681,45 +617,18 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
-        // Check if user is logged in
-        if (!localStorage.getItem('userId')) {
-            window.location.href = 'index.html';
+        // ========== COMPLETE HISTORY PAGE SCRIPT ==========
+
+        // Helper Functions
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        // Load history page
-        if (typeof window.loadHistoryPage === 'function') {
-            window.loadHistoryPage();
-        } else if (typeof window.loadHistory === 'function') {
-            window.loadHistory();
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.clear();
-                window.location.href = 'index.html';
-            }
-        }
-
-        function clearHistory() {
-            if (confirm('Are you sure you want to clear all your history? This cannot be undone.')) {
-                const userId = localStorage.getItem('userId');
-                if (userId) {
-                    localStorage.setItem(`history_${userId}`, JSON.stringify([]));
-                    if (typeof window.loadHistory === 'function') {
-                        window.loadHistory();
-                    } else if (typeof window.loadHistoryPage === 'function') {
-                        window.loadHistoryPage();
-                    } else {
-                        location.reload();
-                    }
-                    showToastMessage('History cleared successfully!', 'success');
-                }
-            }
-        }
-
-        function showToastMessage(message, type) {
+        function showToast(message, type) {
             const toast = document.createElement('div');
             toast.style.cssText = `
                 position: fixed; bottom: 20px; right: 20px;
@@ -732,6 +641,97 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        function viewMovie(id) {
+            if (id) window.location.href = `watch-movie.html?id=${id}`;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load History
+        function loadHistory() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+
+            const history = JSON.parse(localStorage.getItem(`history_${userId}`)) || [];
+            const container = document.getElementById('historyList');
+            const totalSpan = document.getElementById('totalCount');
+
+            if (totalSpan) totalSpan.innerText = history.length;
+
+            if (history.length === 0) {
+                container.innerHTML = `<div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-history"></i></div>
+                    <h3>No History Yet</h3>
+                    <p>Start watching movies to see your activity here!</p>
+                    <button class="btn-explore" onclick="location.href='user-dashboard.html'"><i class="fas fa-film"></i> Explore Movies</button>
+                </div>`;
+                return;
+            }
+
+            const actionConfig = {
+                'watch': { icon: 'fa-play', class: 'watch', label: 'Watched' },
+                'like': { icon: 'fa-heart', class: 'like', label: 'Liked' },
+                'favorite': { icon: 'fa-star', class: 'favorite', label: 'Added to Favorites' },
+                'watchlist': { icon: 'fa-bookmark', class: 'watchlist', label: 'Added to Watchlist' },
+                'comment': { icon: 'fa-comment', class: 'comment', label: 'Commented' }
+            };
+
+            container.innerHTML = history.map(item => {
+                const action = actionConfig[item.action] || { icon: 'fa-clock', class: 'watch', label: item.action };
+                return `
+                    <div class="history-item" onclick="viewMovie(${item.movieId})">
+                        <div class="history-content">
+                            <div class="history-icon ${action.class}">
+                                <i class="fas ${action.icon}"></i>
+                            </div>
+                            <div class="history-details">
+                                <div class="history-title">${escapeHtml(item.movieTitle)}</div>
+                                <div class="history-meta">
+                                    <span class="history-badge ${action.class}">${action.label}</span>
+                                    <span class="history-date"><i class="far fa-calendar-alt"></i> ${item.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all your history? This cannot be undone.')) {
+                const userId = localStorage.getItem('userId');
+                if (userId) {
+                    localStorage.setItem(`history_${userId}`, JSON.stringify([]));
+                    loadHistory();
+                    showToast('History cleared successfully!', 'success');
+                }
+            }
+        }
+
+        // Check login
+        if (!localStorage.getItem('userId')) {
+            window.location.href = 'index.html';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistory();
+
+            document.getElementById('logoutBtn').onclick = logout;
+            document.getElementById('clearHistoryBtn').onclick = clearHistory;
+        });
+
+        // Make functions global
+        window.viewMovie = viewMovie;
+        window.logout = logout;
+        window.clearHistory = clearHistory;
+        window.loadHistory = loadHistory;
     </script>
 </body>
 </html>

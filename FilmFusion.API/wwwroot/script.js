@@ -4,7 +4,7 @@ let allMovies = [];
 let currentMovieId = null;
 let currentMovieData = null;
 
-// ========== SINGLE STORAGE KEYS (Same as Admin) ==========
+// ========== SINGLE STORAGE KEYS ==========
 const STORAGE_KEYS = {
     MOVIES: 'filmfusion_movies',
     USERS: 'users',
@@ -14,15 +14,12 @@ const STORAGE_KEYS = {
     FAVORITES: 'favorites'
 };
 
-// ========== INITIALIZE DEFAULT DATA (No Default Movies) ==========
+// ========== INITIALIZE DEFAULT DATA ==========
 function initializeDefaultData() {
-    // Initialize movies - EMPTY initially, only admin can add
     if (!localStorage.getItem(STORAGE_KEYS.MOVIES)) {
         localStorage.setItem(STORAGE_KEYS.MOVIES, JSON.stringify([]));
         localStorage.setItem('cached_movies', JSON.stringify([]));
     }
-
-    // Initialize users with admin
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
         const defaultUsers = [
             { id: "admin_001", username: "Admin", email: "admin@filmfusion.com", password: "admin123", role: "Admin", isActive: true, createdAt: new Date().toISOString(), bio: "System Administrator", profilePicture: null },
@@ -30,8 +27,6 @@ function initializeDefaultData() {
         ];
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(defaultUsers));
     }
-
-    // Initialize empty collections
     if (!localStorage.getItem(STORAGE_KEYS.LIKES)) localStorage.setItem(STORAGE_KEYS.LIKES, '{}');
     if (!localStorage.getItem(STORAGE_KEYS.COMMENTS)) localStorage.setItem(STORAGE_KEYS.COMMENTS, '{}');
     if (!localStorage.getItem(STORAGE_KEYS.WATCHLIST)) localStorage.setItem(STORAGE_KEYS.WATCHLIST, '{}');
@@ -63,7 +58,7 @@ function showToast(message, type) {
     setTimeout(() => { toast.remove(); }, 3000);
 }
 
-// ========== MOVIE FUNCTIONS (Same as Admin) ==========
+// ========== MOVIE FUNCTIONS ==========
 function getAllMovies() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.MOVIES)) || [];
 }
@@ -82,14 +77,7 @@ function saveAllUsers(users) {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 }
 
-function getCurrentUser() {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return null;
-    const users = getAllUsers();
-    return users.find(u => u.id == userId);
-}
-
-// ========== USER'S FAVORITE FUNCTIONS (Fixed) ==========
+// ========== FAVORITE FUNCTIONS ==========
 function getUserFavorites() {
     const userId = localStorage.getItem('userId');
     if (!userId) return [];
@@ -108,8 +96,6 @@ function addToFavorites(movieId) {
         favorites[userId].push(movieId);
         localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
         showToast('❤️ Added to favorites!', 'success');
-
-        // Add to history
         const movie = getMovieById(movieId);
         if (movie) addToHistory('favorite', movie);
         return true;
@@ -135,7 +121,7 @@ function isMovieFavorited(movieId) {
     return favorites.includes(movieId);
 }
 
-// ========== USER'S WATCHLIST FUNCTIONS (Fixed) ==========
+// ========== WATCHLIST FUNCTIONS ==========
 function getUserWatchlist() {
     const userId = localStorage.getItem('userId');
     if (!userId) return [];
@@ -154,8 +140,6 @@ function addToWatchlist(movieId) {
         watchlist[userId].push(movieId);
         localStorage.setItem(STORAGE_KEYS.WATCHLIST, JSON.stringify(watchlist));
         showToast('📝 Added to watchlist!', 'success');
-
-        // Add to history
         const movie = getMovieById(movieId);
         if (movie) addToHistory('watchlist', movie);
         return true;
@@ -181,7 +165,7 @@ function isMovieInWatchlist(movieId) {
     return watchlist.includes(movieId);
 }
 
-// ========== USER'S LIKES FUNCTIONS ==========
+// ========== LIKES FUNCTIONS ==========
 function getUserLikes() {
     const userId = localStorage.getItem('userId');
     if (!userId) return [];
@@ -196,19 +180,10 @@ function addToLikes(movieId) {
     let likes = JSON.parse(localStorage.getItem(STORAGE_KEYS.LIKES)) || {};
     if (!likes[userId]) likes[userId] = [];
 
-    // Remove from dislikes if present
-    let dislikes = JSON.parse(localStorage.getItem(STORAGE_KEYS.DISLIKES)) || {};
-    if (dislikes[userId] && dislikes[userId].includes(movieId)) {
-        dislikes[userId] = dislikes[userId].filter(id => id != movieId);
-        localStorage.setItem(STORAGE_KEYS.DISLIKES, JSON.stringify(dislikes));
-    }
-
     if (!likes[userId].includes(movieId)) {
         likes[userId].push(movieId);
         localStorage.setItem(STORAGE_KEYS.LIKES, JSON.stringify(likes));
-        showToast('👍 Thanks for liking!', 'success');
-
-        // Add to history
+        showToast('👍 Liked!', 'success');
         const movie = getMovieById(movieId);
         if (movie) addToHistory('like', movie);
         return true;
@@ -216,7 +191,7 @@ function addToLikes(movieId) {
     return false;
 }
 
-// ========== USER'S COMMENTS FUNCTIONS (Fixed - No Replacement) ==========
+// ========== COMMENTS FUNCTIONS ==========
 function addComment(movieId, commentText) {
     const userId = localStorage.getItem('userId');
     const userName = localStorage.getItem('userName') || 'User';
@@ -225,7 +200,6 @@ function addComment(movieId, commentText) {
     let comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS)) || {};
     if (!comments[userId]) comments[userId] = [];
 
-    // Add new comment (not replace)
     comments[userId].push({
         id: Date.now(),
         movieId: movieId,
@@ -236,8 +210,6 @@ function addComment(movieId, commentText) {
 
     localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(comments));
     showToast('💬 Comment added!', 'success');
-
-    // Add to history
     const movie = getMovieById(movieId);
     if (movie) addToHistory('comment', movie);
     return true;
@@ -259,8 +231,6 @@ function getMovieComments(movieId) {
             });
         }
     }
-
-    // Sort by timestamp descending
     allComments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     return allComments;
 }
@@ -301,76 +271,6 @@ function updateNotificationBadge() {
     }
 }
 
-function markNotificationAsRead(notificationId) {
-    const notifications = getUserNotifications();
-    const notification = notifications.find(n => n.id == notificationId);
-    if (notification) {
-        notification.isRead = true;
-        localStorage.setItem(`notifications_${localStorage.getItem('userId')}`, JSON.stringify(notifications));
-        updateNotificationBadge();
-        loadNotificationsList();
-    }
-}
-
-function markAllNotificationsAsRead() {
-    const notifications = getUserNotifications();
-    notifications.forEach(n => n.isRead = true);
-    localStorage.setItem(`notifications_${localStorage.getItem('userId')}`, JSON.stringify(notifications));
-    updateNotificationBadge();
-    loadNotificationsList();
-    showToast('All notifications marked as read', 'success');
-}
-
-function deleteNotification(notificationId) {
-    if (!confirm('Delete this notification?')) return;
-    let notifications = getUserNotifications();
-    notifications = notifications.filter(n => n.id != notificationId);
-    localStorage.setItem(`notifications_${localStorage.getItem('userId')}`, JSON.stringify(notifications));
-    updateNotificationBadge();
-    loadNotificationsList();
-    showToast('Notification deleted', 'success');
-}
-
-function clearAllNotifications() {
-    if (!confirm('Delete all notifications?')) return;
-    localStorage.setItem(`notifications_${localStorage.getItem('userId')}`, JSON.stringify([]));
-    updateNotificationBadge();
-    loadNotificationsList();
-    showToast('All notifications cleared', 'success');
-}
-
-function loadNotificationsList() {
-    const notifications = getUserNotifications();
-    const container = document.getElementById('notificationsList');
-    const countSpan = document.getElementById('notificationsCount');
-
-    if (!container) return;
-    if (countSpan) countSpan.innerText = notifications.length;
-
-    if (notifications.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">
-            <i class="fas fa-bell-slash" style="font-size:2rem;"></i>
-            <p>No notifications yet</p>
-        </div>`;
-        return;
-    }
-
-    container.innerHTML = notifications.map(notif => `
-        <div class="notification-item" style="padding:0.8rem; border-bottom:1px solid rgba(100,180,250,0.1); background:${notif.isRead ? 'rgba(255,255,255,0.02)' : 'rgba(58,134,255,0.1)'};">
-            <div style="display:flex; justify-content:space-between;">
-                <div>
-                    <strong>${escapeHtml(notif.title)}</strong>
-                    ${!notif.isRead ? '<span style="background:#3a86ff; padding:2px 8px; border-radius:10px; font-size:0.6rem; margin-left:8px;">New</span>' : ''}
-                </div>
-                <button onclick="deleteNotification(${notif.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer;">&times;</button>
-            </div>
-            <div style="font-size:0.75rem; margin-top:4px;">${escapeHtml(notif.message)}</div>
-            <div style="font-size:0.6rem; color:rgba(255,255,255,0.4); margin-top:4px;">${notif.timestamp}</div>
-            ${!notif.isRead ? `<button onclick="markNotificationAsRead(${notif.id})" style="background:#64b4fa; border:none; color:white; padding:2px 10px; border-radius:15px; margin-top:5px; cursor:pointer; font-size:0.6rem;">Mark Read</button>` : ''}
-        </div>
-    `).join('');
-}
-
 function showNotificationsModal() {
     let modal = document.getElementById('notificationsModal');
     if (!modal) {
@@ -383,23 +283,27 @@ function showNotificationsModal() {
         `;
         document.body.appendChild(modal);
     }
-
-    loadNotificationsList();
+    const notifications = getUserNotifications();
     modal.innerHTML = `
         <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 24px; width: 90%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid rgba(100,180,250,0.3);">
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(100,180,250,0.1);">
-                <h3 style="color: white;"><i class="fas fa-bell"></i> Notifications <span id="notificationsCount" style="background:#3a86ff; padding:2px 8px; border-radius:20px; font-size:0.7rem;">0</span></h3>
-                <div>
-                    <button onclick="markAllNotificationsAsRead()" style="background:rgba(100,180,250,0.2); border:none; color:#64b4fa; padding:5px 10px; border-radius:20px; cursor:pointer; margin-right:8px;">Mark all read</button>
-                    <button onclick="clearAllNotifications()" style="background:rgba(231,76,60,0.2); border:none; color:#e74c3c; padding:5px 10px; border-radius:20px; cursor:pointer; margin-right:8px;">Clear all</button>
-                    <button onclick="closeNotificationsModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">&times;</button>
-                </div>
+                <h3 style="color: white;"><i class="fas fa-bell"></i> Notifications</h3>
+                <button onclick="closeNotificationsModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">&times;</button>
             </div>
-            <div id="notificationsList" style="flex:1; overflow-y: auto; padding: 0.5rem;"></div>
+            <div style="flex:1; overflow-y: auto; padding: 0.5rem;">
+                ${notifications.length === 0 ? '<div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">No notifications</div>' :
+            notifications.map(n => `
+                        <div style="padding:0.8rem; border-bottom:1px solid rgba(100,180,250,0.1); background:${n.isRead ? 'rgba(255,255,255,0.02)' : 'rgba(58,134,255,0.1)'};">
+                            <div><strong>${escapeHtml(n.title)}</strong> ${!n.isRead ? '<span style="background:#3a86ff; padding:2px 6px; border-radius:10px; font-size:0.6rem;">New</span>' : ''}</div>
+                            <div style="font-size:0.75rem; margin-top:4px;">${escapeHtml(n.message)}</div>
+                            <div style="font-size:0.6rem; color:rgba(255,255,255,0.4); margin-top:4px;">${n.timestamp}</div>
+                        </div>
+                    `).join('')
+        }
+            </div>
         </div>
     `;
     modal.style.display = 'flex';
-    updateNotificationBadge();
 }
 
 function closeNotificationsModal() {
@@ -460,7 +364,7 @@ function loadUserStats() {
     if (historyCountEl) historyCountEl.innerText = history.length;
 }
 
-// ========== MOVIES DISPLAY (From Admin's Data) ==========
+// ========== MOVIES DISPLAY ==========
 function loadMovies() {
     const movies = getAllMovies();
     displayMovies(movies);
@@ -513,150 +417,6 @@ function viewMovie(id) {
         currentMovieData = getMovieById(id);
         window.location.href = `watch-movie.html?id=${id}`;
     }
-}
-
-// ========== WATCH MOVIE PAGE ==========
-function loadMovieForWatch() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id');
-
-    if (!movieId) {
-        alert('No movie selected');
-        window.location.href = 'user-dashboard.html';
-        return;
-    }
-
-    currentMovieId = parseInt(movieId);
-    const movie = getMovieById(currentMovieId);
-
-    if (!movie) {
-        alert('Movie not found');
-        window.location.href = 'user-dashboard.html';
-        return;
-    }
-
-    currentMovieData = movie;
-
-    const titleEl = document.getElementById('movieTitle');
-    const yearEl = document.getElementById('movieYear');
-    const genreEl = document.getElementById('movieGenre');
-    const ratingEl = document.getElementById('movieRating');
-    const overviewEl = document.getElementById('movieOverview');
-
-    if (titleEl) titleEl.innerText = movie.title;
-    if (yearEl) yearEl.innerText = movie.year;
-    if (genreEl) genreEl.innerText = movie.genre;
-    if (ratingEl) ratingEl.innerText = '⭐ ' + movie.rating + '/10';
-    if (overviewEl) overviewEl.innerText = movie.overview;
-
-    const player = document.getElementById('moviePlayer');
-    if (player) {
-        const tmdbId = movie.tmdbId || movie.id;
-        player.src = `https://vidsrc.to/embed/movie/${tmdbId}`;
-    }
-
-    addToHistory('watch', movie);
-    loadCommentsForWatch(movieId);
-    updateActionButtons();
-}
-
-function updateActionButtons() {
-    if (!currentMovieId) return;
-    const favBtn = document.getElementById('favoriteBtn');
-    const watchlistBtn = document.getElementById('watchlistBtn');
-    const likeBtn = document.getElementById('likeBtn');
-
-    if (favBtn) {
-        if (isMovieFavorited(currentMovieId)) {
-            favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
-            favBtn.style.background = '#e74c3c';
-        } else {
-            favBtn.innerHTML = '<i class="far fa-heart"></i> Favorite';
-            favBtn.style.background = 'rgba(100,180,250,0.2)';
-        }
-    }
-
-    if (watchlistBtn) {
-        if (isMovieInWatchlist(currentMovieId)) {
-            watchlistBtn.innerHTML = '<i class="fas fa-bookmark"></i> In Watchlist';
-            watchlistBtn.style.background = '#2ecc71';
-        } else {
-            watchlistBtn.innerHTML = '<i class="far fa-bookmark"></i> Watchlist';
-            watchlistBtn.style.background = 'rgba(100,180,250,0.2)';
-        }
-    }
-}
-
-function toggleFavorite() {
-    if (!currentMovieId) return;
-    if (isMovieFavorited(currentMovieId)) {
-        removeFromFavorites(currentMovieId);
-    } else {
-        addToFavorites(currentMovieId);
-    }
-    updateActionButtons();
-}
-
-function toggleWatchlist() {
-    if (!currentMovieId) return;
-    if (isMovieInWatchlist(currentMovieId)) {
-        removeFromWatchlist(currentMovieId);
-    } else {
-        addToWatchlist(currentMovieId);
-    }
-    updateActionButtons();
-}
-
-function likeMovie() {
-    if (!currentMovieId) return;
-    addToLikes(currentMovieId);
-}
-
-// ========== COMMENTS FUNCTIONS (Fixed - No Replacement) ==========
-function loadCommentsForWatch(movieId) {
-    const container = document.getElementById('commentsList');
-    const countSpan = document.getElementById('commentsCount');
-
-    if (!container) return;
-
-    const comments = getMovieComments(movieId);
-
-    if (countSpan) countSpan.innerText = `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`;
-
-    if (comments.length === 0) {
-        container.innerHTML = '<div class="no-comments" style="text-align:center; padding:1rem; color:rgba(255,255,255,0.5);">No comments yet. Be the first to comment!</div>';
-        return;
-    }
-
-    const currentUser = localStorage.getItem('userName');
-
-    container.innerHTML = comments.map(c => `
-        <div class="comment-item" style="margin-bottom:1rem; border-bottom:1px solid rgba(100,180,250,0.1); padding-bottom:0.8rem;">
-            <div style="display:flex; gap:0.8rem;">
-                <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#3a86ff,#64b4fa); display:flex; align-items:center; justify-content:center;">
-                    <span style="font-size:0.8rem;">${c.userName ? c.userName.charAt(0).toUpperCase() : 'U'}</span>
-                </div>
-                <div style="flex:1;">
-                    <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                        <span style="font-weight:600; color:white;">${escapeHtml(c.userName || 'User')}</span>
-                        <span style="font-size:0.7rem; color:rgba(255,255,255,0.5);">${new Date(c.timestamp).toLocaleString()}</span>
-                    </div>
-                    <div style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-top:0.3rem;">${escapeHtml(c.text)}</div>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function addCommentForWatch() {
-    const input = document.getElementById('commentInput');
-    const comment = input?.value.trim();
-    if (!comment) { alert('Please write a comment'); return; }
-    if (!currentMovieId) return;
-
-    addComment(currentMovieId, comment);
-    input.value = '';
-    loadCommentsForWatch(currentMovieId);
 }
 
 // ========== FAVORITES PAGE ==========
@@ -1066,10 +826,38 @@ async function handleUserSignup(username, email, password, confirmPassword) {
     handleLocalSignup(username, email, password);
 }
 
+// ========== TRAILER FUNCTIONS ==========
+async function fetchMovieTrailer(movieTitle, movieYear) {
+    try {
+        const TMDB_API_KEY = '0fef51148b56778e567f9ceeac3fbc13';
+        let searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(movieTitle)}`;
+        if (movieYear) searchUrl += `&year=${movieYear}`;
 
+        const searchRes = await fetch(searchUrl);
+        const searchData = await searchRes.json();
 
-// Load movie for watch page (Enhanced version)
-function loadMovieForWatchEnhanced() {
+        if (searchData.results && searchData.results.length > 0) {
+            const movieId = searchData.results[0].id;
+            const videoUrl = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`;
+            const videoRes = await fetch(videoUrl);
+            const videoData = await videoRes.json();
+
+            let trailer = videoData.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+            if (!trailer) trailer = videoData.results?.find(v => v.type === 'Teaser' && v.site === 'YouTube');
+            if (!trailer) trailer = videoData.results?.find(v => v.site === 'YouTube');
+
+            if (trailer && trailer.key) {
+                return `https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`;
+            }
+        }
+        return `https://www.youtube.com/embed?listType=search&q=${encodeURIComponent(movieTitle + ' official trailer')}&autoplay=1`;
+    } catch (error) {
+        return `https://www.youtube.com/embed?listType=search&q=${encodeURIComponent(movieTitle + ' official trailer')}&autoplay=1`;
+    }
+}
+
+// ========== WATCH MOVIE PAGE FUNCTIONS ==========
+function loadMovieForWatch() {
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
 
@@ -1090,7 +878,6 @@ function loadMovieForWatchEnhanced() {
 
     currentMovieData = movie;
 
-    // Update all UI elements
     const titleEl = document.getElementById('movieTitle');
     const yearEl = document.getElementById('movieYear');
     const genreEl = document.getElementById('movieGenre');
@@ -1109,37 +896,25 @@ function loadMovieForWatchEnhanced() {
     if (castEl) castEl.innerText = movie.cast || 'Not specified';
     if (durationEl) durationEl.innerHTML = movie.duration || '—';
 
-   
-
-    // Update action buttons state
-    updateMovieActionButtons();
-
-    // Load comments
-    loadCommentsForWatch(currentMovieId);
-
-    // Add to history
-    addToHistory('watch', movie);
-
-    // Set user avatar in comment section
-    const userAvatar = localStorage.getItem('userAvatar');
-    const avatarContainer = document.getElementById('currentUserAvatar');
-    if (avatarContainer) {
-        if (userAvatar && userAvatar !== 'null') {
-            avatarContainer.innerHTML = `<img src="${userAvatar}" style="width:100%; height:100%; object-fit:cover;">`;
-        } else {
-            const userName = localStorage.getItem('userName') || 'U';
-            avatarContainer.innerHTML = `<span>${userName.charAt(0).toUpperCase()}</span>`;
-        }
+    const player = document.getElementById('moviePlayer');
+    if (player) {
+        player.src = 'about:blank';
+        showToast('Loading trailer...', 'info');
+        fetchMovieTrailer(movie.title, movie.year).then(trailerUrl => {
+            player.src = trailerUrl;
+        });
     }
+
+    updateMovieActionButtons();
+    loadCommentsForWatch(currentMovieId);
+    addToHistory('watch', movie);
+    setUserAvatar();
 }
 
-// Update movie action buttons state (Favorite/Watchlist/Like)
 function updateMovieActionButtons() {
     if (!currentMovieId) return;
-
     const favBtn = document.getElementById('favoriteBtn');
     const watchlistBtn = document.getElementById('watchlistBtn');
-    const likeBtn = document.getElementById('likeBtn');
 
     if (favBtn) {
         if (isMovieFavorited(currentMovieId)) {
@@ -1150,7 +925,6 @@ function updateMovieActionButtons() {
             favBtn.classList.remove('active');
         }
     }
-
     if (watchlistBtn) {
         if (isMovieInWatchlist(currentMovieId)) {
             watchlistBtn.innerHTML = '<i class="fas fa-bookmark"></i> In Watchlist';
@@ -1162,7 +936,6 @@ function updateMovieActionButtons() {
     }
 }
 
-// Toggle favorite from watch page
 function toggleMovieFavorite() {
     if (!currentMovieId) return;
     if (isMovieFavorited(currentMovieId)) {
@@ -1173,7 +946,6 @@ function toggleMovieFavorite() {
     updateMovieActionButtons();
 }
 
-// Toggle watchlist from watch page
 function toggleMovieWatchlist() {
     if (!currentMovieId) return;
     if (isMovieInWatchlist(currentMovieId)) {
@@ -1184,11 +956,9 @@ function toggleMovieWatchlist() {
     updateMovieActionButtons();
 }
 
-// Like movie from watch page
 function likeCurrentMovie() {
     if (!currentMovieId) return;
     addToLikes(currentMovieId);
-    // Update like button visual
     const likeBtn = document.getElementById('likeBtn');
     if (likeBtn) {
         likeBtn.innerHTML = '<i class="fas fa-thumbs-up"></i> Liked!';
@@ -1202,20 +972,15 @@ function likeCurrentMovie() {
     }
 }
 
-// Clear comment input
 function clearCommentInput() {
     const input = document.getElementById('commentInput');
     if (input) input.value = '';
 }
 
-// Enhanced add comment for watch page
 function addWatchComment() {
     const input = document.getElementById('commentInput');
     const comment = input?.value.trim();
-    if (!comment) {
-        showToast('Please write a comment', 'error');
-        return;
-    }
+    if (!comment) { showToast('Please write a comment', 'error'); return; }
     if (!currentMovieId) return;
 
     addComment(currentMovieId, comment);
@@ -1223,56 +988,12 @@ function addWatchComment() {
     loadCommentsForWatch(currentMovieId);
 }
 
-
-
-// ========== NOTIFICATION FUNCTIONS FOR WATCH PAGE ==========
-function showNotificationBell() {
-    if (typeof showNotificationsModal === 'function') {
-        showNotificationsModal();
-    }
-}
-
-// ========== OVERRIDE loadMovieForWatch if needed ==========
-// Agar pehle se loadMovieForWatch function hai to use override karo
-// Nahi to yeh function use hoga
-if (typeof window.loadMovieForWatch !== 'function') {
-    window.loadMovieForWatch = loadMovieForWatchEnhanced;
-} else {
-    // Agar already hai to enhanced version use karo
-    const originalLoadMovie = window.loadMovieForWatch;
-    window.loadMovieForWatch = function () {
-        originalLoadMovie();
-        // Additional enhancement
-        setTimeout(() => {
-            updateMovieActionButtons();
-            
-        }, 100);
-    };
-}
-
-// Make new functions global
-
-window.updateMovieActionButtons = updateMovieActionButtons;
-window.toggleMovieFavorite = toggleMovieFavorite;
-window.toggleMovieWatchlist = toggleMovieWatchlist;
-window.likeCurrentMovie = likeCurrentMovie;
-window.clearCommentInput = clearCommentInput;
-window.addWatchComment = addWatchComment;
-
-window.showNotificationBell = showNotificationBell;
-window.loadMovieForWatchEnhanced = loadMovieForWatchEnhanced;
-
-// ========== FIX: Make sure loadCommentsForWatch uses the correct function ==========
-// Ensure comments load properly
-const originalLoadComments = window.loadCommentsForWatch;
-window.loadCommentsForWatch = function (movieId) {
+function loadCommentsForWatch(movieId) {
     const container = document.getElementById('commentsList');
     const countSpan = document.getElementById('commentsCount');
-
     if (!container) return;
 
     const comments = getMovieComments(movieId || currentMovieId);
-
     if (countSpan) countSpan.innerText = `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`;
 
     if (comments.length === 0) {
@@ -1296,241 +1017,152 @@ window.loadCommentsForWatch = function (movieId) {
             </div>
         </div>
     `).join('');
-};
+}
 
-console.log('✅ Watch movie functions loaded successfully!');
-// ========== TRAILER FUNCTIONS ==========
-// Yeh function TMDB API se trailer fetch karega movie ke title ke according
-
-let currentTrailerUrl = '';
-
-async function fetchMovieTrailer(movieTitle, movieYear) {
-    try {
-        // Search movie on TMDB
-        const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=0fef51148b56778e567f9ceeac3fbc13&query=${encodeURIComponent(movieTitle)}&year=${movieYear}`;
-        const searchRes = await fetch(searchUrl);
-        const searchData = await searchRes.json();
-
-        if (searchData.results && searchData.results.length > 0) {
-            const movieId = searchData.results[0].id;
-
-            // Get videos for this movie
-            const videoUrl = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=0fef51148b56778e567f9ceeac3fbc13`;
-            const videoRes = await fetch(videoUrl);
-            const videoData = await videoRes.json();
-
-            // Find YouTube trailer
-            const trailer = videoData.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
-            if (trailer) {
-                return `https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`;
-            }
+function setUserAvatar() {
+    const userAvatar = localStorage.getItem('userAvatar');
+    const avatarContainer = document.getElementById('currentUserAvatar');
+    if (avatarContainer) {
+        if (userAvatar && userAvatar !== 'null') {
+            avatarContainer.innerHTML = `<img src="${userAvatar}" style="width:100%; height:100%; object-fit:cover;">`;
+        } else {
+            const userName = localStorage.getItem('userName') || 'U';
+            avatarContainer.innerHTML = `<span>${userName.charAt(0).toUpperCase()}</span>`;
         }
-
-        // Fallback: Search YouTube directly
-        return `https://www.youtube.com/embed?listType=search&q=${encodeURIComponent(movieTitle + ' ' + movieYear + ' official trailer')}&autoplay=1`;
-
-    } catch (error) {
-        console.error('Error fetching trailer:', error);
-        // Fallback YouTube search
-        return `https://www.youtube.com/embed?listType=search&q=${encodeURIComponent(movieTitle + ' official trailer')}&autoplay=1`;
     }
 }
 
-// Updated loadMovieForWatch function
-const originalLoadMovieForWatch = window.loadMovieForWatch || function () { };
-
-window.loadMovieForWatch = async function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id');
-
-    if (!movieId) {
-        alert('No movie selected');
-        window.location.href = 'user-dashboard.html';
-        return;
+// ========== INDEX PAGE FUNCTIONS ==========
+function initIndexPage() {
+    const loginBtn = document.getElementById('loginSubmitBtn');
+    if (loginBtn) {
+        loginBtn.onclick = function () {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) { alert('Please enter email and password'); return; }
+            handleUserLogin(email, password);
+        };
     }
 
-    currentMovieId = parseInt(movieId);
-    const movie = getMovieById(currentMovieId);
-
-    if (!movie) {
-        alert('Movie not found');
-        window.location.href = 'user-dashboard.html';
-        return;
+    const signupBtn = document.getElementById('signupSubmitBtn');
+    if (signupBtn) {
+        signupBtn.onclick = function () {
+            const username = document.getElementById('signupUsername').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            if (!username || !email || !password) { alert('Please fill all fields'); return; }
+            if (password !== confirmPassword) { alert('Passwords do not match!'); return; }
+            if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
+            handleUserSignup(username, email, password, confirmPassword);
+        };
     }
 
-    currentMovieData = movie;
+    const showSignup = document.getElementById('showSignupBtn');
+    if (showSignup) showSignup.onclick = function () {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'block';
+    };
 
-    // Update UI elements
-    const titleEl = document.getElementById('movieTitle');
-    const yearEl = document.getElementById('movieYear');
-    const genreEl = document.getElementById('movieGenre');
-    const ratingEl = document.getElementById('movieRating');
-    const overviewEl = document.getElementById('movieOverview');
-    const directorEl = document.getElementById('movieDirector');
-    const castEl = document.getElementById('movieCast');
-    const durationEl = document.getElementById('movieDuration');
+    const showLogin = document.getElementById('showLoginBtn');
+    if (showLogin) showLogin.onclick = function () {
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+    };
 
-    if (titleEl) titleEl.innerText = movie.title;
-    if (yearEl) yearEl.innerText = movie.year || 'N/A';
-    if (genreEl) genreEl.innerText = movie.genre || 'General';
-    if (ratingEl) ratingEl.innerText = '⭐ ' + (movie.rating || '0') + '/10';
-    if (overviewEl) overviewEl.innerText = movie.overview || 'No description available.';
-    if (directorEl) directorEl.innerText = movie.director || 'Not specified';
-    if (castEl) castEl.innerText = movie.cast || 'Not specified';
-    if (durationEl) durationEl.innerHTML = movie.duration || '—';
+    const forgotPassword = document.getElementById('forgotPassword');
+    if (forgotPassword) forgotPassword.onclick = function () {
+        alert('Contact admin to reset password: admin@filmfusion.com');
+    };
 
-    // Load trailer from TMDB
-    const player = document.getElementById('moviePlayer');
-    if (player) {
-        player.src = 'about:blank';
-        showToast('Loading trailer...', 'info');
-        const trailerUrl = await fetchMovieTrailer(movie.title, movie.year);
-        player.src = trailerUrl;
-    }
-
-    // Update action buttons state
-    updateMovieActionButtons();
-
-    // Load comments
-    if (typeof loadCommentsForWatch === 'function') {
-        loadCommentsForWatch(currentMovieId);
-    }
-
-    // Add to history
-    addToHistory('watch', movie);
-};
-
-// Make sure functions are global
-window.fetchMovieTrailer = fetchMovieTrailer;
-window.loadMovieForWatch = loadMovieForWatch;
-window.updateMovieActionButtons = updateMovieActionButtons;
-window.toggleMovieFavorite = toggleMovieFavorite;
-window.toggleMovieWatchlist = toggleMovieWatchlist;
-window.likeCurrentMovie = likeCurrentMovie;
-window.clearCommentInput = clearCommentInput;
-window.addWatchComment = addWatchComment;
-
-console.log('✅ Movie trailer functions loaded successfully!');
-
-// ========== WELCOME PAGE FUNCTIONS - ADD AT THE END OF script.js ==========
-
-// Navigation scroll function
-function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-}
-
-// Get Started button handler
-function handleGetStarted() {
-    window.location.href = 'index.html';
-}
-
-// Explore Features button handler
-function handleExploreFeatures() {
-    scrollToSection('features');
-}
-
-// Admin modal handlers
-function showAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) modal.classList.add('active');
-}
-
-function closeAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) modal.classList.remove('active');
-}
-
-function handleAdminLogin() {
-    const email = document.getElementById('adminEmail').value;
-    const password = document.getElementById('adminPassword').value;
-
-    if (email === 'admin@filmfusion.com' && password === 'admin123') {
-        localStorage.setItem('userId', 'admin_001');
-        localStorage.setItem('userName', 'Admin');
-        localStorage.setItem('userRole', 'Admin');
-        localStorage.setItem('userEmail', email);
-        window.location.href = 'admin-dashboard.html';
-    } else {
-        alert('Invalid admin credentials! Use: admin@filmfusion.com / admin123');
-    }
-}
-
-// Initialize welcome page if on welcome.html
-function initWelcomePage() {
-    // Check if we are on welcome page
-    if (!document.getElementById('getStartedBtn')) return;
-
-    // Get Started buttons
-    const getStartedBtn = document.getElementById('getStartedBtn');
-    const getStartedBtn2 = document.getElementById('getStartedBtn2');
-
-    if (getStartedBtn) getStartedBtn.onclick = handleGetStarted;
-    if (getStartedBtn2) getStartedBtn2.onclick = handleGetStarted;
-
-    // Explore Features button
-    const exploreBtn = document.getElementById('exploreFeaturesBtn');
-    if (exploreBtn) exploreBtn.onclick = handleExploreFeatures;
-
-    // Navigation links
-    const homeNav = document.getElementById('homeNav');
-    const featuresNav = document.getElementById('featuresNav');
-    const aboutNav = document.getElementById('aboutNav');
-    const scrollIndicator = document.getElementById('scrollIndicator');
-
-    if (homeNav) homeNav.onclick = () => scrollToSection('home');
-    if (featuresNav) featuresNav.onclick = () => scrollToSection('features');
-    if (aboutNav) aboutNav.onclick = () => scrollToSection('about');
-    if (scrollIndicator) scrollIndicator.onclick = () => scrollToSection('features');
-
-    // Admin modal
     const adminLink = document.getElementById('adminLink');
-    const adminModalClose = document.getElementById('closeAdminModal');
+    const adminModal = document.getElementById('adminModal');
+    const closeAdminModal = document.getElementById('closeAdminModal');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
 
-    if (adminLink) adminLink.onclick = showAdminModal;
-    if (adminModalClose) adminModalClose.onclick = closeAdminModal;
-    if (adminLoginBtn) adminLoginBtn.onclick = handleAdminLogin;
+    if (adminLink) adminLink.onclick = function () { if (adminModal) adminModal.classList.add('active'); };
+    if (closeAdminModal) closeAdminModal.onclick = function () { if (adminModal) adminModal.classList.remove('active'); };
+    if (adminLoginBtn) {
+        adminLoginBtn.onclick = function () {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            if (email === 'admin@filmfusion.com' && password === 'admin123') {
+                localStorage.setItem('userId', 'admin_001');
+                localStorage.setItem('userName', 'Admin');
+                localStorage.setItem('userRole', 'Admin');
+                localStorage.setItem('userEmail', email);
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('Invalid admin credentials! Use: admin@filmfusion.com / admin123');
+            }
+        };
+    }
 
-    // Close modal when clicking outside
-    window.onclick = function (e) {
-        const modal = document.getElementById('adminModal');
-        if (e.target === modal) closeAdminModal();
-    };
+    window.onclick = function (e) { if (e.target === adminModal && adminModal) adminModal.classList.remove('active'); };
 }
 
-// Call welcome page init when DOM loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initWelcomePage);
-} else {
-    initWelcomePage();
-}
-
-console.log('✅ Welcome page functions loaded successfully!');
-
-// ========== PAGE INITIALIZATION ==========
+// ========== DOM CONTENT LOADED ==========
 document.addEventListener('DOMContentLoaded', function () {
     initializeDefaultData();
     addNotificationStyles();
 
-    // Dashboard page
-    if (document.getElementById('moviesGrid') && !document.getElementById('statsGrid')) {
-        const userId = localStorage.getItem('userId');
-        if (!userId || userId === 'null') {
-            window.location.href = 'index.html';
-            return;
+    const isIndexPage = document.getElementById('loginSubmitBtn') !== null;
+    const isWelcomePage = document.getElementById('getStartedBtn') !== null;
+    const isDashboardPage = document.getElementById('moviesGrid') !== null && !document.getElementById('statsGrid');
+    const isFavoritesPage = document.getElementById('favoritesGrid') !== null;
+    const isWatchlistPage = document.getElementById('watchlistGrid') !== null;
+    const isHistoryPage = document.getElementById('historyList') !== null;
+    const isProfilePage = document.getElementById('profileName') !== null;
+    const isWatchMoviePage = document.getElementById('moviePlayer') !== null;
+
+    if (isIndexPage) { initIndexPage(); return; }
+
+    if (isWelcomePage) {
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const getStartedBtn2 = document.getElementById('getStartedBtn2');
+        const exploreBtn = document.getElementById('exploreFeaturesBtn');
+        const homeNav = document.getElementById('homeNav');
+        const featuresNav = document.getElementById('featuresNav');
+        const aboutNav = document.getElementById('aboutNav');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        const adminLink = document.getElementById('adminLink');
+        const adminModalClose = document.getElementById('closeAdminModal');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminModal = document.getElementById('adminModal');
+
+        if (getStartedBtn) getStartedBtn.onclick = () => window.location.href = 'index.html';
+        if (getStartedBtn2) getStartedBtn2.onclick = () => window.location.href = 'index.html';
+        if (exploreBtn) exploreBtn.onclick = () => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+        if (homeNav) homeNav.onclick = () => document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
+        if (featuresNav) featuresNav.onclick = () => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+        if (aboutNav) aboutNav.onclick = () => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+        if (scrollIndicator) scrollIndicator.onclick = () => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+        if (adminLink) adminLink.onclick = () => { if (adminModal) adminModal.classList.add('active'); };
+        if (adminModalClose) adminModalClose.onclick = () => { if (adminModal) adminModal.classList.remove('active'); };
+        if (adminLoginBtn) {
+            adminLoginBtn.onclick = () => {
+                const email = document.getElementById('adminEmail')?.value;
+                const password = document.getElementById('adminPassword')?.value;
+                if (email === 'admin@filmfusion.com' && password === 'admin123') {
+                    localStorage.setItem('userId', 'admin_001');
+                    localStorage.setItem('userName', 'Admin');
+                    localStorage.setItem('userRole', 'Admin');
+                    localStorage.setItem('userEmail', email);
+                    window.location.href = 'admin-dashboard.html';
+                } else { alert('Invalid admin credentials!'); }
+            };
         }
+        return;
+    }
+
+    if (isDashboardPage) {
+        const userId = localStorage.getItem('userId');
+        if (!userId || userId === 'null') { window.location.href = 'index.html'; return; }
         loadUserStats();
         loadMovies();
-
-        // Set welcome message
         const userName = localStorage.getItem('userName');
         const nameSpan = document.getElementById('userNameDisplay');
         if (nameSpan && userName) nameSpan.innerText = userName;
-
-        // Set avatar
         const navAvatar = document.getElementById('navUserAvatar');
         const userAvatar = localStorage.getItem('userAvatar');
         if (navAvatar) {
@@ -1540,45 +1172,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 navAvatar.innerHTML = `<span>${userName.charAt(0).toUpperCase()}</span>`;
             }
         }
-
         const navUserName = document.getElementById('navUserName');
         if (navUserName && userName) navUserName.innerText = userName;
-
         const navUserEmail = document.getElementById('navUserEmail');
         if (navUserEmail) navUserEmail.innerText = localStorage.getItem('userEmail') || '';
-
         updateNotificationBadge();
         addWelcomeNotification();
         addDailyNotification();
+        return;
     }
 
-    // Favorites page
-    if (document.getElementById('favoritesGrid')) {
-        loadFavorites();
-    }
-
-    // Watchlist page
-    if (document.getElementById('watchlistGrid')) {
-        loadWatchlist();
-    }
-
-    // History page
-    if (document.getElementById('historyList')) {
-        loadHistory();
-    }
-
-    // Profile page
-    if (document.getElementById('profileName')) {
-        loadProfile();
-    }
-
-    // Watch movie page
-    if (document.getElementById('moviePlayer')) {
-        loadMovieForWatch();
-    }
+    if (isFavoritesPage) loadFavorites();
+    if (isWatchlistPage) loadWatchlist();
+    if (isHistoryPage) loadHistory();
+    if (isProfilePage) loadProfile();
+    if (isWatchMoviePage) loadMovieForWatch();
 });
 
-// Make functions global
+// ========== GLOBAL FUNCTIONS ==========
 window.viewMovie = viewMovie;
 window.searchMovies = searchMovies;
 window.filterByGenre = filterByGenre;
@@ -1593,10 +1204,6 @@ window.loadHistory = loadHistory;
 window.clearHistory = clearHistory;
 window.showNotificationsModal = showNotificationsModal;
 window.closeNotificationsModal = closeNotificationsModal;
-window.markNotificationAsRead = markNotificationAsRead;
-window.markAllNotificationsAsRead = markAllNotificationsAsRead;
-window.deleteNotification = deleteNotification;
-window.clearAllNotifications = clearAllNotifications;
 window.updateNotificationBadge = updateNotificationBadge;
 window.openEditModal = openEditModal;
 window.closeEditModal = closeEditModal;
@@ -1610,3 +1217,13 @@ window.handleGalleryUpload = handleGalleryUpload;
 window.logout = logout;
 window.removeFromFavorites = removeFromFavorites;
 window.removeFromWatchlist = removeFromWatchlist;
+window.toggleMovieFavorite = toggleMovieFavorite;
+window.toggleMovieWatchlist = toggleMovieWatchlist;
+window.likeCurrentMovie = likeCurrentMovie;
+window.clearCommentInput = clearCommentInput;
+window.addWatchComment = addWatchComment;
+window.loadMovieForWatch = loadMovieForWatch;
+window.fetchMovieTrailer = fetchMovieTrailer;
+window.updateMovieActionButtons = updateMovieActionButtons;
+
+console.log('✅ FilmFusion script loaded successfully!');

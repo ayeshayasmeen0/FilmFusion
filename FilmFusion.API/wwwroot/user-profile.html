@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - FilmFusion</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* Video Background */
         .video-background {
             position: fixed;
             top: 0;
@@ -40,7 +39,6 @@
             z-index: -1;
         }
 
-        /* Glow Effects */
         .glow {
             position: fixed;
             top: 20%;
@@ -61,7 +59,6 @@
             background: radial-gradient(circle, rgba(100,180,250,0.08) 0%, transparent 70%);
         }
 
-        /* Navbar */
         .dashboard-nav {
             background: rgba(10, 20, 30, 0.95);
             backdrop-filter: blur(20px);
@@ -142,11 +139,14 @@
             border: 1px solid rgba(231,76,60,0.3);
             color: #e74c3c;
             padding: 0.5rem 1rem;
-            border-radius: 12px;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
             font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
             .logout-btn:hover {
@@ -154,14 +154,12 @@
                 transform: translateY(-2px);
             }
 
-        /* Dashboard Content */
         .dashboard-content {
             max-width: 900px;
             margin: 0 auto;
             padding: 1.5rem;
         }
 
-        /* Profile Container */
         .profile-container {
             background: rgba(10, 20, 30, 0.55);
             backdrop-filter: blur(15px);
@@ -230,7 +228,6 @@
             border-radius: 30px;
         }
 
-        /* Profile Body */
         .profile-body {
             padding: 1.5rem;
         }
@@ -302,7 +299,7 @@
             background: linear-gradient(135deg, #3a86ff, #64b4fa);
             border: none;
             color: white;
-            padding: 0.6rem 1.2rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
@@ -313,7 +310,7 @@
             gap: 0.5rem;
             transition: all 0.3s;
             margin-top: 0.8rem;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
             .edit-profile-btn:hover {
@@ -326,7 +323,6 @@
             border: 1px solid rgba(100,180,250,0.25);
         }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -356,32 +352,45 @@
             max-width: 500px;
             width: 90%;
             border: 1px solid rgba(100,180,250,0.3);
+            animation: modalSlide 0.3s ease;
         }
 
-            .modal-content h2 {
-                color: white;
-                margin-bottom: 1.2rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 1.2rem;
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
             }
 
-            .modal-content input, .modal-content textarea {
-                width: 100%;
-                padding: 0.7rem 1rem;
-                margin-bottom: 0.8rem;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(100,180,250,0.3);
-                border-radius: 14px;
-                color: white;
-                font-size: 0.85rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-                .modal-content input:focus, .modal-content textarea:focus {
-                    outline: none;
-                    border-color: #64b4fa;
-                }
+        .modal-content h2 {
+            color: white;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            margin-bottom: 0.8rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(100,180,250,0.3);
+            border-radius: 14px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+            .modal-content input:focus, .modal-content textarea:focus {
+                outline: none;
+                border-color: #64b4fa;
+            }
 
         .modal-buttons {
             display: flex;
@@ -399,7 +408,12 @@
             cursor: pointer;
             font-weight: 500;
             font-size: 0.85rem;
+            transition: all 0.3s;
         }
+
+            .save-btn:hover {
+                transform: translateY(-2px);
+            }
 
         .cancel-btn {
             flex: 1;
@@ -410,7 +424,12 @@
             color: #e74c3c;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: all 0.3s;
         }
+
+            .cancel-btn:hover {
+                background: rgba(231,76,60,0.3);
+            }
 
         .avatar-options {
             display: flex;
@@ -491,7 +510,6 @@
     </style>
 </head>
 <body>
-    <!-- Video Background -->
     <video class="video-background" autoplay muted loop playsinline>
         <source src="videos/v3.mp4" type="video/mp4">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
@@ -514,7 +532,7 @@
                     <a href="user-history.html"><i class="fas fa-history"></i> History</a>
                     <a href="user-profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
                 </div>
-                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </nav>
 
@@ -522,8 +540,8 @@
             <div class="profile-container">
                 <div class="profile-header">
                     <div class="avatar-section">
-                        <img id="profileAvatar" class="profile-avatar" src="">
-                        <div class="camera-btn" onclick="openAvatarModal()">
+                        <img id="profileAvatar" class="profile-avatar" src="" alt="Profile Avatar">
+                        <div class="camera-btn" id="cameraBtn">
                             <i class="fas fa-camera"></i>
                         </div>
                     </div>
@@ -533,9 +551,7 @@
 
                 <div class="profile-body">
                     <div class="info-section">
-                        <div class="info-title">
-                            <i class="fas fa-user-circle"></i> Personal Information
-                        </div>
+                        <div class="info-title"><i class="fas fa-user-circle"></i> Personal Information</div>
                         <div class="info-grid">
                             <div class="info-card-item">
                                 <div class="info-card-label"><i class="fas fa-envelope"></i> Email</div>
@@ -549,22 +565,18 @@
                     </div>
 
                     <div class="info-section">
-                        <div class="info-title">
-                            <i class="fas fa-pencil-alt"></i> Bio
-                        </div>
+                        <div class="info-title"><i class="fas fa-pencil-alt"></i> Bio</div>
                         <div class="bio-text" id="profileBio">Loading...</div>
                     </div>
 
                     <div class="info-section">
-                        <div class="info-title">
-                            <i class="fas fa-shield-alt"></i> Account Security
-                        </div>
-                        <button class="edit-profile-btn security-btn" onclick="openChangePasswordModal()">
+                        <div class="info-title"><i class="fas fa-shield-alt"></i> Account Security</div>
+                        <button class="edit-profile-btn security-btn" id="changePasswordBtn">
                             <i class="fas fa-key"></i> Change Password
                         </button>
                     </div>
 
-                    <button class="edit-profile-btn" onclick="openEditModal()">
+                    <button class="edit-profile-btn" id="editProfileBtn">
                         <i class="fas fa-user-edit"></i> Edit Profile
                     </button>
                 </div>
@@ -580,8 +592,8 @@
             <input type="email" id="editEmail" placeholder="Email">
             <textarea id="editBio" placeholder="Write something about yourself..." rows="3"></textarea>
             <div class="modal-buttons">
-                <button class="save-btn" onclick="saveProfile()">Save Changes</button>
-                <button class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                <button class="save-btn" id="saveProfileBtn">Save Changes</button>
+                <button class="cancel-btn" id="closeEditModalBtn">Cancel</button>
             </div>
         </div>
     </div>
@@ -594,8 +606,8 @@
             <input type="password" id="newPassword" placeholder="New Password">
             <input type="password" id="confirmPassword" placeholder="Confirm New Password">
             <div class="modal-buttons">
-                <button class="save-btn" onclick="changePassword()">Update Password</button>
-                <button class="cancel-btn" onclick="closePasswordModal()">Cancel</button>
+                <button class="save-btn" id="changePasswordSubmitBtn">Update Password</button>
+                <button class="cancel-btn" id="closePasswordModalBtn">Cancel</button>
             </div>
         </div>
     </div>
@@ -605,31 +617,331 @@
         <div class="modal-content">
             <h2><i class="fas fa-camera"></i> Update Profile Picture</h2>
             <div class="avatar-options">
-                <div class="avatar-option" onclick="openGallery()">
+                <div class="avatar-option" id="galleryOption">
                     <i class="fas fa-images"></i>
                     <p>Gallery</p>
                 </div>
-                <div class="avatar-option" onclick="document.getElementById('cameraInput').click()">
+                <div class="avatar-option" id="cameraOption">
                     <i class="fas fa-camera"></i>
                     <p>Camera</p>
                 </div>
             </div>
-            <input type="file" id="galleryInput" accept="image/*" onchange="handleGalleryUpload(this)">
+            <input type="file" id="galleryInput" accept="image/*">
             <input type="file" id="cameraInput" accept="image/*" capture="environment">
             <div class="modal-buttons">
-                <button class="cancel-btn" onclick="closeAvatarModal()">Close</button>
+                <button class="cancel-btn" id="closeAvatarModalBtn">Close</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
-        if (!localStorage.getItem('userId')) window.location.href = 'index.html';
+        // ========== HELPER FUNCTIONS ==========
+
+        // Get element safely
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        // Show toast message
+        function showToast(message, type) {
+            var toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: ' + (type === 'success' ? '#27ae60' : '#e74c3c') + '; color: white; padding: 12px 20px; border-radius: 12px; font-size: 0.85rem; z-index: 9999; animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2);';
+            toast.innerHTML = '<i class="fas ' + (type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle') + '"></i> ' + message;
+            document.body.appendChild(toast);
+            setTimeout(function() { if(toast && toast.remove) toast.remove(); }, 3000);
+        }
+
+        // ========== PROFILE DATA ==========
+
+        function loadProfileData() {
+            var userName = localStorage.getItem('userName') || 'User';
+            var userEmail = localStorage.getItem('userEmail') || 'user@filmfusion.com';
+            var userBio = localStorage.getItem('userBio') || 'Movie enthusiast who loves discovering new films.';
+            var userJoined = localStorage.getItem('userJoined') || new Date().toLocaleDateString();
+            var userAvatar = localStorage.getItem('userAvatar');
+
+            var nameEl = $('profileName');
+            var emailEl = $('profileEmail');
+            var bioEl = $('profileBio');
+            var joinedEl = $('profileJoined');
+            var avatarEl = $('profileAvatar');
+
+            if(nameEl) nameEl.innerText = userName;
+            if(emailEl) emailEl.innerText = userEmail;
+            if(bioEl) bioEl.innerText = userBio;
+            if(joinedEl) joinedEl.innerText = userJoined;
+
+            if(avatarEl) {
+                if(userAvatar && userAvatar !== 'null') {
+                    avatarEl.src = userAvatar;
+                } else {
+                    avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName) + '&background=3a86ff&color=fff&size=130';
+                }
+            }
+        }
+
+        // ========== MODAL FUNCTIONS ==========
+
+        function openEditModal() {
+            var modal = $('editModal');
+            var usernameEl = $('editUsername');
+            var emailEl = $('editEmail');
+            var bioEl = $('editBio');
+
+            if(modal) {
+                if(usernameEl) usernameEl.value = localStorage.getItem('userName') || '';
+                if(emailEl) emailEl.value = localStorage.getItem('userEmail') || '';
+                if(bioEl) bioEl.value = localStorage.getItem('userBio') || '';
+                modal.classList.add('active');
+            }
+        }
+
+        function closeEditModal() {
+            var modal = $('editModal');
+            if(modal) modal.classList.remove('active');
+        }
+
+        function openPasswordModal() {
+            var modal = $('passwordModal');
+            var oldPassEl = $('oldPassword');
+            var newPassEl = $('newPassword');
+            var confirmPassEl = $('confirmPassword');
+
+            if(modal) {
+                if(oldPassEl) oldPassEl.value = '';
+                if(newPassEl) newPassEl.value = '';
+                if(confirmPassEl) confirmPassEl.value = '';
+                modal.classList.add('active');
+            }
+        }
+
+        function closePasswordModal() {
+            var modal = $('passwordModal');
+            if(modal) modal.classList.remove('active');
+        }
+
+        function openAvatarModal() {
+            var modal = $('avatarModal');
+            if(modal) modal.classList.add('active');
+        }
+
+        function closeAvatarModal() {
+            var modal = $('avatarModal');
+            if(modal) modal.classList.remove('active');
+        }
+
+        // ========== SAVE PROFILE ==========
+
+        function saveProfile() {
+            var userId = localStorage.getItem('userId');
+            var usernameEl = $('editUsername');
+            var emailEl = $('editEmail');
+            var bioEl = $('editBio');
+
+            var newUsername = usernameEl ? usernameEl.value : '';
+            var newEmail = emailEl ? emailEl.value : '';
+            var newBio = bioEl ? bioEl.value : '';
+
+            if(!newUsername || !newEmail) {
+                alert('Username and email are required!');
+                return;
+            }
+
+            localStorage.setItem('userName', newUsername);
+            localStorage.setItem('userEmail', newEmail);
+            localStorage.setItem('userBio', newBio);
+
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+            var userIndex = -1;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i].id == userId) {
+                    userIndex = i;
+                    break;
+                }
+            }
+
+            if(userIndex !== -1) {
+                users[userIndex].username = newUsername;
+                users[userIndex].email = newEmail;
+                users[userIndex].bio = newBio;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            loadProfileData();
+            closeEditModal();
+            showToast('Profile updated successfully!', 'success');
+        }
+
+        // ========== CHANGE PASSWORD ==========
+
+        function changePassword() {
+            var userEmail = localStorage.getItem('userEmail');
+            var oldPassEl = $('oldPassword');
+            var newPassEl = $('newPassword');
+            var confirmPassEl = $('confirmPassword');
+
+            var oldPassword = oldPassEl ? oldPassEl.value : '';
+            var newPassword = newPassEl ? newPassEl.value : '';
+            var confirmPassword = confirmPassEl ? confirmPassEl.value : '';
+
+            if(!oldPassword || !newPassword || !confirmPassword) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            if(newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            if(newPassword.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+            var userIndex = -1;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i].email === userEmail) {
+                    userIndex = i;
+                    break;
+                }
+            }
+
+            if(userIndex === -1) {
+                alert('User not found!');
+                return;
+            }
+
+            if(users[userIndex].password !== oldPassword) {
+                alert('Current password is incorrect!');
+                return;
+            }
+
+            users[userIndex].password = newPassword;
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('userPassword', newPassword);
+
+            alert('✅ Password changed successfully!');
+            closePasswordModal();
+
+            if(confirm('Password changed! Please login again with your new password.')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ========== AVATAR UPLOAD ==========
+
+        function handleFileUpload(fileInput) {
+            if(!fileInput) return;
+            var file = fileInput.files[0];
+            if(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if(e.target && e.target.result) {
+                        setAvatar(e.target.result);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function setAvatar(imageUrl) {
+            if(!imageUrl) return;
+
+            localStorage.setItem('userAvatar', imageUrl);
+
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+            var userId = localStorage.getItem('userId');
+            var userIndex = -1;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i].id == userId) {
+                    userIndex = i;
+                    break;
+                }
+            }
+
+            if(userIndex !== -1) {
+                users[userIndex].profilePicture = imageUrl;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            var avatarEl = $('profileAvatar');
+            if(avatarEl) avatarEl.src = imageUrl;
+
+            closeAvatarModal();
+            showToast('Profile picture updated!', 'success');
+        }
+
+        // ========== LOGOUT ==========
 
         function logout() {
-            localStorage.clear();
+            if(confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ========== CHECK LOGIN ==========
+
+        if(!localStorage.getItem('userId')) {
             window.location.href = 'index.html';
         }
+
+        // ========== INITIALIZE ==========
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+
+            var logoutBtn = $('logoutBtn');
+            var cameraBtn = $('cameraBtn');
+            var editProfileBtn = $('editProfileBtn');
+            var changePasswordBtn = $('changePasswordBtn');
+            var saveProfileBtn = $('saveProfileBtn');
+            var closeEditModalBtn = $('closeEditModalBtn');
+            var changePasswordSubmitBtn = $('changePasswordSubmitBtn');
+            var closePasswordModalBtn = $('closePasswordModalBtn');
+            var closeAvatarModalBtn = $('closeAvatarModalBtn');
+            var galleryOption = $('galleryOption');
+            var cameraOption = $('cameraOption');
+            var galleryInput = $('galleryInput');
+            var cameraInput = $('cameraInput');
+
+            if(logoutBtn) logoutBtn.onclick = logout;
+            if(cameraBtn) cameraBtn.onclick = openAvatarModal;
+            if(editProfileBtn) editProfileBtn.onclick = openEditModal;
+            if(changePasswordBtn) changePasswordBtn.onclick = openPasswordModal;
+            if(saveProfileBtn) saveProfileBtn.onclick = saveProfile;
+            if(closeEditModalBtn) closeEditModalBtn.onclick = closeEditModal;
+            if(changePasswordSubmitBtn) changePasswordSubmitBtn.onclick = changePassword;
+            if(closePasswordModalBtn) closePasswordModalBtn.onclick = closePasswordModal;
+            if(closeAvatarModalBtn) closeAvatarModalBtn.onclick = closeAvatarModal;
+
+            if(galleryOption) {
+                galleryOption.onclick = function() {
+                    if(galleryInput) galleryInput.click();
+                };
+            }
+
+            if(cameraOption) {
+                cameraOption.onclick = function() {
+                    if(cameraInput) cameraInput.click();
+                };
+            }
+
+            if(galleryInput) {
+                galleryInput.onchange = function() {
+                    handleFileUpload(galleryInput);
+                };
+            }
+
+            if(cameraInput) {
+                cameraInput.onchange = function() {
+                    handleFileUpload(cameraInput);
+                };
+            }
+        });
     </script>
 </body>
 </html>

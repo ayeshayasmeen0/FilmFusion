@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FilmFusion - Dashboard | Live Notifications & Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* VIDEO BACKGROUND */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 30, 60, 0.75));
+            z-index: -1;
+        }
+
+        .glow {
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(58,134,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            top: 60%;
+            left: auto;
+            right: 5%;
+            background: radial-gradient(circle, rgba(100,180,250,0.1) 0%, transparent 70%);
+        }
+
+        /* NAVBAR */
+        .dashboard-nav {
+            background: rgba(10, 20, 30, 0.92);
+            backdrop-filter: blur(20px);
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(100, 180, 250, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.6rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%,100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #64b4fa, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+            .nav-links a {
+                text-decoration: none;
+                color: rgba(255,255,255,0.7);
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 40px;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+                .nav-links a:hover, .nav-links a.active {
+                    background: rgba(100,180,250,0.15);
+                    color: #64b4fa;
+                    transform: translateY(-2px);
+                }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* NOTIFICATION BELL & MODAL */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            background: rgba(100, 180, 250, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+            .notification-bell:hover {
+                background: rgba(100, 180, 250, 0.2);
+                transform: scale(1.05);
+            }
+
+            .notification-bell i {
+                font-size: 1.2rem;
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* NOTIFICATION MODAL */
+        .notif-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+            .notif-modal-overlay.active {
+                visibility: visible;
+                opacity: 1;
+            }
+
+        .notif-modal {
+            background: rgba(15, 25, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 70vh;
+            border: 1px solid rgba(100,180,250,0.3);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .notif-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(100,180,250,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .notif-header h3 {
+                color: white;
+                font-size: 1.2rem;
+            }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .notif-list {
+            padding: 0.8rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .notif-item {
+            background: rgba(100,180,250,0.08);
+            border-radius: 16px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid #3a86ff;
+        }
+
+            .notif-item.new {
+                background: rgba(58,134,255,0.2);
+                border-left-color: #ffc107;
+            }
+
+        .notif-title {
+            font-weight: 600;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .notif-desc {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+        }
+
+        .notif-time {
+            font-size: 0.65rem;
+            color: #64b4fa;
+            margin-top: 5px;
+        }
+
+        .clear-notif {
+            background: rgba(231,76,60,0.2);
+            border: none;
+            color: #e74c3c;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin: 0.5rem auto;
+            width: fit-content;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3a86ff, #64b4fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(100,180,250,0.3);
+        }
+
+        .user-profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(20,30,40,0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1000;
+            border: 1px solid rgba(100,180,250,0.2);
+        }
+
+        .user-profile-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+            .dropdown-item:hover {
+                background: rgba(100,180,250,0.1);
+                color: #64b4fa;
+            }
+
+        .logout-dropdown {
+            color: #e74c3c;
+        }
+
+        /* DASHBOARD CONTENT */
+        .dashboard-container {
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(58,134,255,0.12), rgba(100,180,250,0.05));
+            border-radius: 28px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid rgba(100,180,250,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+            .hero-banner h1 {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: white;
+            }
+
+                .hero-banner h1 span {
+                    background: linear-gradient(135deg, #64b4fa, #3a86ff);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .stat-card {
+            background: rgba(10,20,30,0.55);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            border: 1px solid rgba(100,180,250,0.15);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(100,180,250,0.4);
+            }
+
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .glass-card {
+            background: rgba(10,20,30,0.45);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid rgba(100,180,250,0.12);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+            .search-bar input, .search-bar select {
+                padding: 0.7rem 1.2rem;
+                background: rgba(255,255,255,0.07);
+                border: 1px solid rgba(100,180,250,0.25);
+                border-radius: 40px;
+                font-size: 0.85rem;
+                color: white;
+            }
+
+                .search-bar input:focus {
+                    outline: none;
+                    border-color: #64b4fa;
+                }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .movie-card {
+            background: rgba(25,35,45,0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(100,180,250,0.1);
+        }
+
+            .movie-card:hover {
+                transform: translateY(-6px);
+                border-color: rgba(100,180,250,0.4);
+            }
+
+        .movie-poster {
+            position: relative;
+            aspect-ratio: 2/3;
+            overflow: hidden;
+        }
+
+            .movie-poster img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .movie-rating-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #ffc107;
+        }
+
+        .movie-info {
+            padding: 0.7rem;
+        }
+
+        .movie-title {
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-year {
+            font-size: 0.65rem;
+            color: rgba(100,180,250,0.7);
+        }
+
+        .quick-action-btn {
+            background: rgba(100,180,250,0.1);
+            border: 1px solid rgba(100,180,250,0.25);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64b4fa;
+        }
+
+        @media (max-width: 768px) {
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-animation-of-blue-particles-12254-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="glow"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="nav-container">
+                <div class="logo"><span class="logo-icon">🎬</span><span class="logo-text">FilmFusion</span></div>
+                <div class="nav-links">
+                    <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+                    <a href="#"><i class="fas fa-heart"></i> Favorites</a>
+                    <a href="#"><i class="fas fa-clock"></i> Watchlist</a>
+                    <a href="#"><i class="fas fa-history"></i> History</a>
+                    <a href="#"><i class="fas fa-user"></i> Profile</a>
+                </div>
+                <div class="user-section">
+                    <div class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-profile-dropdown">
+                        <div class="user-avatar" id="navUserAvatar"><span>👤</span></div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-header" style="padding:0.8rem 1.2rem;"><div class="user-name" id="navUserName">User</div><div class="user-email" id="navUserEmail" style="font-size:0.7rem;color:gray;">user@filmfusion.com</div></div>
+                            <a href="#" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+                            <a href="#" class="dropdown-item logout-dropdown" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="hero-banner">
+                <h1>Welcome back, <span id="userNameDisplay">Movie Lover</span>! 🎉</h1>
+                <p>🔥 Real-time notifications: New movies added by admin appear instantly!</p>
+                <div class="quick-actions"><button class="quick-action-btn" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-number" id="totalMovies">0</div><div class="stat-label">Total Movies</div></div>
+                <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-number" id="favoritesCount">0</div><div class="stat-label">Favorites</div></div>
+                <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-number" id="watchlistCount">0</div><div class="stat-label">Watchlist</div></div>
+                <div class="stat-card"><div class="stat-icon">📜</div><div class="stat-number" id="historyCount">0</div><div class="stat-label">History</div></div>
+            </div>
+            <div class="glass-card">
+                <h2 class="section-title"><i class="fas fa-film"></i> Discover Movies</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Search by title...">
+                    <select id="genreFilter"><option value="">🎯 All Genres</option><option value="action">🔥 Action</option><option value="comedy">😂 Comedy</option><option value="drama">🎭 Drama</option><option value="sci-fi">🚀 Sci-Fi</option><option value="horror">👻 Horror</option><option value="romance">💕 Romance</option></select>
+                </div>
+                <div id="moviesGrid" class="movie-grid"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading movies...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="notif-modal-overlay"><div class="notif-modal"><div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="close-modal" onclick="closeNotifModal()">✕</button></div><div id="notifListContainer" class="notif-list"></div><button class="clear-notif" onclick="clearAllNotifications()">Clear All</button></div></div>
+
+    <script>
+        // ----------------------------- GLOBAL STATE ---------------------------------
+        let currentUser = { id: null, name: "Movie Lover", email: "user@filmfusion.com" };
+        let moviesDatabase = [];      // master movie list
+        let userStats = { favorites: 0, watchlist: 0, history: 0 };
+
+        // ---------- NOTIFICATION SYSTEM (stores per user in localStorage) ----------
+        function getUserNotifKey() { return `filmfusion_notifications_${currentUser.id || 'guest'}`; }
+        function loadNotifications() {
+            const key = getUserNotifKey();
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveNotifications(notifs) { localStorage.setItem(getUserNotifKey(), JSON.stringify(notifs)); }
+
+        // Add notification for user (triggered when admin adds a movie)
+        function addMovieNotification(movieTitle, movieId) {
+            let notifs = loadNotifications();
+            const newNotif = {
+                id: Date.now(),
+                title: "🎬 New Movie Added!",
+                message: `"${movieTitle}" has been added to FilmFusion. Watch now!`,
+                movieId: movieId,
+                timestamp: new Date().toLocaleString(),
+                read: false,
+                type: 'new_movie'
+            };
+            notifs.unshift(newNotif);
+            saveNotifications(notifs);
+            updateNotificationBadge();
+            // Show toast style alert
+            showToastNotification(`✨ New movie: ${movieTitle}`);
+            return newNotif;
+        }
+
+        // Admin Simulation: function to add movie (mimics admin adding from elsewhere)
+        window.adminAddMovie = function(movieData) {
+            // check if movie already exists by id or title
+            const exists = moviesDatabase.some(m => m.title.toLowerCase() === movieData.title.toLowerCase());
+            if(exists) return false;
+            const newId = Date.now();
+            const newMovie = { ...movieData, id: newId };
+            moviesDatabase.push(newMovie);
+            // save to localStorage so it persists & cross-tab sync
+            localStorage.setItem('filmfusion_movies', JSON.stringify(moviesDatabase));
+            // 🔔 CRITICAL: send notification to current user
+            addMovieNotification(newMovie.title, newId);
+            // re-render movies & update stats
+            renderMovieGrid();
+            updateTotalMoviesCount();
+            return true;
+        };
+
+        // Show toast
+        function showToastNotification(msg) {
+            let toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.background = 'rgba(58,134,255,0.95)';
+            toast.style.backdropFilter = 'blur(12px)';
+            toast.style.color = 'white';
+            toast.style.padding = '12px 20px';
+            toast.style.borderRadius = '40px';
+            toast.style.fontSize = '0.85rem';
+            toast.style.zIndex = '3000';
+            toast.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+            toast.style.border = '1px solid rgba(255,255,255,0.2)';
+            toast.innerHTML = `<i class="fas fa-bell"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // update badge + show modal live
+        function updateNotificationBadge() {
+            const notifs = loadNotifications();
+            const unreadCount = notifs.filter(n => !n.read).length;
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.style.display = 'flex';
+                    badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        window.showNotificationsModal = function() {
+            const modal = document.getElementById('notifModal');
+            const container = document.getElementById('notifListContainer');
+            let notifs = loadNotifications();
+            if (notifs.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;color:gray;">✨ No notifications yet. New movies will appear here!</div>';
+            } else {
+                container.innerHTML = notifs.map(notif => `
+                    <div class="notif-item ${!notif.read ? 'new' : ''}" data-id="${notif.id}">
+                        <div class="notif-title">${notif.title}</div>
+                        <div class="notif-desc">${notif.message}</div>
+                        <div class="notif-time">${notif.timestamp}</div>
+                    </div>
+                `).join('');
+                // mark as read after opening
+                const updated = notifs.map(n => ({ ...n, read: true }));
+                saveNotifications(updated);
+                updateNotificationBadge();
+            }
+            modal.classList.add('active');
+        };
+        window.closeNotifModal = function() { document.getElementById('notifModal').classList.remove('active'); };
+        window.clearAllNotifications = function() {
+            saveNotifications([]);
+            updateNotificationBadge();
+            if(document.getElementById('notifModal').classList.contains('active')) window.showNotificationsModal();
+            showToastNotification("Cleared all notifications");
+        };
+
+        // ------------- MOVIE DATA & PERSISTENCE -------------
+        const DEFAULT_MOVIES = [
+            { id: 1, title: "Inception", year: 2010, genre: "action", rating: 8.8, poster: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uyi.jpg", description: "A thief who steals corporate secrets..." },
+            { id: 2, title: "The Dark Knight", year: 2008, genre: "action", rating: 9.0, poster: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" },
+            { id: 3, title: "Interstellar", year: 2014, genre: "sci-fi", rating: 8.6, poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" },
+            { id: 4, title: "The Godfather", year: 1972, genre: "drama", rating: 9.2, poster: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" },
+            { id: 5, title: "Parasite", year: 2019, genre: "drama", rating: 8.6, poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg" },
+            { id: 6, title: "Spider-Man: Into the Spider-Verse", year: 2018, genre: "action", rating: 8.4, poster: "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg" }
+        ];
+
+        function loadMoviesFromStorage() {
+            const stored = localStorage.getItem('filmfusion_movies');
+            if (stored) {
+                moviesDatabase = JSON.parse(stored);
+            } else {
+                moviesDatabase = [...DEFAULT_MOVIES];
+                localStorage.setItem('filmfusion_movies', JSON.stringify(moviesDatabase));
+            }
+        }
+
+        function updateTotalMoviesCount() { document.getElementById('totalMovies').innerText = moviesDatabase.length; }
+        function updateStatsFromLocal() {
+            // Simulate stats (for demo, we keep zeros but update UI)
+            document.getElementById('favoritesCount').innerText = userStats.favorites;
+            document.getElementById('watchlistCount').innerText = userStats.watchlist;
+            document.getElementById('historyCount').innerText = userStats.history;
+        }
+
+        // SEARCH + FILTER
+        let currentSearch = '', currentGenre = '';
+        window.searchMovies = function() {
+            currentSearch = document.getElementById('searchInput').value.toLowerCase();
+            renderMovieGrid();
+        };
+        window.filterByGenre = function() {
+            currentGenre = document.getElementById('genreFilter').value;
+            renderMovieGrid();
+        };
+
+        function renderMovieGrid() {
+            const container = document.getElementById('moviesGrid');
+            let filtered = [...moviesDatabase];
+            if (currentSearch) filtered = filtered.filter(m => m.title.toLowerCase().includes(currentSearch));
+            if (currentGenre) filtered = filtered.filter(m => m.genre === currentGenre);
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state" style="text-align:center;padding:2rem;"><i class="fas fa-film" style="font-size:2rem;opacity:0.5"></i><h3>No movies found</h3></div>`;
+                return;
+            }
+            container.innerHTML = filtered.map(movie => `
+                <div class="movie-card" onclick="alert('Playing soon: ${movie.title}')">
+                    <div class="movie-poster">
+                        <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
+                        <div class="movie-rating-badge"><i class="fas fa-star"></i> ${movie.rating || 'N/A'}</div>
+                    </div>
+                    <div class="movie-info">
+                        <div class="movie-title">${movie.title}</div>
+                        <div class="movie-year">${movie.year} • ${movie.genre}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // SIMULATE ADMIN ADDING MOVIE periodically (for demo) & also provide manual simulation button in console, plus an on-page floating demo button
+        function startAdminSimulation() {
+            // Every 45 seconds, simulate admin adding a random new movie (only if not exist)
+            setInterval(() => {
+                const demoNewMovies = [
+                    { title: "Dune: Part Two", year: 2024, genre: "sci-fi", rating: 8.9, poster: "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dnbOE6PY0I9s7nS.jpg" },
+                    { title: "Oppenheimer", year: 2023, genre: "drama", rating: 8.5, poster: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
+                    { title: "John Wick 4", year: 2023, genre: "action", rating: 7.8, poster: "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg" },
+                    { title: "Everything Everywhere All at Once", year: 2022, genre: "comedy", rating: 8.1, poster: "https://image.tmdb.org/t/p/w500/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg" }
+                ];
+                const randomMovie = demoNewMovies[Math.floor(Math.random() * demoNewMovies.length)];
+                const exists = moviesDatabase.some(m => m.title.toLowerCase() === randomMovie.title.toLowerCase());
+                if (!exists) {
+                    window.adminAddMovie(randomMovie);
+                    showToastNotification(`🎥 Admin added: ${randomMovie.title}`);
+                }
+            }, 45000);
+        }
+
+        // attach UI events
+        function bindEvents() {
+            document.getElementById('searchInput').addEventListener('input', window.searchMovies);
+            document.getElementById('genreFilter').addEventListener('change', window.filterByGenre);
+            document.getElementById('notificationBell').addEventListener('click', window.showNotificationsModal);
+            document.getElementById('dropdownLogout').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+
+        // initial user setup
+        function initUser() {
+            let uid = localStorage.getItem('userId');
+            let uname = localStorage.getItem('userName');
+            let uemail = localStorage.getItem('userEmail');
+            if (!uid || uid === 'null') {
+                // fallback demo user
+                uid = 'demo_123';
+                uname = uname || 'Alex';
+                uemail = uemail || 'alex@filmfusion.com';
+                localStorage.setItem('userId', uid);
+                localStorage.setItem('userName', uname);
+                localStorage.setItem('userEmail', uemail);
+            }
+            currentUser.id = uid;
+            currentUser.name = uname || 'Movie Lover';
+            currentUser.email = uemail || 'user@filmfusion.com';
+            document.getElementById('userNameDisplay').innerText = currentUser.name;
+            document.getElementById('navUserName').innerText = currentUser.name;
+            document.getElementById('navUserEmail').innerText = currentUser.email;
+            const avatarDiv = document.getElementById('navUserAvatar');
+            if(avatarDiv) avatarDiv.innerHTML = `<span>${currentUser.name.charAt(0).toUpperCase()}</span>`;
+        }
+
+        // welcome notification for new day or first visit
+        function addWelcomeNotif() {
+            const notifs = loadNotifications();
+            const hasWelcome = notifs.some(n => n.type === 'welcome');
+            if (!hasWelcome) {
+                const welcomeNotif = { id: Date.now(), title: "👋 Welcome to FilmFusion!", message: "Get real-time alerts when admin adds fresh movies. Stay tuned!", timestamp: new Date().toLocaleString(), read: false, type: 'welcome' };
+                let existing = loadNotifications();
+                existing.unshift(welcomeNotif);
+                saveNotifications(existing);
+                updateNotificationBadge();
+            }
+        }
+
+        // simulate admin adding a movie after 15 seconds (to show notification instantly)
+        setTimeout(() => {
+            if (!moviesDatabase.some(m => m.title === "The Marvels")) {
+                window.adminAddMovie({ title: "The Marvels", year: 2023, genre: "action", rating: 6.8, poster: "https://image.tmdb.org/t/p/w500/9GBhzXMFjgcZ3FdR9w3bUMMTps5.jpg" });
+            }
+        }, 5000);
+
+        // main entry
+        (function main() {
+            initUser();
+            loadMoviesFromStorage();
+            bindEvents();
+            renderMovieGrid();
+            updateTotalMoviesCount();
+            updateStatsFromLocal();
+            updateNotificationBadge();
+            addWelcomeNotif();
+            startAdminSimulation();   // auto periodic admin adds (demonstrates realtime notifications)
+            // ensure cross-tab sync (listen to storage changes)
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'filmfusion_movies') {
+                    loadMoviesFromStorage();
+                    renderMovieGrid();
+                    updateTotalMoviesCount();
+                    showToastNotification("Movie library updated externally!");
+                    updateNotificationBadge(); // ensure badge reflect maybe
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
